@@ -18,10 +18,14 @@ const Dashboard = () => {
       <Navbar />
       
       <main className="container py-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Dashboard Financiero</h1>
-          <Button onClick={() => navigate("/reports")} className="flex items-center">
-            <FileText className="mr-2 h-4 w-4" />
+        <div className="flex flex-col items-center mb-8">
+          <h1 className="text-2xl font-bold mb-4">Dashboard Financiero</h1>
+          <Button 
+            onClick={() => navigate("/reports")} 
+            className="flex items-center px-6"
+            size="lg"
+          >
+            <FileText className="mr-2 h-5 w-5" />
             Generar Informes
           </Button>
         </div>
