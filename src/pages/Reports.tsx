@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { Calendar, FilePdf, Printer, Save } from "lucide-react";
+import { Calendar, FileText, Printer, Save } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,7 +25,6 @@ const Reports = () => {
   };
 
   const generateReport = () => {
-    // Creamos el contenido del informe
     const reportDate = format(selectedDate, "dd 'de' MMMM 'de' yyyy", { locale: es });
     
     let reportContent = `
@@ -192,7 +190,7 @@ const Reports = () => {
                       size="sm"
                       onClick={() => setOutputFormat("pdf")}
                     >
-                      <FilePdf className="mr-1 h-4 w-4" />
+                      <FileText className="mr-1 h-4 w-4" />
                       Guardar PDF
                     </Button>
                   </div>
@@ -264,7 +262,7 @@ const Reports = () => {
                       Imprimir
                     </Button>
                     <Button variant="outline" onClick={() => setOutputFormat("pdf")}>
-                      <FilePdf className="mr-1 h-4 w-4" />
+                      <FileText className="mr-1 h-4 w-4" />
                       Guardar PDF
                     </Button>
                     <Button>Confirmar Cierre</Button>
