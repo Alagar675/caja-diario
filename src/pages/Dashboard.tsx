@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FileText } from "lucide-react";
@@ -8,23 +7,16 @@ import TransactionForm from "@/components/transactions/TransactionForm";
 import TransactionList from "@/components/transactions/TransactionList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const navigate = useNavigate();
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <Navbar />
       
       <main className="container py-8">
         <div className="flex flex-col items-center mb-8">
-          <h1 className="text-2xl font-bold mb-4">Dashboard Financiero</h1>
-          <Button 
-            onClick={() => navigate("/reports")} 
-            className="flex items-center px-6"
-            size="lg"
-          >
+          <h1 className="text-2xl mb-4 font-bold text-indigo-950">Balance Financiero</h1>
+          <Button onClick={() => navigate("/reports")} className="flex items-center px-6" size="lg">
             <FileText className="mr-2 h-5 w-5" />
             Generar Informes
           </Button>
@@ -52,12 +44,7 @@ const Dashboard = () => {
         </div>
       </main>
 
-      <Sidebar 
-        isOpen={isSidebarOpen} 
-        toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} 
-      />
-    </div>
-  );
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+    </div>;
 };
-
 export default Dashboard;
