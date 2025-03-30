@@ -10,12 +10,20 @@ import { formatCurrency } from "@/utils/formatters";
 interface SidebarProps {
   isOpen: boolean;
   toggleSidebar: () => void;
+  onSidebarStateChange?: (isOpen: boolean) => void;
 }
 
-const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
+const Sidebar = ({ isOpen, toggleSidebar, onSidebarStateChange }: SidebarProps) => {
   const { getDailySummary, getTotalBalance } = useFinance();
   const dailySummary = getDailySummary();
   const totalBalance = getTotalBalance();
+
+  // Call the callback when sidebar state changes
+  React.useEffect(() => {
+    if (onSidebarStateChange) {
+      onSidebarStateChange(isOpen);
+    }
+  }, [isOpen, onSidebarStateChange]);
 
   return (
     <div

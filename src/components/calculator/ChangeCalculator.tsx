@@ -1,11 +1,14 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatCurrency } from "@/utils/formatters";
 
-const ChangeCalculator = () => {
+interface ChangeCalculatorProps {
+  isVisible?: boolean;
+}
+
+const ChangeCalculator = ({ isVisible = true }: ChangeCalculatorProps) => {
   const [amountToPay, setAmountToPay] = useState<number>(0);
   const [amountReceived, setAmountReceived] = useState<number>(0);
   const [change, setChange] = useState<number>(0);
@@ -104,6 +107,11 @@ const ChangeCalculator = () => {
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     e.target.select();
   };
+
+  // If the component is not visible, don't render anything
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <Card className="w-full">
