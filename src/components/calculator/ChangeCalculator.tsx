@@ -9,20 +9,70 @@ const ChangeCalculator = () => {
   const [amountToPay, setAmountToPay] = useState<number>(0);
   const [amountReceived, setAmountReceived] = useState<number>(0);
   const [change, setChange] = useState<number>(0);
+  
+  // For display in the input fields
+  const [formattedAmountToPay, setFormattedAmountToPay] = useState<string>("");
+  const [formattedAmountReceived, setFormattedAmountReceived] = useState<string>("");
 
   useEffect(() => {
     const calculatedChange = amountReceived - amountToPay;
     setChange(calculatedChange >= 0 ? calculatedChange : 0);
   }, [amountToPay, amountReceived]);
 
+  // Helper function to format number with thousand separators
+  const formatNumber = (value: number): string => {
+    return value.toLocaleString('es-CO', { 
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2
+    });
+  };
+
+  // Helper function to parse formatted string back to number
+  const parseFormattedNumber = (formattedValue: string): number => {
+    // Remove all non-numeric characters except decimal point
+    const numericString = formattedValue.replace(/[^\d,.]/g, '').replace(',', '.');
+    return parseFloat(numericString) || 0;
+  };
+
   const handleAmountToPayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value) || 0;
-    setAmountToPay(value);
+    const rawValue = e.target.value;
+    
+    // Don't format empty input
+    if (rawValue === '') {
+      setFormattedAmountToPay('');
+      setAmountToPay(0);
+      return;
+    }
+    
+    // Remove non-numeric characters for calculation
+    const numericValue = parseFormattedNumber(rawValue);
+    setAmountToPay(numericValue);
+    
+    // Format for display
+    setFormattedAmountToPay(formatNumber(numericValue));
   };
 
   const handleAmountReceivedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value) || 0;
-    setAmountReceived(value);
+    const rawValue = e.target.value;
+    
+    // Don't format empty input
+    if (rawValue === '') {
+      setFormattedAmountReceived('');
+      setAmountReceived(0);
+      return;
+    }
+    
+    // Remove non-numeric characters for calculation
+    const numericValue = parseFormattedNumber(rawValue);
+    setAmountReceived(numericValue);
+    
+    // Format for display
+    setFormattedAmountReceived(formatNumber(numericValue));
+  };
+
+  // Handle focus to make editing easier
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.select();
   };
 
   return (
@@ -35,11 +85,11 @@ const ChangeCalculator = () => {
           <Label htmlFor="amountToPay">Monto a pagar</Label>
           <Input
             id="amountToPay"
-            type="number"
+            type="text"
             placeholder="0"
-            min="0"
-            value={amountToPay || ""}
+            value={formattedAmountToPay}
             onChange={handleAmountToPayChange}
+            onFocus={handleFocus}
             className="text-right"
           />
         </div>
@@ -48,11 +98,11 @@ const ChangeCalculator = () => {
           <Label htmlFor="amountReceived">Monto recibido</Label>
           <Input
             id="amountReceived"
-            type="number"
+            type="text"
             placeholder="0"
-            min="0"
-            value={amountReceived || ""}
+            value={formattedAmountReceived}
             onChange={handleAmountReceivedChange}
+            onFocus={handleFocus}
             className="text-right"
           />
         </div>
