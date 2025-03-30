@@ -47,8 +47,10 @@ const ChangeCalculator = ({
 
     // Remove all non-numeric characters except decimal comma and thousand separators
     // Replace comma with dot for proper JavaScript float parsing
-    const numericString = formattedValue.replace(/[^\d,.]/g, '').replace(/\./g, '') // Remove all dots (thousand separators)
-      .replace(',', '.'); // Replace comma with dot for decimal parsing
+    const numericString = formattedValue
+      .replace(/[^\d,.]/g, '')  // Keep only digits, commas, and dots
+      .replace(/\./g, '')       // Remove all dots (thousand separators)
+      .replace(',', '.');       // Replace comma with dot for decimal parsing
 
     return parseFloat(numericString) || 0;
   };
@@ -63,13 +65,13 @@ const ChangeCalculator = ({
       return;
     }
 
-    // Limit input length to match requirements (25 digits for integer part + separators and decimals)
-    // Count only digits to check the limit
-    if (rawValue.replace(/[^\d]/g, '').length > 27) { // 25 digits + 2 decimals
+    // Limit input to 25 digits for integer part + 2 decimal digits
+    const digitCount = rawValue.replace(/[^\d]/g, '').length;
+    if (digitCount > 27) { // 25 integer digits + 2 decimal digits
       return;
     }
 
-    // Remove non-numeric characters for calculation
+    // Parse the number for calculation
     const numericValue = parseFormattedNumber(rawValue);
     setAmountToPay(numericValue);
 
@@ -87,13 +89,13 @@ const ChangeCalculator = ({
       return;
     }
 
-    // Limit input length to match requirements (25 digits for integer part + separators and decimals)
-    // Count only digits to check the limit
-    if (rawValue.replace(/[^\d]/g, '').length > 27) { // 25 digits + 2 decimals
+    // Limit input to 25 digits for integer part + 2 decimal digits
+    const digitCount = rawValue.replace(/[^\d]/g, '').length;
+    if (digitCount > 27) { // 25 integer digits + 2 decimal digits
       return;
     }
 
-    // Remove non-numeric characters for calculation
+    // Parse the number for calculation
     const numericValue = parseFormattedNumber(rawValue);
     setAmountReceived(numericValue);
 
