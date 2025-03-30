@@ -24,7 +24,7 @@ const Navbar = () => {
     path: "/reports"
   }];
   return <header className="sticky top-0 z-40 w-full backdrop-blur-sm bg-white/90 dark:bg-dark/90 border-b">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-16 items-center justify-between bg-blue-50">
         <div className="flex items-center">
           <a href="/dashboard" className="flex items-center space-x-2">
             <span className="font-bold text-blue-700 text-xl">D'pagos movil</span>
