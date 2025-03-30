@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Sidebar from "@/components/layout/Sidebar";
+import DashboardTitle from "@/components/dashboard/DashboardTitle";
 import TransactionForm from "@/components/transactions/TransactionForm";
 import TransactionList from "@/components/transactions/TransactionList";
 import ChangeCalculator from "@/components/calculator/ChangeCalculator";
@@ -22,6 +23,7 @@ const Dashboard = () => {
   return (
     <div className="flex flex-col h-screen bg-background">
       <Navbar />
+      <DashboardTitle />
       <div className="flex flex-1 overflow-hidden">
         <main className="flex-1 overflow-y-auto p-4">
           <div className="container mx-auto">
