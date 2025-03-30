@@ -21,6 +21,7 @@ const ChangeCalculator = () => {
 
   // Helper function to format number with thousand separators
   const formatNumber = (value: number): string => {
+    // Format with dots for thousands and comma for decimals (Colombian format)
     return value.toLocaleString('es-CO', { 
       minimumFractionDigits: 0,
       maximumFractionDigits: 2
@@ -29,8 +30,15 @@ const ChangeCalculator = () => {
 
   // Helper function to parse formatted string back to number
   const parseFormattedNumber = (formattedValue: string): number => {
-    // Remove all non-numeric characters except decimal point
-    const numericString = formattedValue.replace(/[^\d,.]/g, '').replace(',', '.');
+    // Handle empty strings
+    if (!formattedValue.trim()) return 0;
+    
+    // Remove all non-numeric characters except decimal comma and thousand separators
+    // Replace comma with dot for proper JavaScript float parsing
+    const numericString = formattedValue.replace(/[^\d,.]/g, '')
+      .replace(/\./g, '') // Remove all dots (thousand separators)
+      .replace(',', '.'); // Replace comma with dot for decimal parsing
+      
     return parseFloat(numericString) || 0;
   };
 
@@ -41,6 +49,11 @@ const ChangeCalculator = () => {
     if (rawValue === '') {
       setFormattedAmountToPay('');
       setAmountToPay(0);
+      return;
+    }
+    
+    // Limit input length to 24 characters (20 digits + separators and decimals)
+    if (rawValue.replace(/[^\d]/g, '').length > 20) {
       return;
     }
     
@@ -59,6 +72,11 @@ const ChangeCalculator = () => {
     if (rawValue === '') {
       setFormattedAmountReceived('');
       setAmountReceived(0);
+      return;
+    }
+    
+    // Limit input length to 24 characters (20 digits + separators and decimals)
+    if (rawValue.replace(/[^\d]/g, '').length > 20) {
       return;
     }
     
