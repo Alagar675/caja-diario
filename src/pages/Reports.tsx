@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Calendar, FileText, Printer, Save } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
@@ -26,9 +27,13 @@ const Reports = () => {
 
   const generateReport = () => {
     const reportDate = format(selectedDate, "dd 'de' MMMM 'de' yyyy", { locale: es });
+    const printDateTime = format(new Date(), "dd/MM/yyyy HH:mm:ss", { locale: es });
     
     let reportContent = `
-      <div style="font-family: sans-serif; max-width: 800px; margin: 0 auto;">
+      <div style="font-family: sans-serif; max-width: 800px; margin: 0 auto; position: relative;">
+        <div style="position: absolute; top: 20px; right: 20px; font-size: 12px; color: #666;">
+          Impreso: ${printDateTime}
+        </div>
         <h1 style="text-align: center;">Reporte Financiero</h1>
         <h2 style="text-align: center;">${reportDate}</h2>
         
