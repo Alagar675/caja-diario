@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FileText } from "lucide-react";
@@ -5,11 +6,14 @@ import Navbar from "@/components/layout/Navbar";
 import Sidebar from "@/components/layout/Sidebar";
 import TransactionForm from "@/components/transactions/TransactionForm";
 import TransactionList from "@/components/transactions/TransactionList";
+import ChangeCalculator from "@/components/calculator/ChangeCalculator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const navigate = useNavigate();
+  
   return <div className="min-h-screen bg-background">
       <Navbar />
       
@@ -22,29 +26,36 @@ const Dashboard = () => {
           </Button>
         </div>
         
-        <div className="space-y-8">
-          <Tabs defaultValue="income" className="w-full">
-            <TabsList className="w-full max-w-md mx-auto">
-              <TabsTrigger value="income" className="w-1/2">Ingresos</TabsTrigger>
-              <TabsTrigger value="expense" className="w-1/2">Egresos</TabsTrigger>
-            </TabsList>
-            <div className="mt-6">
-              <TabsContent value="income" className="space-y-8">
-                <TransactionForm type="income" />
-              </TabsContent>
-              <TabsContent value="expense" className="space-y-8">
-                <TransactionForm type="expense" />
-              </TabsContent>
-            </div>
-          </Tabs>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="md:col-span-2">
+            <Tabs defaultValue="income" className="w-full">
+              <TabsList className="w-full max-w-md mx-auto">
+                <TabsTrigger value="income" className="w-1/2">Ingresos</TabsTrigger>
+                <TabsTrigger value="expense" className="w-1/2">Egresos</TabsTrigger>
+              </TabsList>
+              <div className="mt-6">
+                <TabsContent value="income" className="space-y-8">
+                  <TransactionForm type="income" />
+                </TabsContent>
+                <TabsContent value="expense" className="space-y-8">
+                  <TransactionForm type="expense" />
+                </TabsContent>
+              </div>
+            </Tabs>
+          </div>
           
           <div>
-            <TransactionList />
+            <ChangeCalculator />
           </div>
+        </div>
+        
+        <div>
+          <TransactionList />
         </div>
       </main>
 
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
     </div>;
 };
+
 export default Dashboard;
