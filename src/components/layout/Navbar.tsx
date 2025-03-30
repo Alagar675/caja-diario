@@ -4,7 +4,6 @@ import { LogOut, Menu, X, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
-
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const {
@@ -12,14 +11,11 @@ const Navbar = () => {
     logout
   } = useAuth();
   const navigate = useNavigate();
-
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
-
   const closeMenu = () => setIsMenuOpen(false);
-
   const menuItems = [{
     name: "Inicio",
     path: "/dashboard"
@@ -27,12 +23,11 @@ const Navbar = () => {
     name: "Informes",
     path: "/reports"
   }];
-
   return <header className="sticky top-0 z-40 w-full backdrop-blur-sm bg-white/90 dark:bg-dark/90 border-b">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center">
           <a href="/dashboard" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-blue-700">Caja Diario</span>
+            <span className="font-bold text-blue-700 text-xl">D'pagos movil</span>
           </a>
         </div>
 
@@ -110,5 +105,4 @@ const Navbar = () => {
       </div>
     </header>;
 };
-
 export default Navbar;
