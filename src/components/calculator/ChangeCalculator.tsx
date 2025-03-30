@@ -14,10 +14,16 @@ const ChangeCalculator = () => {
   const [formattedAmountToPay, setFormattedAmountToPay] = useState<string>("");
   const [formattedAmountReceived, setFormattedAmountReceived] = useState<string>("");
 
+  // Update change calculation whenever input values change
   useEffect(() => {
+    calculateChange();
+  }, [amountToPay, amountReceived]);
+
+  // Calculate the change amount
+  const calculateChange = () => {
     const calculatedChange = amountReceived - amountToPay;
     setChange(calculatedChange >= 0 ? calculatedChange : 0);
-  }, [amountToPay, amountReceived]);
+  };
 
   // Helper function to format number with thousand separators
   const formatNumber = (value: number): string => {
@@ -63,6 +69,9 @@ const ChangeCalculator = () => {
     
     // Format for display
     setFormattedAmountToPay(formatNumber(numericValue));
+    
+    // Immediately calculate the change
+    calculateChange();
   };
 
   const handleAmountReceivedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,9 +95,12 @@ const ChangeCalculator = () => {
     
     // Format for display
     setFormattedAmountReceived(formatNumber(numericValue));
+    
+    // Immediately calculate the change
+    calculateChange();
   };
 
-  // Handle focus to make editing easier
+  // Handle focus to make editing easier and select all text
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     e.target.select();
   };
@@ -100,7 +112,7 @@ const ChangeCalculator = () => {
       </CardHeader>
       <CardContent className="space-y-4 pt-4">
         <div className="space-y-2">
-          <Label htmlFor="amountToPay">Monto a pagar</Label>
+          <Label htmlFor="amountToPay">Valor a pagar</Label>
           <Input
             id="amountToPay"
             type="text"
@@ -113,7 +125,7 @@ const ChangeCalculator = () => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="amountReceived">Monto recibido</Label>
+          <Label htmlFor="amountReceived">Valor recibido</Label>
           <Input
             id="amountReceived"
             type="text"
@@ -126,7 +138,7 @@ const ChangeCalculator = () => {
         </div>
 
         <div className="space-y-2 pt-2 border-t">
-          <Label htmlFor="change">Cambio a devolver</Label>
+          <Label htmlFor="change">Valor a devolver</Label>
           <div 
             id="change"
             className="h-10 flex items-center justify-end px-3 rounded-md bg-gray-100 font-medium text-lg"
