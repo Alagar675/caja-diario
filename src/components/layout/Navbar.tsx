@@ -24,7 +24,7 @@ const Navbar = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-sm bg-white/90 dark:bg-dark/90 border-b shadow-sm">
+    <header className="sticky top-0 z-50 w-full bg-white border-b shadow-sm dark:bg-gray-950">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center">
           <a href="/dashboard" className="flex items-center space-x-2">
@@ -79,7 +79,7 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Navigation Menu */}
-      <div className={cn("md:hidden absolute w-full bg-white/95 backdrop-blur-sm border-b border-border", isMenuOpen ? "block animate-slide-in" : "hidden")}>
+      <div className={cn("md:hidden absolute w-full bg-white/95 backdrop-blur-sm border-b border-border z-40", isMenuOpen ? "block animate-slide-in" : "hidden")}>
         <div className="container py-4 space-y-4">
           {user && (
             <>

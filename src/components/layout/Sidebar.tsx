@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { ArrowRight, DollarSign, BarChart, ArrowLeft } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -19,7 +19,7 @@ const Sidebar = ({ isOpen, toggleSidebar, onSidebarStateChange }: SidebarProps) 
   const totalBalance = getTotalBalance();
 
   // Call the callback when sidebar state changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (onSidebarStateChange) {
       onSidebarStateChange(isOpen);
     }
@@ -42,7 +42,7 @@ const Sidebar = ({ isOpen, toggleSidebar, onSidebarStateChange }: SidebarProps) 
           {isOpen ? <ArrowRight size={18} /> : <ArrowLeft size={18} />}
         </Button>
         
-        <Card className="h-full w-80 glass-dark overflow-y-auto py-6 px-4 border-l">
+        <Card className="h-full w-80 overflow-y-auto py-6 px-4 border-l shadow-lg">
           <div className="space-y-8">
             <div className="text-center">
               <h3 className="text-lg font-semibold mb-2">Resumen del día</h3>

@@ -36,9 +36,14 @@ const Dashboard = () => {
                     <TabsTrigger value="income">Ingresos</TabsTrigger>
                     <TabsTrigger value="expense">Egresos</TabsTrigger>
                   </TabsList>
+                  <TabsContent value="income">
+                    <TransactionForm type="income" />
+                  </TabsContent>
+                  <TabsContent value="expense">
+                    <TransactionForm type="expense" />
+                  </TabsContent>
                 </Tabs>
                 
-                <TransactionForm type={transactionType} />
                 <div className="h-6" />
                 <TransactionList />
               </div>
