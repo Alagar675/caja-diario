@@ -28,10 +28,10 @@ const DashboardTitle: React.FC<DashboardTitleProps> = ({
   };
 
   return (
-    <div className="w-full py-4 bg-white dark:bg-gray-950">
+    <div className="w-full py-8 bg-white dark:bg-gray-950">
       <div className="container mx-auto">
         <div className="flex flex-col items-center justify-center text-center">
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">
             {initialTitle}
           </h1>
           <div className="text-sm font-medium bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-md flex gap-2">
