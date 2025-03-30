@@ -63,8 +63,9 @@ const ChangeCalculator = ({
       return;
     }
 
-    // Limit input length to 24 characters (20 digits + separators and decimals)
-    if (rawValue.replace(/[^\d]/g, '').length > 20) {
+    // Limit input length to match requirements (25 digits for integer part + separators and decimals)
+    // Count only digits to check the limit
+    if (rawValue.replace(/[^\d]/g, '').length > 27) { // 25 digits + 2 decimals
       return;
     }
 
@@ -86,8 +87,9 @@ const ChangeCalculator = ({
       return;
     }
 
-    // Limit input length to 24 characters (20 digits + separators and decimals)
-    if (rawValue.replace(/[^\d]/g, '').length > 20) {
+    // Limit input length to match requirements (25 digits for integer part + separators and decimals)
+    // Count only digits to check the limit
+    if (rawValue.replace(/[^\d]/g, '').length > 27) { // 25 digits + 2 decimals
       return;
     }
 

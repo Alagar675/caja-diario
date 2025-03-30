@@ -1,12 +1,18 @@
-
 // Format a number as currency (COP - Colombian Pesos)
 export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('es-CO', {
-    style: 'currency',
-    currency: 'COP',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(amount);
+  // Use try-catch to handle potential number formatting errors with very large numbers
+  try {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+      useGrouping: true, // Ensure thousand separators are used
+    }).format(amount);
+  } catch (error) {
+    console.error('Error formatting currency:', error);
+    return 'COP Error';
+  }
 };
 
 // Format a date as a local string
