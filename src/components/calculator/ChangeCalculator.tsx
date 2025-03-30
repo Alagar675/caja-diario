@@ -1,11 +1,14 @@
+
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatCurrency } from "@/utils/formatters";
+
 interface ChangeCalculatorProps {
   isVisible?: boolean;
 }
+
 const ChangeCalculator = ({
   isVisible = true
 }: ChangeCalculatorProps) => {
@@ -28,11 +31,11 @@ const ChangeCalculator = ({
     setChange(calculatedChange >= 0 ? calculatedChange : 0);
   };
 
-  // Helper function to format number with thousand separators
+  // Helper function to format number with thousand separators and decimal comma
   const formatNumber = (value: number): string => {
     // Format with dots for thousands and comma for decimals (Colombian format)
     return value.toLocaleString('es-CO', {
-      minimumFractionDigits: 0,
+      minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
   };
@@ -45,10 +48,11 @@ const ChangeCalculator = ({
     // Remove all non-numeric characters except decimal comma and thousand separators
     // Replace comma with dot for proper JavaScript float parsing
     const numericString = formattedValue.replace(/[^\d,.]/g, '').replace(/\./g, '') // Remove all dots (thousand separators)
-    .replace(',', '.'); // Replace comma with dot for decimal parsing
+      .replace(',', '.'); // Replace comma with dot for decimal parsing
 
     return parseFloat(numericString) || 0;
   };
+
   const handleAmountToPayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
 
@@ -70,10 +74,8 @@ const ChangeCalculator = ({
 
     // Format for display
     setFormattedAmountToPay(formatNumber(numericValue));
-
-    // Immediately calculate the change
-    calculateChange();
   };
+
   const handleAmountReceivedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
 
@@ -95,9 +97,6 @@ const ChangeCalculator = ({
 
     // Format for display
     setFormattedAmountReceived(formatNumber(numericValue));
-
-    // Immediately calculate the change
-    calculateChange();
   };
 
   // Handle focus to make editing easier and select all text
@@ -109,28 +108,30 @@ const ChangeCalculator = ({
   if (!isVisible) {
     return null;
   }
+
   return <Card className="w-full">
-      <CardHeader className="bg-blue-50 border-b">
-        <CardTitle className="text-center text-blue-700 text-xl">Calculadora de Cambio</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4 pt-4">
-        <div className="space-y-2">
-          <Label htmlFor="amountToPay">Valor a pagar</Label>
-          <Input id="amountToPay" type="text" placeholder="0" value={formattedAmountToPay} onChange={handleAmountToPayChange} onFocus={handleFocus} className="text-right" />
-        </div>
+    <CardHeader className="bg-blue-50 border-b">
+      <CardTitle className="text-center text-blue-700 text-xl">Calculadora de Cambio</CardTitle>
+    </CardHeader>
+    <CardContent className="space-y-4 pt-4">
+      <div className="space-y-2">
+        <Label htmlFor="amountToPay">Valor a pagar</Label>
+        <Input id="amountToPay" type="text" placeholder="0,00" value={formattedAmountToPay} onChange={handleAmountToPayChange} onFocus={handleFocus} className="text-right" />
+      </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="amountReceived">Valor recibido</Label>
-          <Input id="amountReceived" type="text" placeholder="0" value={formattedAmountReceived} onChange={handleAmountReceivedChange} onFocus={handleFocus} className="text-right" />
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="amountReceived">Valor recibido</Label>
+        <Input id="amountReceived" type="text" placeholder="0,00" value={formattedAmountReceived} onChange={handleAmountReceivedChange} onFocus={handleFocus} className="text-right" />
+      </div>
 
-        <div className="space-y-2 pt-2 border-t">
-          <Label htmlFor="change">Valor a devolver</Label>
-          <div id="change" className="h-10 flex items-center justify-end px-3 rounded-md bg-gray-100 font-medium text-lg">
-            {formatCurrency(change)}
-          </div>
+      <div className="space-y-2 pt-2 border-t">
+        <Label htmlFor="change">Valor a devolver</Label>
+        <div id="change" className="h-10 flex items-center justify-end px-3 rounded-md bg-gray-100 font-medium text-lg">
+          {formatCurrency(change)}
         </div>
-      </CardContent>
-    </Card>;
+      </div>
+    </CardContent>
+  </Card>;
 };
+
 export default ChangeCalculator;
