@@ -15,7 +15,7 @@ const Dashboard = () => {
       
       <main className="container py-8">
         <div className="flex flex-col items-center mb-8">
-          <h1 className="text-2xl mb-4 font-bold text-indigo-950">Balance Financiero</h1>
+          <h1 className="text-2xl mb-4 font-bold text-indigo-950">Balance financiero del día</h1>
           <Button onClick={() => navigate("/reports")} className="flex items-center px-6" size="lg">
             <FileText className="mr-2 h-5 w-5" />
             Generar Informes
