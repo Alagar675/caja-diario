@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,41 +15,32 @@ const ChangeCalculator = ({
   const [amountReceived, setAmountReceived] = useState<number>(0);
   const [change, setChange] = useState<number>(0);
 
-  // For display in the input fields
   const [formattedAmountToPay, setFormattedAmountToPay] = useState<string>("");
   const [formattedAmountReceived, setFormattedAmountReceived] = useState<string>("");
 
-  // Update change calculation whenever input values change
   useEffect(() => {
     calculateChange();
   }, [amountToPay, amountReceived]);
 
-  // Calculate the change amount
   const calculateChange = () => {
     const calculatedChange = amountReceived - amountToPay;
     setChange(calculatedChange >= 0 ? calculatedChange : 0);
   };
 
-  // Helper function to format number with thousand separators and decimal comma
   const formatNumber = (value: number): string => {
-    // Format with dots for thousands and comma for decimals (Colombian format)
     return value.toLocaleString('es-CO', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
   };
 
-  // Helper function to parse formatted string back to number
   const parseFormattedNumber = (formattedValue: string): number => {
-    // Handle empty strings
     if (!formattedValue.trim()) return 0;
 
-    // Remove all non-numeric characters except decimal comma and thousand separators
-    // Replace comma with dot for proper JavaScript float parsing
     const numericString = formattedValue
-      .replace(/[^\d,.]/g, '')  // Keep only digits, commas, and dots
-      .replace(/\./g, '')       // Remove all dots (thousand separators)
-      .replace(',', '.');       // Replace comma with dot for decimal parsing
+      .replace(/[^\d,.]/g, '')
+      .replace(/\./g, '')
+      .replace(',', '.');
 
     return parseFloat(numericString) || 0;
   };
@@ -58,57 +48,45 @@ const ChangeCalculator = ({
   const handleAmountToPayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
 
-    // Don't format empty input
     if (rawValue === '') {
       setFormattedAmountToPay('');
       setAmountToPay(0);
       return;
     }
 
-    // Limit input to 25 digits for integer part + 2 decimal digits
     const digitCount = rawValue.replace(/[^\d]/g, '').length;
-    if (digitCount > 27) { // 25 integer digits + 2 decimal digits
+    if (digitCount > 27) {
       return;
     }
 
-    // Parse the number for calculation
     const numericValue = parseFormattedNumber(rawValue);
     setAmountToPay(numericValue);
-
-    // Format for display
     setFormattedAmountToPay(formatNumber(numericValue));
   };
 
   const handleAmountReceivedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
 
-    // Don't format empty input
     if (rawValue === '') {
       setFormattedAmountReceived('');
       setAmountReceived(0);
       return;
     }
 
-    // Limit input to 25 digits for integer part + 2 decimal digits
     const digitCount = rawValue.replace(/[^\d]/g, '').length;
-    if (digitCount > 27) { // 25 integer digits + 2 decimal digits
+    if (digitCount > 27) {
       return;
     }
 
-    // Parse the number for calculation
     const numericValue = parseFormattedNumber(rawValue);
     setAmountReceived(numericValue);
-
-    // Format for display
     setFormattedAmountReceived(formatNumber(numericValue));
   };
 
-  // Handle focus to make editing easier and select all text
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     e.target.select();
   };
 
-  // If the component is not visible, don't render anything
   if (!isVisible) {
     return null;
   }
@@ -124,7 +102,7 @@ const ChangeCalculator = ({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="amountReceived">Valor recibido</Label>
+        <Label htmlFor="amountReceived">Dinero recibido</Label>
         <Input id="amountReceived" type="text" placeholder="0,00" value={formattedAmountReceived} onChange={handleAmountReceivedChange} onFocus={handleFocus} className="text-right" />
       </div>
 
