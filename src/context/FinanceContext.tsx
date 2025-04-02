@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { toast } from "sonner";
 import { useAuth } from "./AuthContext";
@@ -7,7 +6,8 @@ import {
   filterTransactionsByDate, 
   calculateDailySummary, 
   calculateTotalBalance,
-  getCategorySummaryByType
+  getCategorySummaryByType,
+  calculateBalanceSummary
 } from "@/utils/financeUtils";
 
 interface FinanceContextType {
@@ -18,6 +18,7 @@ interface FinanceContextType {
   getTotalBalance: () => number;
   getCategorySummary: (type: TransactionType) => { category: string; total: number }[];
   generateDayEndReport: () => DailySummary;
+  getBalanceSummary: () => { cashBalance: number; transferBalance: number; creditBalance: number };
 }
 
 const FinanceContext = createContext<FinanceContextType | undefined>(undefined);
@@ -40,7 +41,6 @@ export const FinanceProvider = ({ children }: FinanceProviderProps) => {
 
   useEffect(() => {
     if (user) {
-      // Load transactions from localStorage for the current user
       const storedTransactions = localStorage.getItem(`transactions-${user.id}`);
       if (storedTransactions) {
         try {
@@ -60,7 +60,6 @@ export const FinanceProvider = ({ children }: FinanceProviderProps) => {
     }
   }, [user]);
 
-  // Save transactions to localStorage whenever they change
   useEffect(() => {
     if (user) {
       localStorage.setItem(`transactions-${user.id}`, JSON.stringify(transactions));
@@ -108,8 +107,11 @@ export const FinanceProvider = ({ children }: FinanceProviderProps) => {
 
   const generateDayEndReport = () => {
     const summary = getDailySummary();
-    // In a real app, we might want to save this report somewhere
     return summary;
+  };
+
+  const getBalanceSummary = () => {
+    return calculateBalanceSummary(transactions, user?.id);
   };
 
   return (
@@ -121,7 +123,8 @@ export const FinanceProvider = ({ children }: FinanceProviderProps) => {
         getDailySummary,
         getTotalBalance,
         getCategorySummary,
-        generateDayEndReport
+        generateDayEndReport,
+        getBalanceSummary
       }}
     >
       {children}
@@ -129,5 +132,4 @@ export const FinanceProvider = ({ children }: FinanceProviderProps) => {
   );
 };
 
-// Export all types for convenience
 export type { Transaction, TransactionType, PaymentMethod, DailySummary };

@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Calendar, FileText, Printer, Save } from "lucide-react";
+import { Banknote, Calendar, CreditCard, FileText, Printer, Save } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,11 +22,12 @@ const Reports = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType | "all">("all");
   
-  const { getDailySummary, getTotalBalance, getCategorySummary } = useFinance();
+  const { getDailySummary, getTotalBalance, getCategorySummary, getBalanceSummary } = useFinance();
 
   const dailySummary = getDailySummary(selectedDate);
   const incomeCategories = getCategorySummary("income");
   const expenseCategories = getCategorySummary("expense");
+  const balanceSummary = getBalanceSummary();
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(new Date(event.target.value));
@@ -397,6 +398,48 @@ const Reports = () => {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
+              
+              {/* Add balance summary cards */}
+              <div className="mt-6">
+                <h3 className="text-sm font-medium mb-3">Saldos Actuales</h3>
+                <div className="space-y-3">
+                  <Card className="bg-muted">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <Banknote className="h-5 w-5 mr-2 text-primary" />
+                          <span className="text-sm font-medium">Efectivo</span>
+                        </div>
+                        <span className="font-bold">{formatCurrency(balanceSummary.cashBalance)}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-muted">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <CreditCard className="h-5 w-5 mr-2 text-primary" />
+                          <span className="text-sm font-medium">Transferencias</span>
+                        </div>
+                        <span className="font-bold">{formatCurrency(balanceSummary.transferBalance)}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-muted">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <FileText className="h-5 w-5 mr-2 text-primary" />
+                          <span className="text-sm font-medium">Créditos</span>
+                        </div>
+                        <span className="font-bold">{formatCurrency(balanceSummary.creditBalance)}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>

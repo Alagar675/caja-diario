@@ -1,5 +1,51 @@
-
 import { Transaction, TransactionType, DailySummary } from "@/types/finance";
+
+export const calculateBalanceSummary = (
+  transactions: Transaction[],
+  userId: string | undefined
+): { cashBalance: number; transferBalance: number; creditBalance: number } => {
+  if (!userId) {
+    return {
+      cashBalance: 0,
+      transferBalance: 0,
+      creditBalance: 0
+    };
+  }
+
+  let cashBalance = 0;
+  let transferBalance = 0;
+  let creditBalance = 0;
+
+  transactions
+    .filter(t => t.userId === userId)
+    .forEach(t => {
+      if (t.paymentMethod === "cash") {
+        if (t.type === "income") {
+          cashBalance += t.amount;
+        } else {
+          cashBalance -= t.amount;
+        }
+      } else if (t.paymentMethod === "transfer") {
+        if (t.type === "income") {
+          transferBalance += t.amount;
+        } else {
+          transferBalance -= t.amount;
+        }
+      }
+      
+      if (t.type === "income" && t.category === "Ventas a crédito") {
+        creditBalance += t.amount;
+      } else if (t.type === "income" && t.category === "Recaudo Créditos") {
+        creditBalance -= t.amount;
+      }
+    });
+
+  return {
+    cashBalance,
+    transferBalance,
+    creditBalance
+  };
+};
 
 export const isSameDay = (date1: Date, date2: Date) => {
   return date1.getFullYear() === date2.getFullYear() &&
