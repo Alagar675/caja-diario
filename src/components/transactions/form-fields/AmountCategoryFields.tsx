@@ -21,7 +21,7 @@ const AmountCategoryFields = ({
   setCategory
 }: AmountCategoryFieldsProps) => {
   const categoryOptions = type === "income" 
-    ? ["Ventas", "Recaudo Créditos", "Recaudos recurrentes", "Otros"] 
+    ? ["Ventas en efectivo", "Ventas a crédito", "Recaudo Créditos", "Recaudos recurrentes", "Otros"] 
     : ["Facturas", "Pagos recurrentes", "Servicios públicos", "Pago salarios", "Otros"];
 
   return (
