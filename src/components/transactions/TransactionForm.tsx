@@ -10,6 +10,7 @@ import { useFinance, TransactionType, PaymentMethod } from "@/context/FinanceCon
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getCurrentDateForInput, getCurrentTimeForInput } from "@/utils/formatters";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Printer, Archive } from "lucide-react";
 
 interface TransactionFormProps {
@@ -33,6 +34,7 @@ const TransactionForm = ({
   const [date, setDate] = useState(getCurrentDateForInput());
   const [time, setTime] = useState(getCurrentTimeForInput());
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [lastTransaction, setLastTransaction] = useState<any>(null);
 
   const categoryOptions = type === "income" 
@@ -54,6 +56,12 @@ const TransactionForm = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setConfirmDialogOpen(true);
+  };
+
+  const handleConfirmedSubmit = () => {
+    setConfirmDialogOpen(false);
+    
     const dateTime = new Date(`${date}T${time}`);
     const transaction = {
       type,
@@ -181,6 +189,23 @@ const TransactionForm = ({
         </CardFooter>
       </Card>
 
+      {/* Confirmation AlertDialog */}
+      <AlertDialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar operación</AlertDialogTitle>
+            <AlertDialogDescription>
+              ¿Está seguro que desea registrar la operación?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmedSubmit}>Registrar</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Success Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
