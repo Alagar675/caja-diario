@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -31,7 +32,7 @@ const TransactionForm = ({
   const [time, setTime] = useState(getCurrentTimeForInput());
 
   const categoryOptions = type === "income" 
-    ? ["Ventas", "Recaudo Créditos", "Recaudos recurrentes", "Otros"] 
+    ? ["Ventas", "Recaudo Créditos", "Pago cuotas créditos", "Recaudos recurrentes", "Otros"] 
     : ["Facturas", "Pagos recurrentes", "Servicios públicos", "Pago salarios", "Otros"];
 
   const resetForm = () => {
