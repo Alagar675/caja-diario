@@ -1,6 +1,6 @@
 
 export type TransactionType = "income" | "expense";
-export type PaymentMethod = "cash" | "transfer";
+export type PaymentMethod = "cash" | "transfer" | "credit";
 
 export interface Transaction {
   id: string;
@@ -12,6 +12,8 @@ export interface Transaction {
   paymentMethod: PaymentMethod;
   bankName?: string;
   transferNumber?: string;
+  creditorName?: string;
+  dueDate?: Date;
   recipientName?: string;
   recipientId?: string;
   date: Date;

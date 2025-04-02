@@ -6,6 +6,7 @@ import {
   DescriptionField,
   PaymentMethodField,
   TransferDetailsFields,
+  CreditDetailsFields,
   RecipientFields,
   DateTimeFields
 } from "./form-fields";
@@ -24,6 +25,10 @@ interface TransactionFormFieldsProps {
   setBankName: (value: string) => void;
   transferNumber: string;
   setTransferNumber: (value: string) => void;
+  creditorName: string;
+  setCreditorName: (value: string) => void;
+  dueDate: string;
+  setDueDate: (value: string) => void;
   recipientName: string;
   setRecipientName: (value: string) => void;
   recipientId: string;
@@ -48,6 +53,10 @@ const TransactionFormFields = ({
   setBankName,
   transferNumber,
   setTransferNumber,
+  creditorName,
+  setCreditorName,
+  dueDate,
+  setDueDate,
   recipientName,
   setRecipientName,
   recipientId,
@@ -83,6 +92,15 @@ const TransactionFormFields = ({
           setBankName={setBankName}
           transferNumber={transferNumber}
           setTransferNumber={setTransferNumber}
+        />
+      )}
+
+      {paymentMethod === "credit" && (
+        <CreditDetailsFields
+          creditorName={creditorName}
+          setCreditorName={setCreditorName}
+          dueDate={dueDate}
+          setDueDate={setDueDate}
         />
       )}
 

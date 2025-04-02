@@ -30,6 +30,10 @@ const PaymentMethodField = ({
           <RadioGroupItem value="transfer" id="transfer" />
           <Label htmlFor="transfer">Transferencia</Label>
         </div>
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem value="credit" id="credit" />
+          <Label htmlFor="credit">Crédito</Label>
+        </div>
       </RadioGroup>
     </div>
   );
