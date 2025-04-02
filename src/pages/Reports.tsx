@@ -6,15 +6,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useFinance } from "@/context/FinanceContext";
 import { formatCurrency, printDocument, generatePDF } from "@/utils/formatters";
+import { TransactionType } from "@/types/finance";
 
 const Reports = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [endDate, setEndDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [reportType, setReportType] = useState("daily");
   const [outputFormat, setOutputFormat] = useState<"print" | "pdf">("print");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType | "all">("all");
+  
   const { getDailySummary, getTotalBalance, getCategorySummary } = useFinance();
 
   const dailySummary = getDailySummary(selectedDate);
@@ -25,9 +32,49 @@ const Reports = () => {
     setSelectedDate(new Date(event.target.value));
   };
 
+  const handleStartDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setStartDate(event.target.value);
+  };
+
+  const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEndDate(event.target.value);
+  };
+
+  const incomeCategoryOptions = [
+    "Ventas en efectivo", 
+    "Ventas a crédito", 
+    "Recaudo Créditos", 
+    "Recaudos recurrentes", 
+    "Otros"
+  ];
+  
+  const expenseCategoryOptions = [
+    "Pago de Facturas", 
+    "Pagos recurrentes", 
+    "Servicios públicos", 
+    "Pago salarios", 
+    "Otros"
+  ];
+
+  const allCategories = [...incomeCategoryOptions, ...expenseCategoryOptions];
+  
+  const getFilteredCategories = () => {
+    if (selectedTransactionType === "all") {
+      return allCategories;
+    }
+    return selectedTransactionType === "income" ? incomeCategoryOptions : expenseCategoryOptions;
+  };
+
   const generateReport = () => {
     const reportDate = format(selectedDate, "dd 'de' MMMM 'de' yyyy", { locale: es });
     const printDateTime = format(new Date(), "dd/MM/yyyy HH:mm:ss", { locale: es });
+    
+    // Filter logic for categories would be implemented here
+    const categoryFilter = selectedCategory !== "all" ? 
+      `<h3 class="text-center">Filtrado por categoría: ${selectedCategory}</h3>` : '';
+      
+    const typeFilter = selectedTransactionType !== "all" ? 
+      `<h3 class="text-center">Tipo: ${selectedTransactionType === "income" ? "Ingresos" : "Egresos"}</h3>` : '';
     
     let reportContent = `
       <div style="font-family: sans-serif; max-width: 800px; margin: 0 auto; position: relative;">
@@ -36,6 +83,8 @@ const Reports = () => {
         </div>
         <h1 style="text-align: center;">Reporte Financiero</h1>
         <h2 style="text-align: center;">${reportDate}</h2>
+        ${categoryFilter}
+        ${typeFilter}
         
         <div style="margin-top: 20px;">
           <h3>Resumen del día</h3>
@@ -134,7 +183,7 @@ const Reports = () => {
             <CardHeader>
               <CardTitle>Configuración del Informe</CardTitle>
               <CardDescription>
-                Selecciona el tipo de informe y la fecha
+                Selecciona el tipo de informe, la fecha y la categoría
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -154,6 +203,41 @@ const Reports = () => {
                       className="w-full rounded-md border border-input bg-background px-3 py-2"
                     />
                   </div>
+                  <div className="space-y-4 mt-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Tipo de transacción</label>
+                      <Select value={selectedTransactionType} onValueChange={(value: any) => {
+                        setSelectedTransactionType(value);
+                        setSelectedCategory("all");
+                      }}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccionar tipo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Todos</SelectItem>
+                          <SelectItem value="income">Ingresos</SelectItem>
+                          <SelectItem value="expense">Egresos</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Categoría</label>
+                      <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccionar categoría" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Todas las categorías</SelectItem>
+                          {getFilteredCategories().map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
                 </TabsContent>
                 
                 <TabsContent value="range" className="space-y-4">
@@ -162,6 +246,8 @@ const Reports = () => {
                       <label className="block text-sm font-medium mb-1">Fecha inicial</label>
                       <input
                         type="date"
+                        value={startDate}
+                        onChange={handleStartDateChange}
                         className="w-full rounded-md border border-input bg-background px-3 py-2"
                       />
                     </div>
@@ -169,9 +255,46 @@ const Reports = () => {
                       <label className="block text-sm font-medium mb-1">Fecha final</label>
                       <input
                         type="date"
-                        defaultValue={format(new Date(), 'yyyy-MM-dd')}
+                        value={endDate}
+                        onChange={handleEndDateChange}
                         className="w-full rounded-md border border-input bg-background px-3 py-2"
                       />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4 mt-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Tipo de transacción</label>
+                      <Select value={selectedTransactionType} onValueChange={(value: any) => {
+                        setSelectedTransactionType(value);
+                        setSelectedCategory("all");
+                      }}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccionar tipo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Todos</SelectItem>
+                          <SelectItem value="income">Ingresos</SelectItem>
+                          <SelectItem value="expense">Egresos</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Categoría</label>
+                      <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccionar categoría" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Todas las categorías</SelectItem>
+                          {getFilteredCategories().map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </TabsContent>
