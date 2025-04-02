@@ -68,7 +68,7 @@ const TransactionForm = ({
 
   return <Card className="w-full max-w-2xl mx-auto glass animate-fade-in">
       <CardHeader>
-        <CardTitle className="text-green-900">
+        <CardTitle className={type === "income" ? "text-green-900" : "text-red-800"}>
           {type === "income" ? "Registrar Ingreso" : "Registrar Egreso"}
         </CardTitle>
         <CardDescription>
