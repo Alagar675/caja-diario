@@ -22,7 +22,7 @@ const AmountCategoryFields = ({
 }: AmountCategoryFieldsProps) => {
   const categoryOptions = type === "income" 
     ? ["Ventas en efectivo", "Ventas a crédito", "Recaudo Créditos", "Recaudos recurrentes", "Otros"] 
-    : ["Facturas", "Pagos recurrentes", "Servicios públicos", "Pago salarios", "Otros"];
+    : ["Pago de Facturas", "Pagos recurrentes", "Servicios públicos", "Pago salarios", "Otros"];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
