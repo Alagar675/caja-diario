@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -85,7 +86,7 @@ const TransactionForm = ({
               <Label htmlFor="category">Categoría</Label>
               <Select required value={category} onValueChange={setCategory}>
                 <SelectTrigger id="category">
-                  <SelectValue placeholder="Seleccione una categoría" />
+                  <SelectValue placeholder="Elegir categoría" />
                 </SelectTrigger>
                 <SelectContent>
                   {categoryOptions.map(option => <SelectItem key={option} value={option}>
