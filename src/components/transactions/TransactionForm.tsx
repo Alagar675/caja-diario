@@ -31,7 +31,7 @@ const TransactionForm = ({
   const [time, setTime] = useState(getCurrentTimeForInput());
 
   const categoryOptions = type === "income" 
-    ? ["Ventas", "Recaudo Créditos", "Pagos recurrentes", "Otros"] 
+    ? ["Ventas", "Recaudo Créditos", "Recaudos recurrentes", "Otros"] 
     : ["Facturas", "Pagos recurrentes", "Servicios", "Otros"];
 
   const resetForm = () => {
