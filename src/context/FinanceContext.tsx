@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { toast } from "sonner";
 import { useAuth } from "./AuthContext";
@@ -25,7 +26,7 @@ const FinanceContext = createContext<FinanceContextType | undefined>(undefined);
 
 export const useFinance = () => {
   const context = useContext(FinanceContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error("useFinance must be used within a FinanceProvider");
   }
   return context;
