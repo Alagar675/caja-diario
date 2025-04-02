@@ -6,7 +6,6 @@ import {
   DescriptionField,
   PaymentMethodField,
   TransferDetailsFields,
-  CreditDetailsFields,
   RecipientFields,
   DateTimeFields
 } from "./form-fields";
@@ -92,15 +91,6 @@ const TransactionFormFields = ({
           setBankName={setBankName}
           transferNumber={transferNumber}
           setTransferNumber={setTransferNumber}
-        />
-      )}
-
-      {paymentMethod === "credit" && (
-        <CreditDetailsFields
-          creditorName={creditorName}
-          setCreditorName={setCreditorName}
-          dueDate={dueDate}
-          setDueDate={setDueDate}
         />
       )}
 

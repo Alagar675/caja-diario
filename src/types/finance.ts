@@ -1,6 +1,6 @@
 
 export type TransactionType = "income" | "expense";
-export type PaymentMethod = "cash" | "transfer" | "credit";
+export type PaymentMethod = "cash" | "transfer";
 
 export interface Transaction {
   id: string;
