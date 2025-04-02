@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -107,7 +108,7 @@ const ChangeCalculator = ({
       </div>
 
       <div className="space-y-2 pt-2 border-t">
-        <Label htmlFor="change">Valor a devolver</Label>
+        <Label htmlFor="change">Cambio / Devolver</Label>
         <div id="change" className="h-10 flex items-center justify-end px-3 rounded-md bg-gray-100 font-medium text-lg">
           {formatCurrency(change)}
         </div>
