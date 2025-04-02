@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -33,7 +32,7 @@ const TransactionForm = ({
 
   const categoryOptions = type === "income" 
     ? ["Ventas", "Recaudo Créditos", "Recaudos recurrentes", "Otros"] 
-    : ["Facturas", "Pagos recurrentes", "Servicios", "Otros"];
+    : ["Facturas", "Pagos recurrentes", "Servicios públicos", "Pago salarios", "Otros"];
 
   const resetForm = () => {
     setAmount("");
