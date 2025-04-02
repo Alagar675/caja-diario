@@ -27,8 +27,11 @@ const ConfirmationDialog = ({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Confirmar operación</AlertDialogTitle>
-          <AlertDialogDescription>
-            ¿Está seguro que desea registrar la operación?
+          <AlertDialogDescription className="space-y-2">
+            <p>¿Está seguro que desea registrar la operación?</p>
+            <p className="text-[#ea384c] font-medium">
+              ¡Recuerde que aceptar el registro le impide borrarlo o modificarlo después!
+            </p>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
