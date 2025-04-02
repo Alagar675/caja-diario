@@ -8,9 +8,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useFinance, TransactionType, PaymentMethod } from "@/context/FinanceContext";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getCurrentDateForInput, getCurrentTimeForInput } from "@/utils/formatters";
+
 interface TransactionFormProps {
   type: TransactionType;
 }
+
 const TransactionForm = ({
   type
 }: TransactionFormProps) => {
@@ -27,7 +29,11 @@ const TransactionForm = ({
   const [recipientId, setRecipientId] = useState("");
   const [date, setDate] = useState(getCurrentDateForInput());
   const [time, setTime] = useState(getCurrentTimeForInput());
-  const categoryOptions = type === "income" ? ["Ventas", "Créditos", "Pagos recurrentes", "Otros"] : ["Facturas", "Pagos recurrentes", "Servicios", "Otros"];
+
+  const categoryOptions = type === "income" 
+    ? ["Ventas", "Recaudo Créditos", "Pagos recurrentes", "Otros"] 
+    : ["Facturas", "Pagos recurrentes", "Servicios", "Otros"];
+
   const resetForm = () => {
     setAmount("");
     setCategory("");
@@ -40,6 +46,7 @@ const TransactionForm = ({
     setDate(getCurrentDateForInput());
     setTime(getCurrentTimeForInput());
   };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const dateTime = new Date(`${date}T${time}`);
@@ -57,6 +64,7 @@ const TransactionForm = ({
     });
     resetForm();
   };
+
   return <Card className="w-full max-w-2xl mx-auto glass animate-fade-in">
       <CardHeader>
         <CardTitle className="text-green-900">
@@ -148,4 +156,5 @@ const TransactionForm = ({
       </CardFooter>
     </Card>;
 };
+
 export default TransactionForm;
