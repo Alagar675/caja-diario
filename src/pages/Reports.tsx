@@ -443,7 +443,7 @@ const Reports = () => {
               </div>
               
               <div className="mt-6 border-t pt-6">
-                <h3 className="text-sm font-medium mb-3">Retiros de Saldos Actuales</h3>
+                <h3 className="font-medium mb-3 text-lg text-center text-red-900">Retiro de Saldos Actuales</h3>
                 <div className="space-y-4">
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2">
