@@ -1,54 +1,45 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, Menu, X, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
-
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const {
+    user,
+    logout
+  } = useAuth();
   const navigate = useNavigate();
-  
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
-  
   const closeMenu = () => setIsMenuOpen(false);
-  
-  const menuItems = [
-    { name: "Inicio", path: "/dashboard" },
-    { name: "Informes", path: "/reports" }
-  ];
-
-  return (
-    <header className="sticky top-0 z-50 w-full bg-white border-b shadow-sm dark:bg-gray-950">
+  const menuItems = [{
+    name: "Inicio",
+    path: "/dashboard"
+  }, {
+    name: "Informes",
+    path: "/reports"
+  }];
+  return <header className="sticky top-0 z-50 w-full bg-white border-b shadow-sm dark:bg-gray-950">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center">
           <a href="/dashboard" className="flex items-center space-x-2">
-            <span className="font-bold text-blue-700 text-xl">D'pagos movil</span>
+            <span className="font-bold text-blue-700 text-xl">Daily Cash Report</span>
           </a>
         </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6">
-          {user && (
-            <>
-              {menuItems.map(item => (
-                <a 
-                  key={item.name} 
-                  href={item.path} 
-                  className="text-sm font-medium transition-colors hover:text-primary" 
-                  onClick={e => {
-                    e.preventDefault();
-                    navigate(item.path);
-                  }}
-                >
+          {user && <>
+              {menuItems.map(item => <a key={item.name} href={item.path} className="text-sm font-medium transition-colors hover:text-primary" onClick={e => {
+            e.preventDefault();
+            navigate(item.path);
+          }}>
                   {item.name}
-                </a>
-              ))}
+                </a>)}
               <div className="flex items-center space-x-4">
                 <span className="text-sm font-medium">
                   Hola, {user.name}
@@ -58,18 +49,15 @@ const Navbar = () => {
                   <span>Salir</span>
                 </Button>
               </div>
-            </>
-          )}
-          {!user && (
-            <div className="flex items-center space-x-2">
+            </>}
+          {!user && <div className="flex items-center space-x-2">
               <Button variant="ghost" onClick={() => navigate("/login")} className="text-sm">
                 Iniciar sesión
               </Button>
               <Button onClick={() => navigate("/register")} className="text-sm bg-primary text-white">
                 Registrarse
               </Button>
-            </div>
-          )}
+            </div>}
         </nav>
 
         {/* Mobile Navigation Toggle */}
@@ -81,22 +69,14 @@ const Navbar = () => {
       {/* Mobile Navigation Menu */}
       <div className={cn("md:hidden absolute w-full bg-white/95 backdrop-blur-sm border-b border-border z-40", isMenuOpen ? "block animate-slide-in" : "hidden")}>
         <div className="container py-4 space-y-4">
-          {user && (
-            <>
-              {menuItems.map(item => (
-                <a 
-                  key={item.name} 
-                  href={item.path} 
-                  className="block py-2 text-base font-medium transition-colors hover:text-primary" 
-                  onClick={e => {
-                    e.preventDefault();
-                    navigate(item.path);
-                    closeMenu();
-                  }}
-                >
+          {user && <>
+              {menuItems.map(item => <a key={item.name} href={item.path} className="block py-2 text-base font-medium transition-colors hover:text-primary" onClick={e => {
+            e.preventDefault();
+            navigate(item.path);
+            closeMenu();
+          }}>
                   {item.name}
-                </a>
-              ))}
+                </a>)}
               <div className="flex flex-col space-y-2 pt-2 border-t">
                 <span className="text-sm font-medium py-2">
                   Hola, {user.name}
@@ -106,28 +86,23 @@ const Navbar = () => {
                   <span>Cerrar sesión</span>
                 </Button>
               </div>
-            </>
-          )}
-          {!user && (
-            <div className="flex flex-col space-y-2">
+            </>}
+          {!user && <div className="flex flex-col space-y-2">
               <Button variant="ghost" onClick={() => {
-                navigate("/login");
-                closeMenu();
-              }} className="justify-center">
+            navigate("/login");
+            closeMenu();
+          }} className="justify-center">
                 Iniciar sesión
               </Button>
               <Button onClick={() => {
-                navigate("/register");
-                closeMenu();
-              }} className="justify-center bg-primary text-white">
+            navigate("/register");
+            closeMenu();
+          }} className="justify-center bg-primary text-white">
                 Registrarse
               </Button>
-            </div>
-          )}
+            </div>}
         </div>
       </div>
-    </header>
-  );
+    </header>;
 };
-
 export default Navbar;
