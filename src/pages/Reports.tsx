@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { Banknote, Calendar, CreditCard, FileText, Printer, Save } from "lucide-react";
+import { Banknote, Calendar, CreditCard, FileText, Printer, Save, ArrowDown } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +11,11 @@ import { es } from "date-fns/locale";
 import { useFinance } from "@/context/FinanceContext";
 import { formatCurrency, printDocument, generatePDF } from "@/utils/formatters";
 import { TransactionType } from "@/types/finance";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 const Reports = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -21,7 +25,10 @@ const Reports = () => {
   const [outputFormat, setOutputFormat] = useState<"print" | "pdf">("print");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType | "all">("all");
-  
+  const [selectedBalanceType, setSelectedBalanceType] = useState<string | null>(null);
+  const [withdrawalAmount, setWithdrawalAmount] = useState<string>("");
+  const [withdrawalDialogOpen, setWithdrawalDialogOpen] = useState(false);
+
   const { getDailySummary, getTotalBalance, getCategorySummary, getBalanceSummary } = useFinance();
 
   const dailySummary = getDailySummary(selectedDate);
@@ -70,7 +77,6 @@ const Reports = () => {
     const reportDate = format(selectedDate, "dd 'de' MMMM 'de' yyyy", { locale: es });
     const printDateTime = format(new Date(), "dd/MM/yyyy HH:mm:ss", { locale: es });
     
-    // Filter logic for categories would be implemented here
     const categoryFilter = selectedCategory !== "all" ? 
       `<h3 class="text-center">Filtrado por categoría: ${selectedCategory}</h3>` : '';
       
@@ -171,6 +177,58 @@ const Reports = () => {
       generatePDF(reportContent, `reporte-financiero-${format(selectedDate, "yyyy-MM-dd")}.pdf`);
     }
   };
+
+  const withdrawalForm = useForm({
+    defaultValues: {
+      amount: "",
+      concept: "",
+      authorizedBy: ""
+    }
+  });
+
+  const handleWithdrawalRequest = () => {
+    if (!selectedBalanceType) {
+      toast.error("Debe seleccionar un tipo de saldo");
+      return;
+    }
+    
+    if (!withdrawalAmount || parseFloat(withdrawalAmount) <= 0) {
+      toast.error("Debe ingresar un monto válido");
+      return;
+    }
+    
+    const amount = parseFloat(withdrawalAmount);
+    
+    let currentBalance = 0;
+    switch (selectedBalanceType) {
+      case "cash":
+        currentBalance = balanceSummary.cashBalance;
+        break;
+      case "transfer":
+        currentBalance = balanceSummary.transferBalance;
+        break;
+      case "credit":
+        currentBalance = balanceSummary.creditBalance;
+        break;
+    }
+    
+    if (amount > currentBalance) {
+      toast.error(`Saldo insuficiente. Saldo actual: ${formatCurrency(currentBalance)}`);
+      return;
+    }
+    
+    withdrawalForm.setValue("amount", withdrawalAmount);
+    setWithdrawalDialogOpen(true);
+  };
+
+  const handleWithdrawalSubmit = withdrawalForm.handleSubmit((data) => {
+    toast.success(`Retiro de ${formatCurrency(parseFloat(data.amount))} procesado correctamente`);
+    
+    setSelectedBalanceType(null);
+    setWithdrawalAmount("");
+    setWithdrawalDialogOpen(false);
+    withdrawalForm.reset();
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -399,7 +457,6 @@ const Reports = () => {
                 </DialogContent>
               </Dialog>
               
-              {/* Add balance summary cards */}
               <div className="mt-6">
                 <h3 className="text-sm font-medium mb-3">Saldos Actuales</h3>
                 <div className="space-y-3">
@@ -440,10 +497,148 @@ const Reports = () => {
                   </Card>
                 </div>
               </div>
+              
+              <div className="mt-6 border-t pt-6">
+                <h3 className="text-sm font-medium mb-3">Retiros de Saldos Actuales</h3>
+                <div className="space-y-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="cashBalance" 
+                        checked={selectedBalanceType === "cash"} 
+                        onCheckedChange={() => setSelectedBalanceType(selectedBalanceType === "cash" ? null : "cash")}
+                      />
+                      <label
+                        htmlFor="cashBalance"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Efectivo
+                      </label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="transferBalance" 
+                        checked={selectedBalanceType === "transfer"} 
+                        onCheckedChange={() => setSelectedBalanceType(selectedBalanceType === "transfer" ? null : "transfer")}
+                      />
+                      <label
+                        htmlFor="transferBalance"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Transferencias
+                      </label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="creditBalance" 
+                        checked={selectedBalanceType === "credit"} 
+                        onCheckedChange={() => setSelectedBalanceType(selectedBalanceType === "credit" ? null : "credit")}
+                      />
+                      <label
+                        htmlFor="creditBalance"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Créditos
+                      </label>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Monto a retirar</label>
+                    <div className="flex space-x-2">
+                      <Input
+                        type="number"
+                        placeholder="0.00"
+                        value={withdrawalAmount}
+                        onChange={(e) => setWithdrawalAmount(e.target.value)}
+                        className="flex-1"
+                      />
+                      <Button 
+                        onClick={handleWithdrawalRequest} 
+                        className="flex items-center"
+                        disabled={!selectedBalanceType || !withdrawalAmount || parseFloat(withdrawalAmount) <= 0}
+                      >
+                        <ArrowDown className="mr-1 h-4 w-4" />
+                        Retirar
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
       </main>
+      
+      <Dialog open={withdrawalDialogOpen} onOpenChange={setWithdrawalDialogOpen}>
+        <DialogContent>
+          <form onSubmit={handleWithdrawalSubmit}>
+            <DialogHeader>
+              <DialogTitle>Confirmar retiro de saldo</DialogTitle>
+              <DialogDescription>
+                Complete los siguientes datos para procesar el retiro.
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <label className="text-right text-sm font-medium">Tipo:</label>
+                <div className="col-span-3">
+                  {selectedBalanceType === "cash" && "Efectivo"}
+                  {selectedBalanceType === "transfer" && "Transferencias"}
+                  {selectedBalanceType === "credit" && "Créditos"}
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <label className="text-right text-sm font-medium">Monto:</label>
+                <div className="col-span-3 font-medium">
+                  {withdrawalAmount && formatCurrency(parseFloat(withdrawalAmount))}
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <label htmlFor="concept" className="text-right text-sm font-medium">Concepto:</label>
+                <div className="col-span-3">
+                  <Input
+                    id="concept"
+                    {...withdrawalForm.register("concept", { required: "El concepto es requerido" })}
+                    placeholder="Ingrese el concepto del retiro"
+                    className="w-full"
+                  />
+                  {withdrawalForm.formState.errors.concept && (
+                    <p className="text-sm text-red-500 mt-1">{withdrawalForm.formState.errors.concept.message}</p>
+                  )}
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <label htmlFor="authorizedBy" className="text-right text-sm font-medium">Autorizado por:</label>
+                <div className="col-span-3">
+                  <Input
+                    id="authorizedBy"
+                    {...withdrawalForm.register("authorizedBy", { required: "El nombre es requerido" })}
+                    placeholder="Nombre de quien autoriza"
+                    className="w-full"
+                  />
+                  {withdrawalForm.formState.errors.authorizedBy && (
+                    <p className="text-sm text-red-500 mt-1">{withdrawalForm.formState.errors.authorizedBy.message}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setWithdrawalDialogOpen(false)}>
+                Cancelar
+              </Button>
+              <Button type="submit">Confirmar retiro</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
