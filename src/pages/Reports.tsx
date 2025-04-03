@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -17,7 +16,6 @@ import BalanceSummary from "@/components/reports/BalanceSummary";
 import WithdrawalSection from "@/components/reports/WithdrawalSection";
 import WithdrawalDialog from "@/components/reports/WithdrawalDialog";
 import WithdrawalHistoryDialog from "@/components/reports/WithdrawalHistoryDialog";
-
 const Reports = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [startDate, setStartDate] = useState(format(new Date(), 'yyyy-MM-dd'));
@@ -30,7 +28,6 @@ const Reports = () => {
   const [withdrawalAmount, setWithdrawalAmount] = useState<string>("");
   const [withdrawalDialogOpen, setWithdrawalDialogOpen] = useState(false);
   const [withdrawalHistoryDialog, setWithdrawalHistoryDialog] = useState(false);
-  
   const {
     getDailySummary,
     getCategorySummary,
@@ -39,24 +36,20 @@ const Reports = () => {
     withdrawals,
     getTotalWithdrawals
   } = useFinance();
-  
   const dailySummary = getDailySummary(selectedDate);
   const incomeCategories = getCategorySummary("income");
   const expenseCategories = getCategorySummary("expense");
   const balanceSummary = getBalanceSummary();
   const withdrawalSummary = getTotalWithdrawals();
-  
   const incomeCategoryOptions = ["Ventas en efectivo", "Ventas a crédito", "Recaudo Créditos", "Recaudos recurrentes", "Otros"];
   const expenseCategoryOptions = ["Pago de Facturas", "Pagos recurrentes", "Servicios públicos", "Pago salarios", "Otros"];
   const allCategories = [...incomeCategoryOptions, ...expenseCategoryOptions];
-  
   const getFilteredCategories = () => {
     if (selectedTransactionType === "all") {
       return allCategories;
     }
     return selectedTransactionType === "income" ? incomeCategoryOptions : expenseCategoryOptions;
   };
-  
   const generateReport = () => {
     const reportDate = format(selectedDate, "dd 'de' MMMM 'de' yyyy", {
       locale: es
@@ -161,7 +154,6 @@ const Reports = () => {
       generatePDF(reportContent, `reporte-financiero-${format(selectedDate, "yyyy-MM-dd")}.pdf`);
     }
   };
-  
   const withdrawalForm = useForm({
     defaultValues: {
       amount: "",
@@ -169,7 +161,6 @@ const Reports = () => {
       authorizedBy: ""
     }
   });
-  
   const handleWithdrawalRequest = () => {
     if (!selectedBalanceType) {
       toast.error("Debe seleccionar un tipo de saldo");
@@ -199,7 +190,6 @@ const Reports = () => {
     withdrawalForm.setValue("amount", withdrawalAmount);
     setWithdrawalDialogOpen(true);
   };
-  
   const handleWithdrawalSubmit = withdrawalForm.handleSubmit(data => {
     const withdrawal = {
       amount: parseFloat(data.amount),
@@ -207,91 +197,42 @@ const Reports = () => {
       concept: data.concept,
       authorizedBy: data.authorizedBy
     };
-    
     addWithdrawal(withdrawal);
-    
     setSelectedBalanceType(null);
     setWithdrawalAmount("");
     setWithdrawalDialogOpen(false);
     withdrawalForm.reset();
   });
-  
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <Navbar />
       
       <main className="container py-8">
         <h1 className="text-2xl font-bold mb-6">Generar Informes</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <ReportConfiguration 
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-            startDate={startDate}
-            setStartDate={setStartDate}
-            endDate={endDate}
-            setEndDate={setEndDate}
-            reportType={reportType}
-            setReportType={setReportType}
-            outputFormat={outputFormat}
-            setOutputFormat={setOutputFormat}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            selectedTransactionType={selectedTransactionType}
-            setSelectedTransactionType={setSelectedTransactionType}
-            generateReport={generateReport}
-            getFilteredCategories={getFilteredCategories}
-          />
+          <ReportConfiguration selectedDate={selectedDate} setSelectedDate={setSelectedDate} startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} reportType={reportType} setReportType={setReportType} outputFormat={outputFormat} setOutputFormat={setOutputFormat} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} selectedTransactionType={selectedTransactionType} setSelectedTransactionType={setSelectedTransactionType} generateReport={generateReport} getFilteredCategories={getFilteredCategories} />
           
           <Card className="col-span-1">
             <CardHeader>
-              <CardTitle>Informes Rápidos</CardTitle>
+              <CardTitle className="text-center">Informes Rápidos</CardTitle>
               <CardDescription>
                 Generar informes predefinidos
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <QuickReports 
-                dailySummary={dailySummary}
-                setOutputFormat={setOutputFormat}
-              />
+              <QuickReports dailySummary={dailySummary} setOutputFormat={setOutputFormat} />
               
-              <BalanceSummary 
-                cashBalance={balanceSummary.cashBalance}
-                transferBalance={balanceSummary.transferBalance}
-                creditBalance={balanceSummary.creditBalance}
-              />
+              <BalanceSummary cashBalance={balanceSummary.cashBalance} transferBalance={balanceSummary.transferBalance} creditBalance={balanceSummary.creditBalance} />
               
-              <WithdrawalSection 
-                selectedBalanceType={selectedBalanceType}
-                setSelectedBalanceType={setSelectedBalanceType}
-                withdrawalAmount={withdrawalAmount}
-                setWithdrawalAmount={setWithdrawalAmount}
-                handleWithdrawalRequest={handleWithdrawalRequest}
-                withdrawalSummary={withdrawalSummary}
-                setWithdrawalHistoryDialog={setWithdrawalHistoryDialog}
-              />
+              <WithdrawalSection selectedBalanceType={selectedBalanceType} setSelectedBalanceType={setSelectedBalanceType} withdrawalAmount={withdrawalAmount} setWithdrawalAmount={setWithdrawalAmount} handleWithdrawalRequest={handleWithdrawalRequest} withdrawalSummary={withdrawalSummary} setWithdrawalHistoryDialog={setWithdrawalHistoryDialog} />
             </CardContent>
           </Card>
         </div>
       </main>
       
-      <WithdrawalDialog 
-        open={withdrawalDialogOpen}
-        setOpen={setWithdrawalDialogOpen}
-        selectedBalanceType={selectedBalanceType}
-        withdrawalAmount={withdrawalAmount}
-        form={withdrawalForm}
-        onSubmit={handleWithdrawalSubmit}
-      />
+      <WithdrawalDialog open={withdrawalDialogOpen} setOpen={setWithdrawalDialogOpen} selectedBalanceType={selectedBalanceType} withdrawalAmount={withdrawalAmount} form={withdrawalForm} onSubmit={handleWithdrawalSubmit} />
       
-      <WithdrawalHistoryDialog 
-        open={withdrawalHistoryDialog}
-        setOpen={setWithdrawalHistoryDialog}
-        withdrawals={withdrawals}
-      />
-    </div>
-  );
+      <WithdrawalHistoryDialog open={withdrawalHistoryDialog} setOpen={setWithdrawalHistoryDialog} withdrawals={withdrawals} />
+    </div>;
 };
-
 export default Reports;
