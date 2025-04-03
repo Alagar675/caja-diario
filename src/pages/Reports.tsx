@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Banknote, Calendar, CreditCard, FileText, Printer, Save, ArrowDown, History } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
@@ -475,15 +476,6 @@ const Reports = () => {
               <div className="mt-6 border-t pt-6">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-medium text-lg text-red-900">Retiro de Saldos Actuales</h3>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => setWithdrawalHistoryDialog(true)}
-                    className="flex items-center text-xs"
-                  >
-                    <History className="h-3 w-3 mr-1" />
-                    Historial
-                  </Button>
                 </div>
                 
                 <div className="space-y-4">
@@ -540,6 +532,18 @@ const Reports = () => {
                     <div className="flex justify-between font-medium pt-1 border-t">
                       <span>Total:</span>
                       <span>{formatCurrency(withdrawalSummary.totalWithdrawals)}</span>
+                    </div>
+                    
+                    <div className="flex justify-center mt-4">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => setWithdrawalHistoryDialog(true)}
+                        className="flex items-center text-xs w-full"
+                      >
+                        <History className="h-3 w-3 mr-1" />
+                        Historial de Retiros
+                      </Button>
                     </div>
                   </div>
                 </div>
