@@ -1,9 +1,11 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { ArrowDown, History } from "lucide-react";
 import { formatCurrency } from "@/utils/formatters";
+
 interface WithdrawalSectionProps {
   selectedBalanceType: "cash" | "transfer" | "credit" | null;
   setSelectedBalanceType: (type: "cash" | "transfer" | "credit" | null) => void;
@@ -18,6 +20,7 @@ interface WithdrawalSectionProps {
   };
   setWithdrawalHistoryDialog: (open: boolean) => void;
 }
+
 const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
   selectedBalanceType,
   setSelectedBalanceType,
@@ -28,12 +31,12 @@ const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
   setWithdrawalHistoryDialog
 }) => {
   return <div className="mt-6 border-t pt-6">
-      <div className="flex items-center justify-between mb-3 mx-0 rounded-lg">
-        <h3 className="text-lg text-red-900 px-0 mx-0 text-center font-medium">Retiro de Saldos Actuales</h3>
+      <div className="flex items-center justify-center mb-3 rounded-lg">
+        <h3 className="text-lg text-red-900 text-center font-medium">Retiro de Saldos Actuales</h3>
       </div>
       
-      <div className="space-y-4">
-        <div className="space-y-3">
+      <div className="space-y-4 flex flex-col items-center">
+        <div className="space-y-3 w-full max-w-xs">
           <div className="flex items-center space-x-2">
             <Checkbox id="cashBalance" checked={selectedBalanceType === "cash"} onCheckedChange={() => setSelectedBalanceType(selectedBalanceType === "cash" ? null : "cash")} />
             <label htmlFor="cashBalance" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -56,7 +59,7 @@ const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
           </div>
         </div>
         
-        <div className="space-y-2">
+        <div className="space-y-2 w-full max-w-xs">
           <label className="text-sm font-medium">Monto a retirar</label>
           <div className="flex space-x-2">
             <Input type="number" placeholder="0.00" value={withdrawalAmount} onChange={e => setWithdrawalAmount(e.target.value)} className="flex-1" />
@@ -68,7 +71,7 @@ const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
         </div>
       </div>
       
-      <div className="mt-6 pt-4 border-t">
+      <div className="mt-6 pt-4 border-t max-w-xs mx-auto">
         <h4 className="text-sm font-medium mb-2 text-center">Resumen de Retiros</h4>
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
@@ -98,4 +101,5 @@ const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
       </div>
     </div>;
 };
+
 export default WithdrawalSection;

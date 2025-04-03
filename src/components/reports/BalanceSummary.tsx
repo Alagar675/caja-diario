@@ -18,7 +18,7 @@ const BalanceSummary: React.FC<BalanceSummaryProps> = ({
   return (
     <div className="mt-6">
       <h3 className="font-medium mb-3 text-xl text-center text-green-900">Saldos Actuales</h3>
-      <div className="space-y-3">
+      <div className="space-y-3 max-w-xs mx-auto">
         <Card className="bg-muted">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
