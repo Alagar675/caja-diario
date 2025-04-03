@@ -39,3 +39,17 @@ export interface Withdrawal {
   authorizedBy: string;
   timestamp: Date;
 }
+
+export interface FinanceContextType {
+  transactions: Transaction[];
+  withdrawals: Withdrawal[];
+  addTransaction: (transaction: Omit<Transaction, "id" | "userId" | "createdAt">) => void;
+  addWithdrawal: (withdrawal: Omit<Withdrawal, "id" | "userId" | "timestamp">) => void;
+  getTransactionsByDate: (startDate: Date, endDate: Date) => Transaction[];
+  getDailySummary: (date?: Date) => DailySummary;
+  getTotalBalance: () => number;
+  getCategorySummary: (type: TransactionType) => { category: string; total: number }[];
+  generateDayEndReport: () => DailySummary;
+  getBalanceSummary: () => { cashBalance: number; transferBalance: number; creditBalance: number };
+  getTotalWithdrawals: () => { cashWithdrawals: number; transferWithdrawals: number; creditWithdrawals: number; totalWithdrawals: number };
+}
