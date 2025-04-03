@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Banknote, Calendar, CreditCard, FileText, Printer, Save, ArrowDown } from "lucide-react";
+import { Banknote, Calendar, CreditCard, FileText, Printer, Save, ArrowDown, History } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +16,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+
 const Reports = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [startDate, setStartDate] = useState(format(new Date(), 'yyyy-MM-dd'));
@@ -24,37 +25,50 @@ const Reports = () => {
   const [outputFormat, setOutputFormat] = useState<"print" | "pdf">("print");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType | "all">("all");
-  const [selectedBalanceType, setSelectedBalanceType] = useState<string | null>(null);
+  const [selectedBalanceType, setSelectedBalanceType] = useState<"cash" | "transfer" | "credit" | null>(null);
   const [withdrawalAmount, setWithdrawalAmount] = useState<string>("");
   const [withdrawalDialogOpen, setWithdrawalDialogOpen] = useState(false);
+  const [withdrawalHistoryDialog, setWithdrawalHistoryDialog] = useState(false);
+  
   const {
     getDailySummary,
     getTotalBalance,
     getCategorySummary,
-    getBalanceSummary
+    getBalanceSummary,
+    addWithdrawal,
+    withdrawals,
+    getTotalWithdrawals
   } = useFinance();
+  
   const dailySummary = getDailySummary(selectedDate);
   const incomeCategories = getCategorySummary("income");
   const expenseCategories = getCategorySummary("expense");
   const balanceSummary = getBalanceSummary();
+  const withdrawalSummary = getTotalWithdrawals();
+  
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(new Date(event.target.value));
   };
+  
   const handleStartDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setStartDate(event.target.value);
   };
+  
   const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEndDate(event.target.value);
   };
+  
   const incomeCategoryOptions = ["Ventas en efectivo", "Ventas a crédito", "Recaudo Créditos", "Recaudos recurrentes", "Otros"];
   const expenseCategoryOptions = ["Pago de Facturas", "Pagos recurrentes", "Servicios públicos", "Pago salarios", "Otros"];
   const allCategories = [...incomeCategoryOptions, ...expenseCategoryOptions];
+  
   const getFilteredCategories = () => {
     if (selectedTransactionType === "all") {
       return allCategories;
     }
     return selectedTransactionType === "income" ? incomeCategoryOptions : expenseCategoryOptions;
   };
+  
   const generateReport = () => {
     const reportDate = format(selectedDate, "dd 'de' MMMM 'de' yyyy", {
       locale: es
@@ -159,6 +173,7 @@ const Reports = () => {
       generatePDF(reportContent, `reporte-financiero-${format(selectedDate, "yyyy-MM-dd")}.pdf`);
     }
   };
+  
   const withdrawalForm = useForm({
     defaultValues: {
       amount: "",
@@ -166,6 +181,7 @@ const Reports = () => {
       authorizedBy: ""
     }
   });
+  
   const handleWithdrawalRequest = () => {
     if (!selectedBalanceType) {
       toast.error("Debe seleccionar un tipo de saldo");
@@ -195,13 +211,27 @@ const Reports = () => {
     withdrawalForm.setValue("amount", withdrawalAmount);
     setWithdrawalDialogOpen(true);
   };
+  
   const handleWithdrawalSubmit = withdrawalForm.handleSubmit(data => {
-    toast.success(`Retiro de ${formatCurrency(parseFloat(data.amount))} procesado correctamente`);
+    const withdrawal = {
+      amount: parseFloat(data.amount),
+      source: selectedBalanceType as "cash" | "transfer" | "credit",
+      concept: data.concept,
+      authorizedBy: data.authorizedBy
+    };
+    
+    addWithdrawal(withdrawal);
+    
     setSelectedBalanceType(null);
     setWithdrawalAmount("");
     setWithdrawalDialogOpen(false);
     withdrawalForm.reset();
   });
+  
+  const sortedWithdrawals = [...withdrawals].sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
+  
   return <div className="min-h-screen bg-background">
       <Navbar />
       
@@ -443,7 +473,19 @@ const Reports = () => {
               </div>
               
               <div className="mt-6 border-t pt-6">
-                <h3 className="font-medium mb-3 text-lg text-center text-red-900">Retiro de Saldos Actuales</h3>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-medium text-lg text-red-900">Retiro de Saldos Actuales</h3>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setWithdrawalHistoryDialog(true)}
+                    className="flex items-center text-xs"
+                  >
+                    <History className="h-3 w-3 mr-1" />
+                    Historial
+                  </Button>
+                </div>
+                
                 <div className="space-y-4">
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2">
@@ -476,6 +518,28 @@ const Reports = () => {
                         <ArrowDown className="mr-1 h-4 w-4" />
                         Retirar
                       </Button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-6 pt-4 border-t">
+                  <h4 className="text-sm font-medium mb-2">Resumen de Retiros</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>Efectivo:</span>
+                      <span>{formatCurrency(withdrawalSummary.cashWithdrawals)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Transferencias:</span>
+                      <span>{formatCurrency(withdrawalSummary.transferWithdrawals)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Créditos:</span>
+                      <span>{formatCurrency(withdrawalSummary.creditWithdrawals)}</span>
+                    </div>
+                    <div className="flex justify-between font-medium pt-1 border-t">
+                      <span>Total:</span>
+                      <span>{formatCurrency(withdrawalSummary.totalWithdrawals)}</span>
                     </div>
                   </div>
                 </div>
@@ -542,6 +606,61 @@ const Reports = () => {
           </form>
         </DialogContent>
       </Dialog>
+      
+      <Dialog open={withdrawalHistoryDialog} onOpenChange={setWithdrawalHistoryDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Historial de Retiros</DialogTitle>
+            <DialogDescription>
+              Registro de todos los retiros realizados
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="max-h-[60vh] overflow-y-auto">
+            {sortedWithdrawals.length > 0 ? (
+              <div className="space-y-3">
+                {sortedWithdrawals.map((withdrawal) => (
+                  <Card key={withdrawal.id} className="shadow-sm">
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="font-medium">{withdrawal.concept}</p>
+                          <p className="text-sm text-muted-foreground">
+                            Autorizado por: {withdrawal.authorizedBy}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {format(new Date(withdrawal.timestamp), 'dd/MM/yyyy HH:mm')}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-red-600">
+                            -{formatCurrency(withdrawal.amount)}
+                          </p>
+                          <p className="text-sm capitalize">
+                            {withdrawal.source === "cash" ? "Efectivo" : 
+                             withdrawal.source === "transfer" ? "Transferencia" : "Crédito"}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center py-8 text-muted-foreground">
+                No hay retiros registrados
+              </p>
+            )}
+          </div>
+          
+          <DialogFooter>
+            <Button onClick={() => setWithdrawalHistoryDialog(false)}>
+              Cerrar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>;
 };
+
 export default Reports;

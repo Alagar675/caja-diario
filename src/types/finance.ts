@@ -1,6 +1,7 @@
 
 export type TransactionType = "income" | "expense";
-export type PaymentMethod = "cash" | "transfer";
+
+export type PaymentMethod = "cash" | "transfer" | "credit";
 
 export interface Transaction {
   id: string;
@@ -10,14 +11,12 @@ export interface Transaction {
   category: string;
   description: string;
   paymentMethod: PaymentMethod;
-  bankName?: string;
-  transferNumber?: string;
-  creditorName?: string;
-  dueDate?: Date;
-  recipientName?: string;
-  recipientId?: string;
   date: Date;
   createdAt: Date;
+  bankName?: string;
+  transferNumber?: string;
+  recipientName?: string;
+  recipientId?: string;
 }
 
 export interface DailySummary {
@@ -29,4 +28,14 @@ export interface DailySummary {
   totalIncome: number;
   totalExpense: number;
   balance: number;
+}
+
+export interface Withdrawal {
+  id: string;
+  userId: string;
+  amount: number;
+  source: "cash" | "transfer" | "credit";
+  concept: string;
+  authorizedBy: string;
+  timestamp: Date;
 }
