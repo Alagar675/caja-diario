@@ -42,4 +42,4 @@ export const FinanceProvider = ({ children }: FinanceProviderProps) => {
   );
 };
 
-export { Transaction, TransactionType, PaymentMethod, DailySummary, Withdrawal } from "@/types/finance";
+export type { Transaction, TransactionType, PaymentMethod, DailySummary, Withdrawal } from "@/types/finance";
