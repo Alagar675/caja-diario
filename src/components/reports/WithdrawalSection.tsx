@@ -28,8 +28,8 @@ const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
   setWithdrawalHistoryDialog
 }) => {
   return <div className="mt-6 border-t pt-6">
-      <div className="flex items-center justify-between mb-3 mx-[26px]">
-        <h3 className="font-medium text-lg text-red-900 text-center">Retiro de Saldos Actuales</h3>
+      <div className="flex items-center justify-between mb-3 mx-0 rounded-lg">
+        <h3 className="font-medium text-lg text-red-900 px-0 mx-0 text-center">Retiro de Saldos Actuales</h3>
       </div>
       
       <div className="space-y-4">
