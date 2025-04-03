@@ -16,7 +16,6 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
 const Reports = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [startDate, setStartDate] = useState(format(new Date(), 'yyyy-MM-dd'));
@@ -28,61 +27,43 @@ const Reports = () => {
   const [selectedBalanceType, setSelectedBalanceType] = useState<string | null>(null);
   const [withdrawalAmount, setWithdrawalAmount] = useState<string>("");
   const [withdrawalDialogOpen, setWithdrawalDialogOpen] = useState(false);
-
-  const { getDailySummary, getTotalBalance, getCategorySummary, getBalanceSummary } = useFinance();
-
+  const {
+    getDailySummary,
+    getTotalBalance,
+    getCategorySummary,
+    getBalanceSummary
+  } = useFinance();
   const dailySummary = getDailySummary(selectedDate);
   const incomeCategories = getCategorySummary("income");
   const expenseCategories = getCategorySummary("expense");
   const balanceSummary = getBalanceSummary();
-
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(new Date(event.target.value));
   };
-
   const handleStartDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setStartDate(event.target.value);
   };
-
   const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEndDate(event.target.value);
   };
-
-  const incomeCategoryOptions = [
-    "Ventas en efectivo", 
-    "Ventas a crédito", 
-    "Recaudo Créditos", 
-    "Recaudos recurrentes", 
-    "Otros"
-  ];
-  
-  const expenseCategoryOptions = [
-    "Pago de Facturas", 
-    "Pagos recurrentes", 
-    "Servicios públicos", 
-    "Pago salarios", 
-    "Otros"
-  ];
-
+  const incomeCategoryOptions = ["Ventas en efectivo", "Ventas a crédito", "Recaudo Créditos", "Recaudos recurrentes", "Otros"];
+  const expenseCategoryOptions = ["Pago de Facturas", "Pagos recurrentes", "Servicios públicos", "Pago salarios", "Otros"];
   const allCategories = [...incomeCategoryOptions, ...expenseCategoryOptions];
-  
   const getFilteredCategories = () => {
     if (selectedTransactionType === "all") {
       return allCategories;
     }
     return selectedTransactionType === "income" ? incomeCategoryOptions : expenseCategoryOptions;
   };
-
   const generateReport = () => {
-    const reportDate = format(selectedDate, "dd 'de' MMMM 'de' yyyy", { locale: es });
-    const printDateTime = format(new Date(), "dd/MM/yyyy HH:mm:ss", { locale: es });
-    
-    const categoryFilter = selectedCategory !== "all" ? 
-      `<h3 class="text-center">Filtrado por categoría: ${selectedCategory}</h3>` : '';
-      
-    const typeFilter = selectedTransactionType !== "all" ? 
-      `<h3 class="text-center">Tipo: ${selectedTransactionType === "income" ? "Ingresos" : "Egresos"}</h3>` : '';
-    
+    const reportDate = format(selectedDate, "dd 'de' MMMM 'de' yyyy", {
+      locale: es
+    });
+    const printDateTime = format(new Date(), "dd/MM/yyyy HH:mm:ss", {
+      locale: es
+    });
+    const categoryFilter = selectedCategory !== "all" ? `<h3 class="text-center">Filtrado por categoría: ${selectedCategory}</h3>` : '';
+    const typeFilter = selectedTransactionType !== "all" ? `<h3 class="text-center">Tipo: ${selectedTransactionType === "income" ? "Ingresos" : "Egresos"}</h3>` : '';
     let reportContent = `
       <div style="font-family: sans-serif; max-width: 800px; margin: 0 auto; position: relative;">
         <div style="position: absolute; top: 20px; right: 20px; font-size: 12px; color: #666;">
@@ -166,18 +147,18 @@ const Reports = () => {
         </div>
         
         <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #666;">
-          <p>Generado el ${format(new Date(), "dd/MM/yyyy 'a las' HH:mm:ss", { locale: es })}</p>
+          <p>Generado el ${format(new Date(), "dd/MM/yyyy 'a las' HH:mm:ss", {
+      locale: es
+    })}</p>
         </div>
       </div>
     `;
-
     if (outputFormat === "print") {
       printDocument(reportContent);
     } else {
       generatePDF(reportContent, `reporte-financiero-${format(selectedDate, "yyyy-MM-dd")}.pdf`);
     }
   };
-
   const withdrawalForm = useForm({
     defaultValues: {
       amount: "",
@@ -185,20 +166,16 @@ const Reports = () => {
       authorizedBy: ""
     }
   });
-
   const handleWithdrawalRequest = () => {
     if (!selectedBalanceType) {
       toast.error("Debe seleccionar un tipo de saldo");
       return;
     }
-    
     if (!withdrawalAmount || parseFloat(withdrawalAmount) <= 0) {
       toast.error("Debe ingresar un monto válido");
       return;
     }
-    
     const amount = parseFloat(withdrawalAmount);
-    
     let currentBalance = 0;
     switch (selectedBalanceType) {
       case "cash":
@@ -211,27 +188,21 @@ const Reports = () => {
         currentBalance = balanceSummary.creditBalance;
         break;
     }
-    
     if (amount > currentBalance) {
       toast.error(`Saldo insuficiente. Saldo actual: ${formatCurrency(currentBalance)}`);
       return;
     }
-    
     withdrawalForm.setValue("amount", withdrawalAmount);
     setWithdrawalDialogOpen(true);
   };
-
-  const handleWithdrawalSubmit = withdrawalForm.handleSubmit((data) => {
+  const handleWithdrawalSubmit = withdrawalForm.handleSubmit(data => {
     toast.success(`Retiro de ${formatCurrency(parseFloat(data.amount))} procesado correctamente`);
-    
     setSelectedBalanceType(null);
     setWithdrawalAmount("");
     setWithdrawalDialogOpen(false);
     withdrawalForm.reset();
   });
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <Navbar />
       
       <main className="container py-8">
@@ -246,7 +217,7 @@ const Reports = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="daily" onValueChange={(value) => setReportType(value)}>
+              <Tabs defaultValue="daily" onValueChange={value => setReportType(value)}>
                 <TabsList className="w-full mb-4">
                   <TabsTrigger value="daily" className="w-1/2">Informe Diario</TabsTrigger>
                   <TabsTrigger value="range" className="w-1/2">Rango de Fechas</TabsTrigger>
@@ -255,20 +226,15 @@ const Reports = () => {
                 <TabsContent value="daily" className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-1">Fecha del informe</label>
-                    <input
-                      type="date"
-                      value={format(selectedDate, 'yyyy-MM-dd')}
-                      onChange={handleDateChange}
-                      className="w-full rounded-md border border-input bg-background px-3 py-2"
-                    />
+                    <input type="date" value={format(selectedDate, 'yyyy-MM-dd')} onChange={handleDateChange} className="w-full rounded-md border border-input bg-background px-3 py-2" />
                   </div>
                   <div className="space-y-4 mt-4">
                     <div>
                       <label className="block text-sm font-medium mb-1">Tipo de transacción</label>
                       <Select value={selectedTransactionType} onValueChange={(value: any) => {
-                        setSelectedTransactionType(value);
-                        setSelectedCategory("all");
-                      }}>
+                      setSelectedTransactionType(value);
+                      setSelectedCategory("all");
+                    }}>
                         <SelectTrigger>
                           <SelectValue placeholder="Seleccionar tipo" />
                         </SelectTrigger>
@@ -288,11 +254,9 @@ const Reports = () => {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">Todas las categorías</SelectItem>
-                          {getFilteredCategories().map((category) => (
-                            <SelectItem key={category} value={category}>
+                          {getFilteredCategories().map(category => <SelectItem key={category} value={category}>
                               {category}
-                            </SelectItem>
-                          ))}
+                            </SelectItem>)}
                         </SelectContent>
                       </Select>
                     </div>
@@ -303,21 +267,11 @@ const Reports = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-1">Fecha inicial</label>
-                      <input
-                        type="date"
-                        value={startDate}
-                        onChange={handleStartDateChange}
-                        className="w-full rounded-md border border-input bg-background px-3 py-2"
-                      />
+                      <input type="date" value={startDate} onChange={handleStartDateChange} className="w-full rounded-md border border-input bg-background px-3 py-2" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1">Fecha final</label>
-                      <input
-                        type="date"
-                        value={endDate}
-                        onChange={handleEndDateChange}
-                        className="w-full rounded-md border border-input bg-background px-3 py-2"
-                      />
+                      <input type="date" value={endDate} onChange={handleEndDateChange} className="w-full rounded-md border border-input bg-background px-3 py-2" />
                     </div>
                   </div>
                   
@@ -325,9 +279,9 @@ const Reports = () => {
                     <div>
                       <label className="block text-sm font-medium mb-1">Tipo de transacción</label>
                       <Select value={selectedTransactionType} onValueChange={(value: any) => {
-                        setSelectedTransactionType(value);
-                        setSelectedCategory("all");
-                      }}>
+                      setSelectedTransactionType(value);
+                      setSelectedCategory("all");
+                    }}>
                         <SelectTrigger>
                           <SelectValue placeholder="Seleccionar tipo" />
                         </SelectTrigger>
@@ -347,11 +301,9 @@ const Reports = () => {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">Todas las categorías</SelectItem>
-                          {getFilteredCategories().map((category) => (
-                            <SelectItem key={category} value={category}>
+                          {getFilteredCategories().map(category => <SelectItem key={category} value={category}>
                               {category}
-                            </SelectItem>
-                          ))}
+                            </SelectItem>)}
                         </SelectContent>
                       </Select>
                     </div>
@@ -364,19 +316,11 @@ const Reports = () => {
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">Formato de salida:</span>
                   <div className="flex space-x-2">
-                    <Button 
-                      variant={outputFormat === "print" ? "default" : "outline"} 
-                      size="sm" 
-                      onClick={() => setOutputFormat("print")}
-                    >
+                    <Button variant={outputFormat === "print" ? "default" : "outline"} size="sm" onClick={() => setOutputFormat("print")}>
                       <Printer className="mr-1 h-4 w-4" />
                       Imprimir
                     </Button>
-                    <Button
-                      variant={outputFormat === "pdf" ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setOutputFormat("pdf")}
-                    >
+                    <Button variant={outputFormat === "pdf" ? "default" : "outline"} size="sm" onClick={() => setOutputFormat("pdf")}>
                       <FileText className="mr-1 h-4 w-4" />
                       Guardar PDF
                     </Button>
@@ -458,7 +402,7 @@ const Reports = () => {
               </Dialog>
               
               <div className="mt-6">
-                <h3 className="text-sm font-medium mb-3">Saldos Actuales</h3>
+                <h3 className="font-medium mb-3 text-xl text-center text-green-900">Saldos Actuales</h3>
                 <div className="space-y-3">
                   <Card className="bg-muted">
                     <CardContent className="p-4">
@@ -503,43 +447,22 @@ const Reports = () => {
                 <div className="space-y-4">
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="cashBalance" 
-                        checked={selectedBalanceType === "cash"} 
-                        onCheckedChange={() => setSelectedBalanceType(selectedBalanceType === "cash" ? null : "cash")}
-                      />
-                      <label
-                        htmlFor="cashBalance"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
+                      <Checkbox id="cashBalance" checked={selectedBalanceType === "cash"} onCheckedChange={() => setSelectedBalanceType(selectedBalanceType === "cash" ? null : "cash")} />
+                      <label htmlFor="cashBalance" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                         Efectivo
                       </label>
                     </div>
                     
                     <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="transferBalance" 
-                        checked={selectedBalanceType === "transfer"} 
-                        onCheckedChange={() => setSelectedBalanceType(selectedBalanceType === "transfer" ? null : "transfer")}
-                      />
-                      <label
-                        htmlFor="transferBalance"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
+                      <Checkbox id="transferBalance" checked={selectedBalanceType === "transfer"} onCheckedChange={() => setSelectedBalanceType(selectedBalanceType === "transfer" ? null : "transfer")} />
+                      <label htmlFor="transferBalance" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                         Transferencias
                       </label>
                     </div>
                     
                     <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="creditBalance" 
-                        checked={selectedBalanceType === "credit"} 
-                        onCheckedChange={() => setSelectedBalanceType(selectedBalanceType === "credit" ? null : "credit")}
-                      />
-                      <label
-                        htmlFor="creditBalance"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
+                      <Checkbox id="creditBalance" checked={selectedBalanceType === "credit"} onCheckedChange={() => setSelectedBalanceType(selectedBalanceType === "credit" ? null : "credit")} />
+                      <label htmlFor="creditBalance" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                         Créditos
                       </label>
                     </div>
@@ -548,18 +471,8 @@ const Reports = () => {
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Monto a retirar</label>
                     <div className="flex space-x-2">
-                      <Input
-                        type="number"
-                        placeholder="0.00"
-                        value={withdrawalAmount}
-                        onChange={(e) => setWithdrawalAmount(e.target.value)}
-                        className="flex-1"
-                      />
-                      <Button 
-                        onClick={handleWithdrawalRequest} 
-                        className="flex items-center"
-                        disabled={!selectedBalanceType || !withdrawalAmount || parseFloat(withdrawalAmount) <= 0}
-                      >
+                      <Input type="number" placeholder="0.00" value={withdrawalAmount} onChange={e => setWithdrawalAmount(e.target.value)} className="flex-1" />
+                      <Button onClick={handleWithdrawalRequest} className="flex items-center" disabled={!selectedBalanceType || !withdrawalAmount || parseFloat(withdrawalAmount) <= 0}>
                         <ArrowDown className="mr-1 h-4 w-4" />
                         Retirar
                       </Button>
@@ -602,30 +515,20 @@ const Reports = () => {
               <div className="grid grid-cols-4 items-center gap-4">
                 <label htmlFor="concept" className="text-right text-sm font-medium">Concepto:</label>
                 <div className="col-span-3">
-                  <Input
-                    id="concept"
-                    {...withdrawalForm.register("concept", { required: "El concepto es requerido" })}
-                    placeholder="Ingrese el concepto del retiro"
-                    className="w-full"
-                  />
-                  {withdrawalForm.formState.errors.concept && (
-                    <p className="text-sm text-red-500 mt-1">{withdrawalForm.formState.errors.concept.message}</p>
-                  )}
+                  <Input id="concept" {...withdrawalForm.register("concept", {
+                  required: "El concepto es requerido"
+                })} placeholder="Ingrese el concepto del retiro" className="w-full" />
+                  {withdrawalForm.formState.errors.concept && <p className="text-sm text-red-500 mt-1">{withdrawalForm.formState.errors.concept.message}</p>}
                 </div>
               </div>
               
               <div className="grid grid-cols-4 items-center gap-4">
                 <label htmlFor="authorizedBy" className="text-right text-sm font-medium">Autorizado por:</label>
                 <div className="col-span-3">
-                  <Input
-                    id="authorizedBy"
-                    {...withdrawalForm.register("authorizedBy", { required: "El nombre es requerido" })}
-                    placeholder="Nombre de quien autoriza"
-                    className="w-full"
-                  />
-                  {withdrawalForm.formState.errors.authorizedBy && (
-                    <p className="text-sm text-red-500 mt-1">{withdrawalForm.formState.errors.authorizedBy.message}</p>
-                  )}
+                  <Input id="authorizedBy" {...withdrawalForm.register("authorizedBy", {
+                  required: "El nombre es requerido"
+                })} placeholder="Nombre de quien autoriza" className="w-full" />
+                  {withdrawalForm.formState.errors.authorizedBy && <p className="text-sm text-red-500 mt-1">{withdrawalForm.formState.errors.authorizedBy.message}</p>}
                 </div>
               </div>
             </div>
@@ -639,8 +542,6 @@ const Reports = () => {
           </form>
         </DialogContent>
       </Dialog>
-    </div>
-  );
+    </div>;
 };
-
 export default Reports;
