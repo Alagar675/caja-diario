@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import { Input } from "@/components/ui/input"
 import { formatCurrencyValue, parseCurrencyValue } from "@/utils/formatters"
@@ -13,7 +12,7 @@ interface CurrencyInputProps extends Omit<React.ComponentProps<typeof Input>, "o
 }
 
 const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
-  ({ value, onChange, currencySymbol, placeholder = "0,00", className, maxDigits = 20, ...props }, ref) => {
+  ({ value, onChange, currencySymbol, placeholder = "0,00", className, maxDigits = 30, ...props }, ref) => {
     const { decimalSeparator, thousandSeparator, currencySymbol: localeCurrencySymbol } = useCurrencyLocale();
     const symbolToUse = currencySymbol || localeCurrencySymbol;
     
@@ -25,10 +24,14 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
         onChange('');
         return;
       }
-
-      // Allow entering right-to-left starting from decimals
-      // Extract all digits and decimal separator
-      const cleanValue = rawValue.replace(new RegExp(`[^\\d${decimalSeparator}]`, 'g'), '');
+      
+      // Clean value: keep only digits and decimal separator
+      let cleanValue = rawValue.replace(new RegExp(`[^\\d${decimalSeparator}]`, 'g'), '');
+      
+      // Handle the case where the user enters the decimal separator first
+      if (cleanValue === decimalSeparator) {
+        cleanValue = `0${decimalSeparator}`;
+      }
       
       // Limit to maxDigits total (excluding separators)
       const digitCount = cleanValue.replace(new RegExp(decimalSeparator, 'g'), '').length;
@@ -36,8 +39,11 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
         return;
       }
 
-      const numericValue = parseCurrencyValue(rawValue);
-      onChange(formatCurrencyValue(numericValue));
+      // Check if we need to apply the thousand separators
+      const numericValue = parseCurrencyValue(cleanValue);
+      const formattedValue = formatCurrencyValue(numericValue);
+      
+      onChange(formattedValue);
     };
 
     // When field gets focus, select all text for easy replacement
@@ -57,7 +63,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
           value={value}
           onChange={handleValueChange}
           onFocus={handleFocus}
-          className="pl-7 text-right font-mono tracking-wide"
+          className={`pl-7 text-right font-mono tracking-wider ${className}`}
           style={{ fontVariantNumeric: 'tabular-nums' }}
           inputMode="decimal"
           {...props}

@@ -30,7 +30,7 @@ const TransactionForm = ({ type }: TransactionFormProps) => {
           <form onSubmit={handlers.handleSubmit}>
             <TransactionFormFields
               type={type}
-              amount={formState.formattedAmount}
+              amount={formState.amount}
               setAmount={handlers.handleAmountChange}
               category={formState.category}
               setCategory={handlers.setCategory}
