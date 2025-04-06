@@ -172,62 +172,6 @@ const TransactionForm = ({
       />
     </>
   );
-
-  function resetForm() {
-    setAmount("");
-    setFormattedAmount("");
-    setCategory("");
-    setDescription("");
-    setPaymentMethod("cash");
-    setBankName("");
-    setTransferNumber("");
-    setRecipientName("");
-    setRecipientId("");
-    setDate(getCurrentDateForInput());
-    setTime(getCurrentTimeForInput());
-  }
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setConfirmDialogOpen(true);
-  }
-
-  function handleConfirmedSubmit() {
-    setConfirmDialogOpen(false);
-    
-    const dateTime = new Date(`${date}T${time}`);
-    const transaction = {
-      type,
-      amount: parseCurrencyValue(formattedAmount),
-      category,
-      description,
-      paymentMethod,
-      bankName: paymentMethod === "transfer" ? bankName : undefined,
-      transferNumber: paymentMethod === "transfer" ? transferNumber : undefined,
-      recipientName,
-      recipientId,
-      date: dateTime
-    };
-    
-    addTransaction(transaction);
-    setLastTransaction(transaction);
-    setDialogOpen(true);
-  }
-
-  function handlePrint() {
-    setDialogOpen(false);
-    // Show system print dialog
-    window.print();
-    resetForm();
-  }
-
-  function handleArchive() {
-    setDialogOpen(false);
-    // This would typically trigger a file save dialog
-    // For demo purposes we'll just show an alert
-    alert("Transacción archivada correctamente");
-    resetForm();
-  }
 };
 
 export default TransactionForm;
