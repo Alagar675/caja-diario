@@ -1,13 +1,46 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React from "react";
+import AppLayout from "@/components/layout/AppLayout";
+import DashboardTitle from "@/components/dashboard/DashboardTitle";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <AppLayout>
+      <div className="container mx-auto px-4 py-6">
+        <DashboardTitle initialTitle="Bienvenido a Daily Cash Report" />
+        
+        <div className="mt-8 grid gap-6">
+          <div className="bg-white rounded-lg shadow-sm p-6 border">
+            <h2 className="text-xl font-semibold mb-4">Gestión diaria de caja</h2>
+            <p className="text-gray-600">
+              Esta aplicación le permite administrar y controlar el flujo de efectivo diario,
+              registrar transacciones y generar informes detallados de sus operaciones financieras.
+            </p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-sm p-6 border">
+            <h2 className="text-xl font-semibold mb-4">¿Cómo empezar?</h2>
+            <p className="text-gray-600 mb-4">
+              Puede comenzar navegando a alguna de las siguientes secciones:
+            </p>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="bg-blue-50 rounded-md p-4 border border-blue-100">
+                <h3 className="font-medium text-blue-700 mb-2">Panel principal</h3>
+                <p className="text-sm text-gray-600">
+                  Visualice resúmenes de ingresos, egresos y balance del día actual.
+                </p>
+              </div>
+              <div className="bg-green-50 rounded-md p-4 border border-green-100">
+                <h3 className="font-medium text-green-700 mb-2">Informes</h3>
+                <p className="text-sm text-gray-600">
+                  Genere y consulte informes detallados de las operaciones financieras.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </AppLayout>
   );
 };
 
