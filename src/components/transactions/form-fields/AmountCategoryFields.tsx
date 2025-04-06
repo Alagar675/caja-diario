@@ -34,7 +34,7 @@ export function AmountCategoryFields({
       return;
     }
 
-    // Limit to 20 digits (excluding periods and commas)
+    // Limit to 20 digits total (excluding separators)
     const digitCount = rawValue.replace(/[^\d]/g, '').length;
     if (digitCount > 20) {
       return;
@@ -67,8 +67,8 @@ export function AmountCategoryFields({
   // Get currency symbol based on detected locale or default to $
   const localeInfo = getStoredLocaleInfo();
   const currencySymbol = localeInfo?.currencyCode === 'USD' ? '$' : 
-                         localeInfo?.currencyCode === 'EUR' ? '€' : 
-                         localeInfo?.currencyCode === 'GBP' ? '£' : '$';
+                        localeInfo?.currencyCode === 'EUR' ? '€' : 
+                        localeInfo?.currencyCode === 'GBP' ? '£' : '$';
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

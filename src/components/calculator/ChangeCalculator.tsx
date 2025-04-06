@@ -52,7 +52,7 @@ const ChangeCalculator = ({
       return;
     }
 
-    // Limit to 20 digits (excluding periods and commas)
+    // Limit to 20 digits total (excluding separators)
     const digitCount = rawValue.replace(/[^\d]/g, '').length;
     if (digitCount > 20) {
       return;
@@ -72,7 +72,7 @@ const ChangeCalculator = ({
       return;
     }
 
-    // Limit to 20 digits (excluding periods and commas)
+    // Limit to 20 digits total (excluding separators)
     const digitCount = rawValue.replace(/[^\d]/g, '').length;
     if (digitCount > 20) {
       return;
