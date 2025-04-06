@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
@@ -193,7 +192,7 @@ const Navbar = () => {
         onOpenChange={setShowLogoutAlert}
         onCancel={() => setShowLogoutAlert(false)}
         onGoToReports={goToReports}
-        onPerformLogout={performLogout}
+        onPerformLogout={goToReports}
       />
 
       <RecoveryAlert
