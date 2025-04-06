@@ -1,10 +1,9 @@
 
 import React, { useEffect } from "react";
-import { Input } from "@/components/ui/input";
+import { CurrencyInput } from "@/components/ui/currency-input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TransactionType } from "@/types/finance";
-import { formatCurrencyValue, parseCurrencyValue } from "@/utils/formatters";
 
 interface AmountCategoryFieldsProps {
   type: TransactionType;
@@ -24,32 +23,6 @@ export function AmountCategoryFields({
   const incomeCategories = ["Ventas", "Servicios", "Inversiones", "Préstamos", "Otros"];
   const expenseCategories = ["Compras", "Servicios", "Impuestos", "Nómina", "Alquiler", "Suministros", "Transporte", "Otros"];
   const categories = type === "income" ? incomeCategories : expenseCategories;
-
-  // Handle amount change with automatic formatting
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value;
-
-    if (rawValue === '') {
-      setAmount('');
-      return;
-    }
-
-    // Limit to 20 digits total (excluding separators)
-    const digitCount = rawValue.replace(/[^\d]/g, '').length;
-    if (digitCount > 20) {
-      return;
-    }
-
-    const numericValue = parseCurrencyValue(rawValue);
-    
-    // Format with appropriate separators for the locale
-    setAmount(formatCurrencyValue(numericValue));
-  };
-
-  // When field gets focus, select all text for easy replacement
-  const handleAmountFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.target.select();
-  };
 
   // Get currency symbol from local storage if available
   const getStoredLocaleInfo = () => {
@@ -76,23 +49,13 @@ export function AmountCategoryFields({
         <Label htmlFor="amount" className="text-sm font-medium">
           {type === "income" ? "Monto de ingreso" : "Monto de egreso"}
         </Label>
-        <div className="relative">
-          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-            {currencySymbol}
-          </span>
-          <Input
-            id="amount"
-            type="text"
-            placeholder="0,00"
-            value={amount}
-            onChange={handleAmountChange}
-            onFocus={handleAmountFocus}
-            className="pl-7 text-right font-mono tracking-wide"
-            style={{ fontVariantNumeric: 'tabular-nums' }}
-            inputMode="decimal"
-            required
-          />
-        </div>
+        <CurrencyInput
+          id="amount"
+          value={amount}
+          onChange={setAmount}
+          currencySymbol={currencySymbol}
+          required
+        />
       </div>
       
       <div className="space-y-2">
