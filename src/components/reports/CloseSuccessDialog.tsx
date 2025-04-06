@@ -30,7 +30,7 @@ const CloseSuccessDialog: React.FC<CloseSuccessDialogProps> = ({
         <div className="py-4 text-center">
           <p>Todas las transacciones han sido procesadas y archivadas.</p>
           <p className="mt-2 text-sm text-muted-foreground">
-            Al hacer clic en Aceptar, cerrará la sesión del sistema y necesitará iniciar sesión nuevamente para continuar.
+            Al hacer clic en Cerrar Sesión, se finalizará la sesión del sistema y necesitará iniciar sesión nuevamente para continuar.
           </p>
         </div>
         <DialogFooter>
