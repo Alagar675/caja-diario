@@ -6,7 +6,7 @@ import DashboardTitle from "@/components/dashboard/DashboardTitle";
 const Index = () => {
   return (
     <AppLayout>
-      <div className="container mx-auto px-4 py-6">
+      <div className="w-full px-4 py-6">
         <DashboardTitle initialTitle="Bienvenido a Daily Cash Report" />
         
         <div className="mt-8 grid gap-6">
