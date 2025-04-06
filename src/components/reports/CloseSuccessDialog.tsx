@@ -2,7 +2,7 @@
 import React from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, LogOut } from "lucide-react";
 
 interface CloseSuccessDialogProps {
   open: boolean;
@@ -30,12 +30,12 @@ const CloseSuccessDialog: React.FC<CloseSuccessDialogProps> = ({
         <div className="py-4 text-center">
           <p>Todas las transacciones han sido procesadas y archivadas.</p>
           <p className="mt-2 text-sm text-muted-foreground">
-            Puede cerrar la aplicación con seguridad o continuar trabajando.
+            Al hacer clic en Aceptar, cerrará la sesión del sistema y necesitará iniciar sesión nuevamente para continuar.
           </p>
         </div>
         <DialogFooter>
-          <Button onClick={onExit} className="w-full">
-            Aceptar
+          <Button onClick={onExit} className="w-full flex items-center justify-center">
+            <LogOut className="h-4 w-4 mr-2" /> Cerrar Sesión
           </Button>
         </DialogFooter>
       </DialogContent>
