@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import useLocalStorageState from "@/hooks/useLocalStorageState";
 
 interface NavbarMenuProps {
   menuItems: Array<{ name: string; path: string }>;
@@ -14,9 +15,11 @@ interface NavbarMenuProps {
 
 const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, closeMenu }: NavbarMenuProps) => {
   const navigate = useNavigate();
+  const { clearRecoveryState } = useLocalStorageState();
 
   const handleNavigation = (path: string) => {
     saveLastAction(path);
+    clearRecoveryState(); // Clear recovery state when navigating to a new page
     navigate(path);
     if (isMobile && closeMenu) {
       closeMenu();
