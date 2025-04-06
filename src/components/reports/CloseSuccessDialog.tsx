@@ -30,12 +30,12 @@ const CloseSuccessDialog: React.FC<CloseSuccessDialogProps> = ({
         <div className="py-4 text-center">
           <p>Todas las transacciones han sido procesadas y archivadas.</p>
           <p className="mt-2 text-sm text-muted-foreground">
-            Al hacer clic en Cerrar Sesión, se finalizará la sesión del sistema y necesitará iniciar sesión nuevamente para continuar.
+            Al hacer clic en Aceptar, se finalizará la sesión del sistema y necesitará iniciar sesión nuevamente para continuar.
           </p>
         </div>
         <DialogFooter>
           <Button onClick={onExit} className="w-full flex items-center justify-center">
-            <LogOut className="h-4 w-4 mr-2" /> Cerrar Sesión
+            <LogOut className="h-4 w-4 mr-2" /> Aceptar
           </Button>
         </DialogFooter>
       </DialogContent>
