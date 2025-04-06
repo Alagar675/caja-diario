@@ -21,8 +21,9 @@ const Navbar = () => {
   useEffect(() => {
     const lastAction = localStorage.getItem("lastAction");
     const needsRecovery = localStorage.getItem("needsRecovery");
+    const abnormalExit = localStorage.getItem("abnormalExit");
     
-    if (needsRecovery === "true" && lastAction) {
+    if (abnormalExit === "true" && needsRecovery === "true" && lastAction) {
       setShowRecoveryAlert(true);
     }
   }, []);
@@ -30,15 +31,18 @@ const Navbar = () => {
   const saveLastAction = (action: string) => {
     localStorage.setItem("lastAction", action);
     localStorage.setItem("needsRecovery", "true");
+    localStorage.setItem("abnormalExit", "true");
   };
   
   const handleLogout = () => {
+    localStorage.setItem("abnormalExit", "false");
     setShowLogoutAlert(true);
   };
   
   const performLogout = () => {
-    logout();
+    localStorage.setItem("abnormalExit", "false");
     localStorage.removeItem("needsRecovery");
+    logout();
     navigate("/login");
   };
   
@@ -46,9 +50,10 @@ const Navbar = () => {
     const lastAction = localStorage.getItem("lastAction");
     if (lastAction) {
       localStorage.setItem("needsRecovery", "false");
+      localStorage.setItem("abnormalExit", "false");
       try {
         navigate(lastAction);
-        toast.success("Sistema restaurado correctamente");
+        toast.success("Sesión restaurada correctamente");
       } catch (error) {
         navigate("/dashboard");
         toast.error("Error al restaurar. Redirigiendo al inicio");
@@ -59,6 +64,7 @@ const Navbar = () => {
   
   const cancelRecovery = () => {
     localStorage.setItem("needsRecovery", "false");
+    localStorage.setItem("abnormalExit", "false");
     setShowRecoveryAlert(false);
     navigate("/login");
   };

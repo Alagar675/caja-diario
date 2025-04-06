@@ -15,6 +15,10 @@ export const useDailyCashClose = () => {
   };
   
   const handleExitApplication = () => {
+    // Mark as normal exit when closing the application through proper dialog
+    localStorage.setItem("abnormalExit", "false");
+    localStorage.setItem("needsRecovery", "false");
+    
     toast.info("Sesión finalizada. La aplicación se cerrará.");
     setTimeout(() => {
       // Log the user out completely
