@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Calendar, FileText, Printer } from "lucide-react";
@@ -9,9 +9,47 @@ import { formatCurrency } from "@/utils/formatters";
 interface QuickReportsProps {
   dailySummary: DailySummary;
   setOutputFormat: (format: "print" | "pdf") => void;
+  onConfirmClose?: () => void;
 }
 
-const QuickReports: React.FC<QuickReportsProps> = ({ dailySummary, setOutputFormat }) => {
+const QuickReports: React.FC<QuickReportsProps> = ({ 
+  dailySummary, 
+  setOutputFormat,
+  onConfirmClose
+}) => {
+  const [highlightConfirmButton, setHighlightConfirmButton] = useState(false);
+  const [reportGenerated, setReportGenerated] = useState(false);
+  
+  // Function to handle print action
+  const handlePrint = () => {
+    setOutputFormat("print");
+    highlightConfirmButtonEffect();
+    setReportGenerated(true);
+  };
+  
+  // Function to handle PDF action
+  const handleSavePDF = () => {
+    setOutputFormat("pdf");
+    highlightConfirmButtonEffect();
+    setReportGenerated(true);
+  };
+  
+  // Function to highlight the confirm button to remind user to click it
+  const highlightConfirmButtonEffect = () => {
+    setHighlightConfirmButton(true);
+    // Remove the highlight effect after 3 seconds
+    setTimeout(() => {
+      setHighlightConfirmButton(false);
+    }, 3000);
+  };
+  
+  // Function to handle close confirmation
+  const handleConfirmClose = () => {
+    if (onConfirmClose) {
+      onConfirmClose();
+    }
+  };
+
   return (
     <div className="space-y-4">
       <Button className="w-full justify-start" variant="outline">
@@ -41,6 +79,11 @@ const QuickReports: React.FC<QuickReportsProps> = ({ dailySummary, setOutputForm
             <DialogTitle>Cierre de Caja Diario</DialogTitle>
             <DialogDescription>
               Este proceso generará un informe completo de todas las transacciones del día y preparará el sistema para el siguiente día.
+              {reportGenerated && (
+                <p className="mt-2 text-sm font-medium text-green-600">
+                  Informe generado correctamente. Por favor confirme el cierre.
+                </p>
+              )}
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
@@ -60,15 +103,20 @@ const QuickReports: React.FC<QuickReportsProps> = ({ dailySummary, setOutputForm
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setOutputFormat("print")}>
+            <Button variant="outline" onClick={handlePrint}>
               <Printer className="mr-1 h-4 w-4" />
               Imprimir
             </Button>
-            <Button variant="outline" onClick={() => setOutputFormat("pdf")}>
+            <Button variant="outline" onClick={handleSavePDF}>
               <FileText className="mr-1 h-4 w-4" />
               Guardar PDF
             </Button>
-            <Button>Confirmar Cierre</Button>
+            <Button 
+              className={`${highlightConfirmButton ? "animate-pulse ring-2 ring-primary ring-offset-2" : ""}`}
+              onClick={handleConfirmClose}
+            >
+              Confirmar Cierre
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
