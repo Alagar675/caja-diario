@@ -92,9 +92,11 @@ const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
               value={withdrawalAmount} 
               onChange={handleAmountChange}
               onFocus={handleAmountFocus}
-              className="flex-1" 
+              className="flex-1 text-right font-mono tracking-wide" 
+              style={{ fontVariantNumeric: 'tabular-nums' }}
+              inputMode="decimal"
             />
-            <Button onClick={handleWithdrawalRequest} className="flex items-center" disabled={!selectedBalanceType || !withdrawalAmount || parseFloat(withdrawalAmount.replace(/[^\d,]/g, '').replace(',', '.')) <= 0}>
+            <Button onClick={handleWithdrawalRequest} className="flex items-center whitespace-nowrap" disabled={!selectedBalanceType || !withdrawalAmount || parseFloat(withdrawalAmount.replace(/[^\d,]/g, '').replace(',', '.')) <= 0}>
               <ArrowDown className="mr-1 h-4 w-4" />
               Retirar
             </Button>
@@ -107,19 +109,19 @@ const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span>Efectivo:</span>
-            <span>{formatCurrency(withdrawalSummary.cashWithdrawals)}</span>
+            <span className="font-mono" style={{ fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(withdrawalSummary.cashWithdrawals)}</span>
           </div>
           <div className="flex justify-between">
             <span>Transferencias:</span>
-            <span>{formatCurrency(withdrawalSummary.transferWithdrawals)}</span>
+            <span className="font-mono" style={{ fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(withdrawalSummary.transferWithdrawals)}</span>
           </div>
           <div className="flex justify-between">
             <span>Créditos:</span>
-            <span>{formatCurrency(withdrawalSummary.creditWithdrawals)}</span>
+            <span className="font-mono" style={{ fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(withdrawalSummary.creditWithdrawals)}</span>
           </div>
           <div className="flex justify-between font-medium pt-1 border-t">
             <span>Total:</span>
-            <span>{formatCurrency(withdrawalSummary.totalWithdrawals)}</span>
+            <span className="font-mono" style={{ fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(withdrawalSummary.totalWithdrawals)}</span>
           </div>
           
           <div className="flex justify-center mt-4">

@@ -122,7 +122,9 @@ const ChangeCalculator = ({
               value={formattedAmountToPay} 
               onChange={handleAmountToPayChange} 
               onFocus={handleFocus} 
-              className="pl-7 text-right" 
+              className="pl-7 text-right font-mono tracking-wide"
+              style={{ fontVariantNumeric: 'tabular-nums' }}
+              inputMode="decimal"
             />
           </div>
         </div>
@@ -140,14 +142,16 @@ const ChangeCalculator = ({
               value={formattedAmountReceived} 
               onChange={handleAmountReceivedChange} 
               onFocus={handleFocus} 
-              className="pl-7 text-right" 
+              className="pl-7 text-right font-mono tracking-wide"
+              style={{ fontVariantNumeric: 'tabular-nums' }}
+              inputMode="decimal"
             />
           </div>
         </div>
 
         <div className="space-y-2 pt-2 border-t">
           <Label htmlFor="change">Cambio</Label>
-          <div id="change" className="h-10 flex items-center justify-end px-3 rounded-md bg-gray-100 font-medium text-lg">
+          <div id="change" className="h-10 flex items-center justify-end px-3 rounded-md bg-gray-100 font-mono font-medium text-lg tracking-wide" style={{ fontVariantNumeric: 'tabular-nums' }}>
             {formatCurrency(change)}
           </div>
         </div>

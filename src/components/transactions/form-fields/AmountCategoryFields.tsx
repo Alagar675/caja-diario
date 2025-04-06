@@ -87,7 +87,9 @@ export function AmountCategoryFields({
             value={amount}
             onChange={handleAmountChange}
             onFocus={handleAmountFocus}
-            className="pl-7 text-right"
+            className="pl-7 text-right font-mono tracking-wide"
+            style={{ fontVariantNumeric: 'tabular-nums' }}
+            inputMode="decimal"
             required
           />
         </div>
