@@ -1,25 +1,38 @@
 
-// Format a number as currency (COP - Colombian Pesos)
+import { useState, useEffect } from 'react';
+
+// Current locale (default to Colombian)
+let currentLocale = 'es-CO';
+let currentCurrency = 'COP';
+
+// Function to update the locale and currency
+export const updateLocaleSettings = (locale: string, currency: string) => {
+  currentLocale = locale;
+  currentCurrency = currency;
+  console.log(`Locale settings updated: ${locale} / ${currency}`);
+};
+
+// Format a number as currency using the detected locale
 export const formatCurrency = (amount: number): string => {
   // Use try-catch to handle potential number formatting errors with very large numbers
   try {
-    return new Intl.NumberFormat('es-CO', {
+    return new Intl.NumberFormat(currentLocale, {
       style: 'currency',
-      currency: 'COP',
+      currency: currentCurrency,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
       useGrouping: true, // Ensure thousand separators are used
     }).format(amount);
   } catch (error) {
     console.error('Error formatting currency:', error);
-    return 'COP Error';
+    return `${currentCurrency} Error`;
   }
 };
 
-// Format a number as Colombian currency without the currency symbol
+// Format a number as currency value without the currency symbol
 export const formatCurrencyValue = (value: number): string => {
   try {
-    return new Intl.NumberFormat('es-CO', {
+    return new Intl.NumberFormat(currentLocale, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
       useGrouping: true, // Use thousand separators
@@ -30,23 +43,32 @@ export const formatCurrencyValue = (value: number): string => {
   }
 };
 
-// Parse a Colombian formatted number (with period for thousands and comma for decimals)
+// Parse a formatted number (handling both comma and period decimal separators)
 export const parseCurrencyValue = (formattedValue: string): number => {
   if (!formattedValue.trim()) return 0;
 
-  // Remove all non-digit characters except periods and commas
-  // Then replace periods (thousand separators) and convert commas to dots for parsing
-  const numericString = formattedValue
-    .replace(/[^\d,.]/g, '')
-    .replace(/\./g, '')
-    .replace(',', '.');
+  // Get decimal and thousand separators for the current locale
+  const format = new Intl.NumberFormat(currentLocale);
+  const parts = format.formatToParts(1234.5);
+  const decimalSeparator = parts.find(part => part.type === 'decimal')?.value || ',';
+  const groupSeparator = parts.find(part => part.type === 'group')?.value || '.';
 
-  return parseFloat(numericString) || 0;
+  // Remove all non-digit characters except decimal separator
+  const cleanValue = formattedValue.replace(new RegExp(`[^\\d${decimalSeparator}]`, 'g'), '');
+  
+  // If using period as decimal separator (e.g., en-US)
+  if (decimalSeparator === '.') {
+    return parseFloat(cleanValue) || 0;
+  } 
+  // If using comma as decimal separator (e.g., es-CO)
+  else {
+    return parseFloat(cleanValue.replace(decimalSeparator, '.')) || 0;
+  }
 };
 
 // Format a date as a local string
 export const formatDate = (date: Date): string => {
-  return new Intl.DateTimeFormat('es-CO', {
+  return new Intl.DateTimeFormat(currentLocale, {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
@@ -55,7 +77,7 @@ export const formatDate = (date: Date): string => {
 
 // Format a date with time
 export const formatDateTime = (date: Date): string => {
-  return new Intl.DateTimeFormat('es-CO', {
+  return new Intl.DateTimeFormat(currentLocale, {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

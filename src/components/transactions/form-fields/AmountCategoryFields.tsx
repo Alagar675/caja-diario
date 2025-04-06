@@ -1,10 +1,10 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TransactionType } from "@/types/finance";
-import { parseCurrencyValue } from "@/utils/formatters";
+import { formatCurrencyValue, parseCurrencyValue } from "@/utils/formatters";
 
 interface AmountCategoryFieldsProps {
   type: TransactionType;
@@ -28,7 +28,20 @@ export function AmountCategoryFields({
   // Handle amount change with automatic formatting
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
-    setAmount(rawValue);
+
+    if (rawValue === '') {
+      setAmount('');
+      return;
+    }
+
+    // Limit to 20 digits (excluding periods and commas)
+    const digitCount = rawValue.replace(/[^\d]/g, '').length;
+    if (digitCount > 20) {
+      return;
+    }
+
+    const numericValue = parseCurrencyValue(rawValue);
+    setAmount(formatCurrencyValue(numericValue));
   };
 
   const handleAmountFocus = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -78,3 +91,6 @@ export function AmountCategoryFields({
     </div>
   );
 }
+
+// Make sure to export the component as default as well
+export default AmountCategoryFields;

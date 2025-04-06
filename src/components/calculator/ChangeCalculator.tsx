@@ -19,6 +19,21 @@ const ChangeCalculator = ({
   const [formattedAmountToPay, setFormattedAmountToPay] = useState<string>("");
   const [formattedAmountReceived, setFormattedAmountReceived] = useState<string>("");
 
+  // Get locale info from localStorage if available
+  const [localeInfo, setLocaleInfo] = useState<any>(null);
+  
+  useEffect(() => {
+    // Try to get stored locale info
+    const storedLocale = localStorage.getItem('detectedLocale');
+    if (storedLocale) {
+      try {
+        setLocaleInfo(JSON.parse(storedLocale));
+      } catch (e) {
+        console.error("Error parsing stored locale:", e);
+      }
+    }
+  }, []);
+
   useEffect(() => {
     calculateChange();
   }, [amountToPay, amountReceived]);
@@ -37,7 +52,7 @@ const ChangeCalculator = ({
       return;
     }
 
-    // Limita a 20 dígitos (excluyendo puntos y comas)
+    // Limit to 20 digits (excluding periods and commas)
     const digitCount = rawValue.replace(/[^\d]/g, '').length;
     if (digitCount > 20) {
       return;
@@ -57,7 +72,7 @@ const ChangeCalculator = ({
       return;
     }
 
-    // Limita a 20 dígitos (excluyendo puntos y comas)
+    // Limit to 20 digits (excluding periods and commas)
     const digitCount = rawValue.replace(/[^\d]/g, '').length;
     if (digitCount > 20) {
       return;
@@ -76,29 +91,69 @@ const ChangeCalculator = ({
     return null;
   }
 
-  return <Card className="w-full">
-    <CardHeader className="bg-blue-50 border-b">
-      <CardTitle className="text-center text-blue-700 text-xl">Calculadora de Cambio</CardTitle>
-    </CardHeader>
-    <CardContent className="space-y-4 pt-4">
-      <div className="space-y-2">
-        <Label htmlFor="amountToPay">Valor a pagar</Label>
-        <Input id="amountToPay" type="text" placeholder="0,00" value={formattedAmountToPay} onChange={handleAmountToPayChange} onFocus={handleFocus} className="text-right" />
-      </div>
+  // Get currency symbol based on detected locale
+  const currencySymbol = localeInfo?.currencyCode === 'USD' ? '$' : 
+                        localeInfo?.currencyCode === 'EUR' ? '€' : 
+                        localeInfo?.currencyCode === 'GBP' ? '£' : '$';
 
-      <div className="space-y-2">
-        <Label htmlFor="amountReceived">Dinero recibido</Label>
-        <Input id="amountReceived" type="text" placeholder="0,00" value={formattedAmountReceived} onChange={handleAmountReceivedChange} onFocus={handleFocus} className="text-right" />
-      </div>
-
-      <div className="space-y-2 pt-2 border-t">
-        <Label htmlFor="change">Cambio</Label>
-        <div id="change" className="h-10 flex items-center justify-end px-3 rounded-md bg-gray-100 font-medium text-lg">
-          {formatCurrency(change)}
+  return (
+    <Card className="w-full">
+      <CardHeader className="bg-blue-50 border-b">
+        <CardTitle className="text-center text-blue-700 text-xl">
+          Calculadora de Cambio
+          {localeInfo && (
+            <div className="text-xs font-normal text-gray-600 mt-1">
+              {localeInfo.country} ({localeInfo.currencyCode})
+            </div>
+          )}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4 pt-4">
+        <div className="space-y-2">
+          <Label htmlFor="amountToPay">Valor a pagar</Label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+              {currencySymbol}
+            </span>
+            <Input 
+              id="amountToPay" 
+              type="text" 
+              placeholder="0,00" 
+              value={formattedAmountToPay} 
+              onChange={handleAmountToPayChange} 
+              onFocus={handleFocus} 
+              className="pl-7 text-right" 
+            />
+          </div>
         </div>
-      </div>
-    </CardContent>
-  </Card>;
+
+        <div className="space-y-2">
+          <Label htmlFor="amountReceived">Dinero recibido</Label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+              {currencySymbol}
+            </span>
+            <Input 
+              id="amountReceived" 
+              type="text" 
+              placeholder="0,00" 
+              value={formattedAmountReceived} 
+              onChange={handleAmountReceivedChange} 
+              onFocus={handleFocus} 
+              className="pl-7 text-right" 
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2 pt-2 border-t">
+          <Label htmlFor="change">Cambio</Label>
+          <div id="change" className="h-10 flex items-center justify-end px-3 rounded-md bg-gray-100 font-medium text-lg">
+            {formatCurrency(change)}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
 };
 
 export default ChangeCalculator;
