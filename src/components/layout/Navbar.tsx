@@ -1,9 +1,12 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut, Menu, X, FileText } from "lucide-react";
+import { LogOut, Menu, X, FileText, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const {
@@ -31,6 +34,18 @@ const Navbar = () => {
           </a>
         </div>
 
+        {/* User Profile Display in Center */}
+        {user && (
+          <div className="hidden md:flex items-center justify-center space-x-2 bg-blue-50 px-4 py-2 rounded-full">
+            <Avatar className="h-8 w-8 bg-blue-200">
+              <AvatarFallback className="text-blue-700">{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+            </Avatar>
+            <span className="text-sm font-medium text-blue-700">
+              {user.name}
+            </span>
+          </div>
+        )}
+
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6">
           {user && <>
@@ -41,9 +56,6 @@ const Navbar = () => {
                   {item.name}
                 </a>)}
               <div className="flex items-center space-x-4">
-                <span className="text-sm font-medium">
-                  Hola, {user.name}
-                </span>
                 <Button variant="outline" size="sm" onClick={handleLogout} className="flex items-center gap-1">
                   <LogOut className="h-4 w-4" />
                   <span>Salir</span>
@@ -70,6 +82,15 @@ const Navbar = () => {
       <div className={cn("md:hidden absolute w-full bg-white/95 backdrop-blur-sm border-b border-border z-40", isMenuOpen ? "block animate-slide-in" : "hidden")}>
         <div className="container py-4 space-y-4">
           {user && <>
+              {/* Mobile User Profile Display */}
+              <div className="flex items-center space-x-2 py-2 mb-2 justify-center">
+                <Avatar className="h-8 w-8 bg-blue-200">
+                  <AvatarFallback className="text-blue-700">{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <span className="text-sm font-medium text-blue-700">
+                  {user.name}
+                </span>
+              </div>
               {menuItems.map(item => <a key={item.name} href={item.path} className="block py-2 text-base font-medium transition-colors hover:text-primary" onClick={e => {
             e.preventDefault();
             navigate(item.path);
@@ -78,9 +99,6 @@ const Navbar = () => {
                   {item.name}
                 </a>)}
               <div className="flex flex-col space-y-2 pt-2 border-t">
-                <span className="text-sm font-medium py-2">
-                  Hola, {user.name}
-                </span>
                 <Button variant="outline" onClick={handleLogout} className="justify-center">
                   <LogOut className="h-4 w-4 mr-2" />
                   <span>Cerrar sesión</span>
