@@ -1,3 +1,4 @@
+
 // Format a number as currency (COP - Colombian Pesos)
 export const formatCurrency = (amount: number): string => {
   // Use try-catch to handle potential number formatting errors with very large numbers

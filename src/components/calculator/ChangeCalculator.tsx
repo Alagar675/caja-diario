@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -28,6 +29,7 @@ const ChangeCalculator = ({
   };
 
   const formatNumber = (value: number): string => {
+    // Formatea el número con punto para miles y coma para decimales
     return value.toLocaleString('es-CO', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
@@ -37,6 +39,8 @@ const ChangeCalculator = ({
   const parseFormattedNumber = (formattedValue: string): number => {
     if (!formattedValue.trim()) return 0;
 
+    // Elimina todos los caracteres que no sean dígitos, puntos o comas
+    // Luego reemplaza los puntos (separadores de miles) y convierte comas a puntos para el parsing
     const numericString = formattedValue
       .replace(/[^\d,.]/g, '')
       .replace(/\./g, '')
@@ -54,8 +58,9 @@ const ChangeCalculator = ({
       return;
     }
 
+    // Limita a 20 dígitos (excluyendo puntos y comas)
     const digitCount = rawValue.replace(/[^\d]/g, '').length;
-    if (digitCount > 27) {
+    if (digitCount > 20) {
       return;
     }
 
@@ -73,8 +78,9 @@ const ChangeCalculator = ({
       return;
     }
 
+    // Limita a 20 dígitos (excluyendo puntos y comas)
     const digitCount = rawValue.replace(/[^\d]/g, '').length;
-    if (digitCount > 27) {
+    if (digitCount > 20) {
       return;
     }
 
