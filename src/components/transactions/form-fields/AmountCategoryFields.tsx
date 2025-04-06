@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TransactionType } from "@/types/finance";
+import { parseCurrencyValue } from "@/utils/formatters";
 
 interface AmountCategoryFieldsProps {
   type: TransactionType;
@@ -13,41 +14,62 @@ interface AmountCategoryFieldsProps {
   setCategory: (value: string) => void;
 }
 
-const AmountCategoryFields = ({
+export function AmountCategoryFields({
   type,
   amount,
   setAmount,
   category,
-  setCategory
-}: AmountCategoryFieldsProps) => {
-  const categoryOptions = type === "income" 
-    ? ["Ventas en efectivo", "Ventas a crédito", "Recaudo Créditos", "Recaudos recurrentes", "Otros"] 
-    : ["Pago de Facturas", "Pagos recurrentes", "Servicios públicos", "Pago salarios", "Otros"];
+  setCategory,
+}: AmountCategoryFieldsProps) {
+  const incomeCategories = ["Ventas", "Servicios", "Inversiones", "Préstamos", "Otros"];
+  const expenseCategories = ["Compras", "Servicios", "Impuestos", "Nómina", "Alquiler", "Suministros", "Transporte", "Otros"];
+  const categories = type === "income" ? incomeCategories : expenseCategories;
+
+  // Handle amount change with automatic formatting
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value;
+    setAmount(rawValue);
+  };
+
+  const handleAmountFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.select();
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div className="space-y-2">
-        <Label htmlFor="amount">Monto</Label>
-        <Input 
-          id="amount" 
-          type="number" 
-          placeholder="0" 
-          required 
-          value={amount} 
-          onChange={e => setAmount(e.target.value)} 
-          className="transition-all duration-200" 
-        />
+        <Label htmlFor="amount" className="text-sm font-medium">
+          {type === "income" ? "Monto de ingreso" : "Monto de egreso"}
+        </Label>
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+            $
+          </span>
+          <Input
+            id="amount"
+            type="text"
+            placeholder="0,00"
+            value={amount}
+            onChange={handleAmountChange}
+            onFocus={handleAmountFocus}
+            className="pl-7 text-right"
+            required
+          />
+        </div>
       </div>
+      
       <div className="space-y-2">
-        <Label htmlFor="category">Categoría</Label>
-        <Select required value={category} onValueChange={setCategory}>
+        <Label htmlFor="category" className="text-sm font-medium">
+          Categoría
+        </Label>
+        <Select value={category} onValueChange={setCategory} required>
           <SelectTrigger id="category">
-            <SelectValue placeholder="Elegir categoría" />
+            <SelectValue placeholder="Seleccionar categoría" />
           </SelectTrigger>
           <SelectContent>
-            {categoryOptions.map(option => (
-              <SelectItem key={option} value={option}>
-                {option}
+            {categories.map((cat) => (
+              <SelectItem key={cat} value={cat}>
+                {cat}
               </SelectItem>
             ))}
           </SelectContent>
@@ -55,6 +77,4 @@ const AmountCategoryFields = ({
       </div>
     </div>
   );
-};
-
-export default AmountCategoryFields;
+}

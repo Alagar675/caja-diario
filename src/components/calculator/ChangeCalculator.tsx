@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { formatCurrency } from "@/utils/formatters";
+import { formatCurrency, formatCurrencyValue, parseCurrencyValue } from "@/utils/formatters";
 
 interface ChangeCalculatorProps {
   isVisible?: boolean;
@@ -28,27 +28,6 @@ const ChangeCalculator = ({
     setChange(calculatedChange >= 0 ? calculatedChange : 0);
   };
 
-  const formatNumber = (value: number): string => {
-    // Formatea el número con punto para miles y coma para decimales
-    return value.toLocaleString('es-CO', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-  };
-
-  const parseFormattedNumber = (formattedValue: string): number => {
-    if (!formattedValue.trim()) return 0;
-
-    // Elimina todos los caracteres que no sean dígitos, puntos o comas
-    // Luego reemplaza los puntos (separadores de miles) y convierte comas a puntos para el parsing
-    const numericString = formattedValue
-      .replace(/[^\d,.]/g, '')
-      .replace(/\./g, '')
-      .replace(',', '.');
-
-    return parseFloat(numericString) || 0;
-  };
-
   const handleAmountToPayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
 
@@ -64,9 +43,9 @@ const ChangeCalculator = ({
       return;
     }
 
-    const numericValue = parseFormattedNumber(rawValue);
+    const numericValue = parseCurrencyValue(rawValue);
     setAmountToPay(numericValue);
-    setFormattedAmountToPay(formatNumber(numericValue));
+    setFormattedAmountToPay(formatCurrencyValue(numericValue));
   };
 
   const handleAmountReceivedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,9 +63,9 @@ const ChangeCalculator = ({
       return;
     }
 
-    const numericValue = parseFormattedNumber(rawValue);
+    const numericValue = parseCurrencyValue(rawValue);
     setAmountReceived(numericValue);
-    setFormattedAmountReceived(formatNumber(numericValue));
+    setFormattedAmountReceived(formatCurrencyValue(numericValue));
   };
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {

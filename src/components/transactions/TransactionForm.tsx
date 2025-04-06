@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useFinance, TransactionType, PaymentMethod } from "@/context/FinanceContext";
-import { getCurrentDateForInput, getCurrentTimeForInput } from "@/utils/formatters";
+import { getCurrentDateForInput, getCurrentTimeForInput, parseCurrencyValue, formatCurrencyValue } from "@/utils/formatters";
 import TransactionFormFields from "./TransactionFormFields";
 import ConfirmationDialog from "./ConfirmationDialog";
 import SuccessDialog from "./SuccessDialog";
@@ -19,6 +19,7 @@ const TransactionForm = ({
     addTransaction
   } = useFinance();
   const [amount, setAmount] = useState("");
+  const [formattedAmount, setFormattedAmount] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
@@ -34,8 +35,27 @@ const TransactionForm = ({
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [lastTransaction, setLastTransaction] = useState<any>(null);
 
+  const handleAmountChange = (value: string) => {
+    if (value === '') {
+      setFormattedAmount('');
+      setAmount('');
+      return;
+    }
+
+    // Limit to 20 digits (excluding periods and commas)
+    const digitCount = value.replace(/[^\d]/g, '').length;
+    if (digitCount > 20) {
+      return;
+    }
+
+    const numericValue = parseCurrencyValue(value);
+    setAmount(numericValue.toString());
+    setFormattedAmount(formatCurrencyValue(numericValue));
+  };
+
   const resetForm = () => {
     setAmount("");
+    setFormattedAmount("");
     setCategory("");
     setDescription("");
     setPaymentMethod("cash");
@@ -58,7 +78,7 @@ const TransactionForm = ({
     const dateTime = new Date(`${date}T${time}`);
     const transaction = {
       type,
-      amount: Number(amount),
+      amount: parseCurrencyValue(formattedAmount),
       category,
       description,
       paymentMethod,
@@ -104,8 +124,8 @@ const TransactionForm = ({
           <form onSubmit={handleSubmit}>
             <TransactionFormFields
               type={type}
-              amount={amount}
-              setAmount={setAmount}
+              amount={formattedAmount}
+              setAmount={handleAmountChange}
               category={category}
               setCategory={setCategory}
               description={description}

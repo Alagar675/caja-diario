@@ -16,6 +16,34 @@ export const formatCurrency = (amount: number): string => {
   }
 };
 
+// Format a number as Colombian currency without the currency symbol
+export const formatCurrencyValue = (value: number): string => {
+  try {
+    return new Intl.NumberFormat('es-CO', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+      useGrouping: true, // Use thousand separators
+    }).format(value);
+  } catch (error) {
+    console.error('Error formatting currency value:', error);
+    return '0,00';
+  }
+};
+
+// Parse a Colombian formatted number (with period for thousands and comma for decimals)
+export const parseCurrencyValue = (formattedValue: string): number => {
+  if (!formattedValue.trim()) return 0;
+
+  // Remove all non-digit characters except periods and commas
+  // Then replace periods (thousand separators) and convert commas to dots for parsing
+  const numericString = formattedValue
+    .replace(/[^\d,.]/g, '')
+    .replace(/\./g, '')
+    .replace(',', '.');
+
+  return parseFloat(numericString) || 0;
+};
+
 // Format a date as a local string
 export const formatDate = (date: Date): string => {
   return new Intl.DateTimeFormat('es-CO', {

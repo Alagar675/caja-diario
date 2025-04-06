@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
-import { formatCurrency } from "@/utils/formatters";
+import { formatCurrency, parseCurrencyValue, formatCurrencyValue } from "@/utils/formatters";
 
 interface WithdrawalFormData {
   amount: string;
@@ -29,6 +29,11 @@ const WithdrawalDialog: React.FC<WithdrawalDialogProps> = ({
   form,
   onSubmit
 }) => {
+  // Format withdrawal amount for display
+  const displayAmount = withdrawalAmount ? 
+    formatCurrency(parseCurrencyValue(withdrawalAmount)) : 
+    formatCurrency(0);
+    
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
@@ -53,7 +58,7 @@ const WithdrawalDialog: React.FC<WithdrawalDialogProps> = ({
             <div className="grid grid-cols-4 items-center gap-4">
               <label className="text-right text-sm font-medium">Monto:</label>
               <div className="col-span-3 font-medium">
-                {withdrawalAmount && formatCurrency(parseFloat(withdrawalAmount))}
+                {displayAmount}
               </div>
             </div>
             
