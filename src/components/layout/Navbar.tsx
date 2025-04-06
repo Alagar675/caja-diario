@@ -1,22 +1,73 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, Menu, X, FileText, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showLogoutAlert, setShowLogoutAlert] = useState(false);
+  const [showRecoveryAlert, setShowRecoveryAlert] = useState(false);
   const {
     user,
     logout
   } = useAuth();
   const navigate = useNavigate();
   
+  // Check for system recovery on component mount
+  useEffect(() => {
+    const lastAction = localStorage.getItem("lastAction");
+    const needsRecovery = localStorage.getItem("needsRecovery");
+    
+    if (needsRecovery === "true" && lastAction) {
+      setShowRecoveryAlert(true);
+    }
+  }, []);
+  
+  // Save last action to localStorage
+  const saveLastAction = (action: string) => {
+    localStorage.setItem("lastAction", action);
+    localStorage.setItem("needsRecovery", "true");
+  };
+  
+  // Handle logout process
   const handleLogout = () => {
+    setShowLogoutAlert(true);
+  };
+  
+  // Actual logout function
+  const performLogout = () => {
     logout();
+    localStorage.removeItem("needsRecovery");
+    navigate("/login");
+  };
+  
+  // Handle system recovery
+  const handleRecovery = () => {
+    const lastAction = localStorage.getItem("lastAction");
+    if (lastAction) {
+      localStorage.setItem("needsRecovery", "false");
+      // Redirect to the last action path or perform last action
+      try {
+        navigate(lastAction);
+        toast.success("Sistema restaurado correctamente");
+      } catch (error) {
+        navigate("/dashboard");
+        toast.error("Error al restaurar. Redirigiendo al inicio");
+      }
+    }
+    setShowRecoveryAlert(false);
+  };
+  
+  const cancelRecovery = () => {
+    localStorage.setItem("needsRecovery", "false");
+    setShowRecoveryAlert(false);
     navigate("/login");
   };
   
@@ -58,6 +109,13 @@ const Navbar = () => {
   const formattedName = user ? formatName(user.name) : '';
   const userGender = user ? getUserGender(user.name) : 'male';
   
+  // Navigate to reports page
+  const goToReports = () => {
+    saveLastAction("/reports");
+    navigate("/reports");
+    setShowLogoutAlert(false);
+  };
+  
   return <header className="sticky top-0 z-50 w-full bg-white border-b shadow-sm dark:bg-gray-950">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center">
@@ -88,6 +146,7 @@ const Navbar = () => {
           {user && <>
               {menuItems.map(item => <a key={item.name} href={item.path} className="text-sm font-medium transition-colors hover:text-primary" onClick={e => {
             e.preventDefault();
+            saveLastAction(item.path);
             navigate(item.path);
           }}>
                   {item.name}
@@ -135,6 +194,7 @@ const Navbar = () => {
               </div>
               {menuItems.map(item => <a key={item.name} href={item.path} className="block py-2 text-base font-medium transition-colors hover:text-primary" onClick={e => {
             e.preventDefault();
+            saveLastAction(item.path);
             navigate(item.path);
             closeMenu();
           }}>
@@ -163,6 +223,46 @@ const Navbar = () => {
             </div>}
         </div>
       </div>
+
+      {/* Logout Alert Dialog */}
+      <AlertDialog open={showLogoutAlert} onOpenChange={setShowLogoutAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Recordatorio Importante</AlertDialogTitle>
+            <AlertDialogDescription>
+              Antes de salir, debe realizar el cierre de caja diario en la sección de Informes.
+              De lo contrario no podrá cerrar la aplicación correctamente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <Alert className="mt-4 border-yellow-500 bg-yellow-50 text-yellow-800">
+            <AlertTitle className="text-yellow-800">¡Atención!</AlertTitle>
+            <AlertDescription className="text-yellow-700">
+              No realizar el cierre de caja puede causar inconsistencias en sus registros financieros.
+            </AlertDescription>
+          </Alert>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setShowLogoutAlert(false)}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={goToReports}>Ir a Informes</AlertDialogAction>
+            <AlertDialogAction onClick={performLogout}>Salir de todos modos</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* System Recovery Alert Dialog */}
+      <AlertDialog open={showRecoveryAlert} onOpenChange={setShowRecoveryAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Restaurar Sistema</AlertDialogTitle>
+            <AlertDialogDescription>
+              El sistema se cerró de forma inesperada. ¿Desea restaurar su sesión a la última acción realizada?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={cancelRecovery}>No, iniciar de nuevo</AlertDialogCancel>
+            <AlertDialogAction onClick={handleRecovery}>Sí, restaurar sistema</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </header>;
 };
 export default Navbar;
