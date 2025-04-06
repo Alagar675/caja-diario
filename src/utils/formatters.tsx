@@ -32,6 +32,7 @@ export const formatCurrency = (amount: number): string => {
 // Format a number as currency value without the currency symbol
 export const formatCurrencyValue = (value: number): string => {
   try {
+    // Use the native Intl formatter for consistent locale-specific formatting
     return new Intl.NumberFormat(currentLocale, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
