@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
-import { formatCurrency, parseCurrencyValue, formatCurrencyValue } from "@/utils/formatters";
+import { formatCurrency, parseCurrencyValue } from "@/utils/formatters";
 
 interface WithdrawalFormData {
   amount: string;
@@ -57,7 +57,7 @@ const WithdrawalDialog: React.FC<WithdrawalDialogProps> = ({
             
             <div className="grid grid-cols-4 items-center gap-4">
               <label className="text-right text-sm font-medium">Monto:</label>
-              <div className="col-span-3 font-medium">
+              <div className="col-span-3 font-mono font-medium" style={{ fontVariantNumeric: 'tabular-nums' }}>
                 {displayAmount}
               </div>
             </div>

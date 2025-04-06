@@ -6,6 +6,8 @@ interface LocaleInfo {
   currency: string;
   currencyCode: string;
   currencySymbol: string;
+  decimalSeparator: string;
+  thousandSeparator: string;
 }
 
 export function useCurrencyLocale(): LocaleInfo {
@@ -13,7 +15,9 @@ export function useCurrencyLocale(): LocaleInfo {
     locale: 'en-US',
     currency: 'US Dollar',
     currencyCode: 'USD',
-    currencySymbol: '$'
+    currencySymbol: '$',
+    decimalSeparator: '.',
+    thousandSeparator: ','
   });
 
   useEffect(() => {
@@ -27,11 +31,22 @@ export function useCurrencyLocale(): LocaleInfo {
           parsed?.currencyCode === 'EUR' ? '€' :
           parsed?.currencyCode === 'GBP' ? '£' : '$';
 
+        // Determine decimal and thousands separators based on locale
+        let decimalSeparator = ',';
+        let thousandSeparator = '.';
+        
+        if (parsed.locale === 'en-US' || parsed.locale === 'en-GB') {
+          decimalSeparator = '.';
+          thousandSeparator = ',';
+        }
+
         setLocaleInfo({
           locale: parsed.locale || 'en-US',
           currency: parsed.currency || 'US Dollar',
           currencyCode: parsed.currencyCode || 'USD',
-          currencySymbol: currencySymbol
+          currencySymbol: currencySymbol,
+          decimalSeparator,
+          thousandSeparator
         });
       }
     } catch (e) {

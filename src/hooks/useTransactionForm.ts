@@ -1,11 +1,10 @@
 
 import { useState } from "react";
 import { TransactionType, PaymentMethod } from "@/context/FinanceContext";
-import { getCurrentDateForInput, getCurrentTimeForInput, parseCurrencyValue, formatCurrencyValue } from "@/utils/formatters";
+import { getCurrentDateForInput, getCurrentTimeForInput } from "@/utils/formatters";
 
 export const useTransactionForm = (type: TransactionType, addTransaction: Function) => {
   const [amount, setAmount] = useState("");
-  const [formattedAmount, setFormattedAmount] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
@@ -21,27 +20,13 @@ export const useTransactionForm = (type: TransactionType, addTransaction: Functi
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [lastTransaction, setLastTransaction] = useState<any>(null);
 
+  // The amount value is now directly the formatted string from the CurrencyInput component
   const handleAmountChange = (value: string) => {
-    if (value === '') {
-      setFormattedAmount('');
-      setAmount('');
-      return;
-    }
-
-    // Limit to 20 digits total (excluding separators)
-    const digitCount = value.replace(/[^\d]/g, '').length;
-    if (digitCount > 20) {
-      return;
-    }
-
-    const numericValue = parseCurrencyValue(value);
-    setAmount(numericValue.toString());
-    setFormattedAmount(formatCurrencyValue(numericValue));
+    setAmount(value);
   };
 
   const resetForm = () => {
     setAmount("");
-    setFormattedAmount("");
     setCategory("");
     setDescription("");
     setPaymentMethod("cash");
@@ -64,7 +49,7 @@ export const useTransactionForm = (type: TransactionType, addTransaction: Functi
     const dateTime = new Date(`${date}T${time}`);
     const transaction = {
       type,
-      amount: parseCurrencyValue(formattedAmount),
+      amount: parseFloat(amount.replace(/[^\d.,]/g, '').replace(',', '.')),
       category,
       description,
       paymentMethod,
@@ -98,7 +83,6 @@ export const useTransactionForm = (type: TransactionType, addTransaction: Functi
   return {
     formState: {
       amount,
-      formattedAmount,
       category,
       description,
       paymentMethod,

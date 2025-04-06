@@ -2,9 +2,9 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import { ArrowDown, History } from "lucide-react";
-import { formatCurrency, formatCurrencyValue, parseCurrencyValue } from "@/utils/formatters";
+import { formatCurrency, parseCurrencyValue } from "@/utils/formatters";
+import { CurrencyInput } from "@/components/ui/currency-input";
 
 interface WithdrawalSectionProps {
   selectedBalanceType: "cash" | "transfer" | "credit" | null;
@@ -30,30 +30,6 @@ const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
   withdrawalSummary,
   setWithdrawalHistoryDialog
 }) => {
-  // Handle amount change with automatic formatting
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value;
-    
-    if (rawValue === '') {
-      setWithdrawalAmount('');
-      return;
-    }
-    
-    // Limit to 20 digits (excluding periods and commas)
-    const digitCount = rawValue.replace(/[^\d]/g, '').length;
-    if (digitCount > 20) {
-      return;
-    }
-
-    const numericValue = parseCurrencyValue(rawValue);
-    setWithdrawalAmount(formatCurrencyValue(numericValue));
-  };
-  
-  // When field gets focus, select all text for easy replacement
-  const handleAmountFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.target.select();
-  };
-
   return <div className="mt-6 border-t pt-6">
       <div className="flex items-center justify-center mb-3 rounded-lg">
         <h3 className="text-lg text-red-900 text-center font-medium">Retiro de Saldos Actuales</h3>
@@ -86,17 +62,19 @@ const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
         <div className="space-y-2 w-full max-w-xs">
           <label className="text-sm font-medium">Monto a retirar</label>
           <div className="flex space-x-2">
-            <Input 
-              type="text" 
-              placeholder="0,00" 
-              value={withdrawalAmount} 
-              onChange={handleAmountChange}
-              onFocus={handleAmountFocus}
-              className="flex-1 text-right font-mono tracking-wide" 
-              style={{ fontVariantNumeric: 'tabular-nums' }}
-              inputMode="decimal"
-            />
-            <Button onClick={handleWithdrawalRequest} className="flex items-center whitespace-nowrap" disabled={!selectedBalanceType || !withdrawalAmount || parseFloat(withdrawalAmount.replace(/[^\d,]/g, '').replace(',', '.')) <= 0}>
+            <div className="flex-1">
+              <CurrencyInput 
+                value={withdrawalAmount} 
+                onChange={setWithdrawalAmount}
+                placeholder="0,00"
+                maxDigits={30}
+              />
+            </div>
+            <Button 
+              onClick={handleWithdrawalRequest} 
+              className="flex items-center whitespace-nowrap" 
+              disabled={!selectedBalanceType || !withdrawalAmount || parseCurrencyValue(withdrawalAmount) <= 0}
+            >
               <ArrowDown className="mr-1 h-4 w-4" />
               Retirar
             </Button>

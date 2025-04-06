@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 
 // Current locale (default to Colombian)
@@ -46,7 +45,7 @@ export const formatCurrencyValue = (value: number): string => {
 
 // Parse a formatted number (handling both comma and period decimal separators)
 export const parseCurrencyValue = (formattedValue: string): number => {
-  if (!formattedValue.trim()) return 0;
+  if (!formattedValue || !formattedValue.trim()) return 0;
 
   // Get decimal and thousand separators for the current locale
   const format = new Intl.NumberFormat(currentLocale);
@@ -54,8 +53,19 @@ export const parseCurrencyValue = (formattedValue: string): number => {
   const decimalSeparator = parts.find(part => part.type === 'decimal')?.value || ',';
   const groupSeparator = parts.find(part => part.type === 'group')?.value || '.';
 
+  // Keep track of the decimal part if it exists
+  let hasDecimal = formattedValue.includes(decimalSeparator);
+  let decimalPart = '';
+  
+  if (hasDecimal) {
+    const parts = formattedValue.split(decimalSeparator);
+    if (parts.length > 1) {
+      decimalPart = parts[1];
+    }
+  }
+
   // Remove all non-digit characters except decimal separator
-  const cleanValue = formattedValue.replace(new RegExp(`[^\\d${decimalSeparator}]`, 'g'), '');
+  let cleanValue = formattedValue.replace(new RegExp(`[^\\d${decimalSeparator}]`, 'g'), '');
   
   // If using period as decimal separator (e.g., en-US)
   if (decimalSeparator === '.') {
@@ -63,6 +73,10 @@ export const parseCurrencyValue = (formattedValue: string): number => {
   } 
   // If using comma as decimal separator (e.g., es-CO)
   else {
+    // Make sure we handle incomplete decimal entry (e.g., "123,")
+    if (cleanValue.endsWith(decimalSeparator)) {
+      cleanValue += '0';
+    }
     return parseFloat(cleanValue.replace(decimalSeparator, '.')) || 0;
   }
 };

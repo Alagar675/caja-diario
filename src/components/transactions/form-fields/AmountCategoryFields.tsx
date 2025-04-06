@@ -1,9 +1,10 @@
 
-import React, { useEffect } from "react";
+import React from "react";
 import { CurrencyInput } from "@/components/ui/currency-input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TransactionType } from "@/types/finance";
+import { useCurrencyLocale } from "@/hooks/useCurrencyLocale";
 
 interface AmountCategoryFieldsProps {
   type: TransactionType;
@@ -23,25 +24,9 @@ export function AmountCategoryFields({
   const incomeCategories = ["Ventas", "Servicios", "Inversiones", "Préstamos", "Otros"];
   const expenseCategories = ["Compras", "Servicios", "Impuestos", "Nómina", "Alquiler", "Suministros", "Transporte", "Otros"];
   const categories = type === "income" ? incomeCategories : expenseCategories;
-
-  // Get currency symbol from local storage if available
-  const getStoredLocaleInfo = () => {
-    try {
-      const storedLocale = localStorage.getItem('detectedLocale');
-      if (storedLocale) {
-        return JSON.parse(storedLocale);
-      }
-    } catch (e) {
-      console.error("Error parsing stored locale:", e);
-    }
-    return null;
-  };
-
-  // Get currency symbol based on detected locale or default to $
-  const localeInfo = getStoredLocaleInfo();
-  const currencySymbol = localeInfo?.currencyCode === 'USD' ? '$' : 
-                        localeInfo?.currencyCode === 'EUR' ? '€' : 
-                        localeInfo?.currencyCode === 'GBP' ? '£' : '$';
+  
+  // Use the currency locale hook
+  const { currencySymbol } = useCurrencyLocale();
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -55,6 +40,7 @@ export function AmountCategoryFields({
           onChange={setAmount}
           currencySymbol={currencySymbol}
           required
+          maxDigits={30}
         />
       </div>
       
@@ -79,5 +65,4 @@ export function AmountCategoryFields({
   );
 }
 
-// Make sure to export the component as default as well
 export default AmountCategoryFields;
