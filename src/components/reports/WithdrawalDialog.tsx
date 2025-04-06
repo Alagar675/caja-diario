@@ -57,7 +57,7 @@ const WithdrawalDialog: React.FC<WithdrawalDialogProps> = ({
             
             <div className="grid grid-cols-4 items-center gap-4">
               <label className="text-right text-sm font-medium">Monto:</label>
-              <div className="col-span-3 font-mono font-medium" style={{ fontVariantNumeric: 'tabular-nums' }}>
+              <div className="col-span-3 font-mono font-medium text-lg" style={{ fontVariantNumeric: 'tabular-nums' }}>
                 {displayAmount}
               </div>
             </div>

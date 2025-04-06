@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import { Input } from "@/components/ui/input"
 import { formatCurrencyValue, parseCurrencyValue } from "@/utils/formatters"
@@ -63,7 +64,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
           value={value}
           onChange={handleValueChange}
           onFocus={handleFocus}
-          className={`pl-7 text-right font-mono tracking-wider ${className}`}
+          className={`pl-7 text-right font-mono text-lg tracking-wider ${className}`}
           style={{ fontVariantNumeric: 'tabular-nums' }}
           inputMode="decimal"
           {...props}
