@@ -5,7 +5,7 @@ import { LogOut, Menu, X, FileText, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,11 +14,14 @@ const Navbar = () => {
     logout
   } = useAuth();
   const navigate = useNavigate();
+  
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
+  
   const closeMenu = () => setIsMenuOpen(false);
+  
   const menuItems = [{
     name: "Inicio",
     path: "/dashboard"
@@ -26,6 +29,35 @@ const Navbar = () => {
     name: "Informes",
     path: "/reports"
   }];
+
+  // Format user name to capitalize first letter of each word
+  const formatName = (name: string) => {
+    if (!name) return "";
+    return name
+      .split(" ")
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
+
+  // Determine user's gender based on name (simplified approach)
+  // In a real application, this would come from the user profile
+  const getUserGender = (name: string) => {
+    // This is a simplified approach. In a real app, this should be a user property.
+    // Common Spanish female name endings, very simplified
+    const femaleNamePatterns = ['a', 'ia', 'na', 'ina', 'ela'];
+    const lastName = name.split(' ').pop()?.toLowerCase() || '';
+    
+    for (const pattern of femaleNamePatterns) {
+      if (lastName.endsWith(pattern)) {
+        return 'female';
+      }
+    }
+    return 'male';
+  };
+
+  const formattedName = user ? formatName(user.name) : '';
+  const userGender = user ? getUserGender(user.name) : 'male';
+  
   return <header className="sticky top-0 z-50 w-full bg-white border-b shadow-sm dark:bg-gray-950">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center">
@@ -38,10 +70,15 @@ const Navbar = () => {
         {user && (
           <div className="hidden md:flex items-center justify-center space-x-2 bg-blue-50 px-4 py-2 rounded-full">
             <Avatar className="h-8 w-8 bg-blue-200">
-              <AvatarFallback className="text-blue-700">{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+              {userGender === 'female' ? (
+                <AvatarImage src="/avatar-female.png" alt="Female avatar" />
+              ) : (
+                <AvatarImage src="/avatar-male.png" alt="Male avatar" />
+              )}
+              <AvatarFallback className="text-blue-700">{formattedName.charAt(0)}</AvatarFallback>
             </Avatar>
             <span className="text-sm font-medium text-blue-700">
-              {user.name}
+              {formattedName}
             </span>
           </div>
         )}
@@ -85,10 +122,15 @@ const Navbar = () => {
               {/* Mobile User Profile Display */}
               <div className="flex items-center space-x-2 py-2 mb-2 justify-center">
                 <Avatar className="h-8 w-8 bg-blue-200">
-                  <AvatarFallback className="text-blue-700">{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+                  {userGender === 'female' ? (
+                    <AvatarImage src="/avatar-female.png" alt="Female avatar" />
+                  ) : (
+                    <AvatarImage src="/avatar-male.png" alt="Male avatar" />
+                  )}
+                  <AvatarFallback className="text-blue-700">{formattedName.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <span className="text-sm font-medium text-blue-700">
-                  {user.name}
+                  {formattedName}
                 </span>
               </div>
               {menuItems.map(item => <a key={item.name} href={item.path} className="block py-2 text-base font-medium transition-colors hover:text-primary" onClick={e => {
