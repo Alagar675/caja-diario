@@ -11,7 +11,7 @@ const Index = () => {
         
         <div className="mt-8 grid gap-6">
           <div className="bg-white rounded-lg shadow-sm p-6 border">
-            <h2 className="text-xl font-semibold mb-4">Gestión diaria de caja</h2>
+            <h2 className="text-xl font-semibold mb-4 text-center">Gestión diaria de caja</h2>
             <p className="text-gray-600">
               Esta aplicación le permite administrar y controlar el flujo de efectivo diario,
               registrar transacciones y generar informes detallados de sus operaciones financieras.
@@ -19,7 +19,7 @@ const Index = () => {
           </div>
           
           <div className="bg-white rounded-lg shadow-sm p-6 border">
-            <h2 className="text-xl font-semibold mb-4">¿Cómo empezar?</h2>
+            <h2 className="text-xl font-semibold mb-4 text-center">¿Cómo empezar?</h2>
             <p className="text-gray-600 mb-4">
               Puede comenzar navegando a alguna de las siguientes secciones:
             </p>
