@@ -12,38 +12,40 @@ const Dashboard = () => {
   const [transactionType, setTransactionType] = useState<"income" | "expense">("income");
 
   return (
-    <AppLayout>
-      <DashboardTitle />
-      <div className="container mx-auto p-4">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          <div className="col-span-1 md:col-span-8">
-            <Tabs 
-              defaultValue="income" 
-              onValueChange={(value) => setTransactionType(value as "income" | "expense")}
-              className="mb-6"
-            >
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="income">Ingresos</TabsTrigger>
-                <TabsTrigger value="expense">Egresos</TabsTrigger>
-              </TabsList>
-              <TabsContent value="income">
-                <TransactionForm type="income" />
-              </TabsContent>
-              <TabsContent value="expense">
-                <TransactionForm type="expense" />
-              </TabsContent>
-            </Tabs>
+    <div className="min-h-screen bg-background">
+      <AppLayout>
+        <div className="container py-8">
+          <DashboardTitle />
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mt-6">
+            <div className="col-span-1 md:col-span-8">
+              <Tabs 
+                defaultValue="income" 
+                onValueChange={(value) => setTransactionType(value as "income" | "expense")}
+                className="mb-6"
+              >
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="income">Ingresos</TabsTrigger>
+                  <TabsTrigger value="expense">Egresos</TabsTrigger>
+                </TabsList>
+                <TabsContent value="income">
+                  <TransactionForm type="income" />
+                </TabsContent>
+                <TabsContent value="expense">
+                  <TransactionForm type="expense" />
+                </TabsContent>
+              </Tabs>
+              
+              <div className="h-6" />
+              <TransactionList />
+            </div>
             
-            <div className="h-6" />
-            <TransactionList />
-          </div>
-          
-          <div className="col-span-1 md:col-span-4">
-            <ChangeCalculator isVisible={!sidebarOpen} />
+            <div className="col-span-1 md:col-span-4">
+              <ChangeCalculator isVisible={!sidebarOpen} />
+            </div>
           </div>
         </div>
-      </div>
-    </AppLayout>
+      </AppLayout>
+    </div>
   );
 };
 
