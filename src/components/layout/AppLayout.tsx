@@ -28,10 +28,10 @@ const AppLayout: React.FC<AppLayoutProps> = ({
 
   return (
     <SidebarProvider>
-      <div className="flex flex-col h-screen bg-background">
+      <div className="flex flex-col h-screen w-full bg-background">
         <Navbar />
-        <div className="flex flex-1 overflow-hidden">
-          <main className={cn("flex-1 overflow-y-auto", className)}>
+        <div className="flex flex-1 w-full overflow-hidden">
+          <main className={cn("flex-1 w-full overflow-y-auto", className)}>
             {children}
           </main>
           

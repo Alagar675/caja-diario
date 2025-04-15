@@ -99,13 +99,13 @@ const Reports = () => {
   };
   
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen w-full bg-background">
       <Navbar />
       
-      <main className="container py-8">
+      <main className="w-full container mx-auto py-8">
         <h1 className="text-2xl font-bold mb-6">Generar Informes</h1>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
           <ReportConfiguration 
             selectedDate={selectedDate} 
             setSelectedDate={setSelectedDate} 

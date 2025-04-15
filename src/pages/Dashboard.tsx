@@ -12,11 +12,11 @@ const Dashboard = () => {
   const [transactionType, setTransactionType] = useState<"income" | "expense">("income");
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen w-full bg-background">
       <AppLayout>
-        <div className="container mx-auto py-8 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="w-full container mx-auto py-8 max-w-7xl px-4 sm:px-6 lg:px-8">
           <DashboardTitle initialTitle="Bienvenido a Daily Cash Report" />
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mt-6">
+          <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-6 mt-6">
             <div className="col-span-1 md:col-span-8">
               <Tabs 
                 defaultValue="income" 
