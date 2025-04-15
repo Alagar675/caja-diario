@@ -35,7 +35,7 @@ const Register = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await signup(values.email, values.password);
+      await signup(values.email, values.password, "");
       toast.success('Registro exitoso! Redirigiendo al panel de control...');
       navigate('/dashboard');
     } catch (error: any) {
