@@ -5,7 +5,7 @@ import DashboardTitle from "@/components/dashboard/DashboardTitle";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background w-full">
+    <div className="min-h-screen bg-background">
       <AppLayout showSidebar={false}>
         <div className="container mx-auto py-8 max-w-7xl px-4 sm:px-6 lg:px-8">
           <DashboardTitle initialTitle="Bienvenido a Daily Cash Report" />

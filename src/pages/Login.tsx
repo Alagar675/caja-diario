@@ -47,10 +47,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background w-full">
+    <div className="min-h-screen bg-background">
       <AppLayout showSidebar={false}>
         <div className="container mx-auto py-8 max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="w-full flex justify-center items-center">
+          <div className="flex justify-center items-center">
             <Card className="w-full max-w-md">
               <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl text-center">Iniciar Sesión</CardTitle>
