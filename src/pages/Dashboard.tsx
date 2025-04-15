@@ -14,8 +14,8 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <AppLayout>
-        <div className="container py-8">
-          <DashboardTitle />
+        <div className="container py-8 text-center">
+          <DashboardTitle initialTitle="Bienvenido a Daily Cash Report" />
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mt-6">
             <div className="col-span-1 md:col-span-8">
               <Tabs 
