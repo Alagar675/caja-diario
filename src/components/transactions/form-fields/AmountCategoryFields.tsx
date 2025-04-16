@@ -40,7 +40,6 @@ export function AmountCategoryFields({
           onChange={setAmount}
           currencySymbol={currencySymbol}
           required
-          maxDigits={30}
         />
       </div>
       

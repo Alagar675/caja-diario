@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { TransactionType, PaymentMethod } from "@/context/FinanceContext";
-import { getCurrentDateForInput, getCurrentTimeForInput } from "@/utils/formatters";
+import { getCurrentDateForInput, getCurrentTimeForInput, parseCurrencyValue } from "@/utils/formatters";
 
 export const useTransactionForm = (type: TransactionType, addTransaction: Function) => {
   const [amount, setAmount] = useState("");
@@ -49,7 +49,7 @@ export const useTransactionForm = (type: TransactionType, addTransaction: Functi
     const dateTime = new Date(`${date}T${time}`);
     const transaction = {
       type,
-      amount: parseFloat(amount.replace(/[^\d.,]/g, '').replace(',', '.')),
+      amount: parseCurrencyValue(amount),
       category,
       description,
       paymentMethod,

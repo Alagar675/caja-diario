@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import { Input } from "@/components/ui/input"
 import { formatCurrencyValue, parseCurrencyValue } from "@/utils/formatters"
@@ -34,11 +33,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
         cleanValue = `0${decimalSeparator}`;
       }
       
-      // Limit to maxDigits total (excluding separators)
-      const digitCount = cleanValue.replace(new RegExp(decimalSeparator, 'g'), '').length;
-      if (digitCount > maxDigits) {
-        return;
-      }
+      // No limit on number of digits anymore
 
       // Check if we need to apply the thousand separators
       const numericValue = parseCurrencyValue(cleanValue);

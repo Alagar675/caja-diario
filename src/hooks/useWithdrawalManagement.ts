@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useFinance } from "@/context/FinanceContext";
-import { formatCurrency } from "@/utils/formatters";
+import { formatCurrency, parseCurrencyValue } from "@/utils/formatters";
 
 export const useWithdrawalManagement = () => {
   const [selectedBalanceType, setSelectedBalanceType] = useState<"cash" | "transfer" | "credit" | null>(null);
@@ -29,11 +29,11 @@ export const useWithdrawalManagement = () => {
       toast.error("Debe seleccionar un tipo de saldo");
       return;
     }
-    if (!withdrawalAmount || parseFloat(withdrawalAmount) <= 0) {
+    if (!withdrawalAmount || parseCurrencyValue(withdrawalAmount) <= 0) {
       toast.error("Debe ingresar un monto válido");
       return;
     }
-    const amount = parseFloat(withdrawalAmount);
+    const amount = parseCurrencyValue(withdrawalAmount);
     let currentBalance = 0;
     switch (selectedBalanceType) {
       case "cash":
@@ -56,7 +56,7 @@ export const useWithdrawalManagement = () => {
   
   const handleWithdrawalSubmit = withdrawalForm.handleSubmit(data => {
     const withdrawal = {
-      amount: parseFloat(data.amount),
+      amount: parseCurrencyValue(data.amount),
       source: selectedBalanceType as "cash" | "transfer" | "credit",
       concept: data.concept,
       authorizedBy: data.authorizedBy

@@ -65,7 +65,6 @@ const ChangeCalculator = ({
             value={formattedAmountToPay} 
             onChange={handleAmountToPayChange}
             placeholder="0,00"
-            maxDigits={30}
           />
         </div>
 
@@ -76,7 +75,6 @@ const ChangeCalculator = ({
             value={formattedAmountReceived} 
             onChange={handleAmountReceivedChange}
             placeholder="0,00"
-            maxDigits={30}
           />
         </div>
 
