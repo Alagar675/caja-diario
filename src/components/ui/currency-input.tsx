@@ -42,6 +42,8 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
 
       // Check if we need to apply the thousand separators
       const numericValue = parseCurrencyValue(cleanValue);
+      
+      // Format with the exact 000.000.000.000,00 pattern
       const formattedValue = formatCurrencyValue(numericValue);
       
       onChange(formattedValue);

@@ -30,14 +30,25 @@ export const formatCurrency = (amount: number): string => {
 };
 
 // Format a number as currency value without the currency symbol
+// Ensures format is always 000.000.000.000,00 (periods for thousands, comma for decimals)
 export const formatCurrencyValue = (value: number): string => {
   try {
-    // Use the native Intl formatter for consistent locale-specific formatting
-    return new Intl.NumberFormat(currentLocale, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-      useGrouping: true, // Use thousand separators
-    }).format(value);
+    // Colombian format uses period for thousands and comma for decimals
+    const parts = value.toFixed(2).split('.');
+    const integerPart = parts[0];
+    const decimalPart = parts.length > 1 ? parts[1] : '00';
+    
+    // Add thousand separators (periods)
+    let formattedInteger = '';
+    for (let i = 0; i < integerPart.length; i++) {
+      if (i > 0 && (integerPart.length - i) % 3 === 0) {
+        formattedInteger += '.';
+      }
+      formattedInteger += integerPart[i];
+    }
+    
+    // Return with comma as decimal separator
+    return `${formattedInteger},${decimalPart}`;
   } catch (error) {
     console.error('Error formatting currency value:', error);
     return '0,00';
@@ -48,40 +59,9 @@ export const formatCurrencyValue = (value: number): string => {
 export const parseCurrencyValue = (formattedValue: string): number => {
   if (!formattedValue || !formattedValue.trim()) return 0;
 
-  // Get decimal and thousand separators for the current locale
-  const format = new Intl.NumberFormat(currentLocale);
-  const parts = format.formatToParts(1234.5);
-  const decimalSeparator = parts.find(part => part.type === 'decimal')?.value || ',';
-  const groupSeparator = parts.find(part => part.type === 'group')?.value || '.';
-
-  // Handle right-to-left input (starting with decimals)
-  if (formattedValue.startsWith(decimalSeparator) || formattedValue === decimalSeparator) {
-    formattedValue = '0' + formattedValue;
-  }
-
-  // Remove all non-digit characters except decimal separator
-  let cleanValue = formattedValue.replace(new RegExp(`[^\\d${decimalSeparator}]`, 'g'), '');
-  
-  // Handle decimal part
-  if (cleanValue.endsWith(decimalSeparator)) {
-    cleanValue += '00';
-  } else if (cleanValue.includes(decimalSeparator)) {
-    const parts = cleanValue.split(decimalSeparator);
-    if (parts[1].length === 0) {
-      cleanValue += '00';
-    } else if (parts[1].length === 1) {
-      cleanValue += '0';
-    }
-  }
-  
-  // If using period as decimal separator (e.g., en-US)
-  if (decimalSeparator === '.') {
-    return parseFloat(cleanValue) || 0;
-  } 
-  // If using comma as decimal separator (e.g., es-CO)
-  else {
-    return parseFloat(cleanValue.replace(decimalSeparator, '.')) || 0;
-  }
+  // For Colombian format: Remove all periods (thousand separators) and replace comma with period for JS parsing
+  const cleanValue = formattedValue.replace(/\./g, '').replace(',', '.');
+  return parseFloat(cleanValue) || 0;
 };
 
 // Format a date as a local string

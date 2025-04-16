@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AppLayout from "@/components/layout/AppLayout";
 import DashboardTitle from "@/components/dashboard/DashboardTitle";
 import TransactionForm from "@/components/transactions/TransactionForm";
@@ -8,12 +8,12 @@ import ChangeCalculator from "@/components/calculator/ChangeCalculator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Dashboard = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true); // Set default to true to keep sidebar open
   const [transactionType, setTransactionType] = useState<"income" | "expense">("income");
 
   return (
     <div className="min-h-screen w-full bg-background">
-      <AppLayout>
+      <AppLayout onSidebarStateChange={setSidebarOpen} initialSidebarOpen={true}>
         <div className="w-full container mx-auto py-8 max-w-7xl px-4 sm:px-6 lg:px-8">
           <DashboardTitle initialTitle="Bienvenido a Daily Cash Report" />
           <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-6 mt-6">

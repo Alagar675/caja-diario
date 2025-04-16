@@ -9,21 +9,34 @@ interface AppLayoutProps {
   children: React.ReactNode;
   showSidebar?: boolean;
   className?: string;
+  onSidebarStateChange?: (isOpen: boolean) => void;
+  initialSidebarOpen?: boolean;
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ 
   children, 
   showSidebar = true,
-  className 
+  className,
+  onSidebarStateChange,
+  initialSidebarOpen = false
 }) => {
-  const [sidebarOpen, setSidebarOpen] = React.useState(false);
+  const [sidebarOpen, setSidebarOpen] = React.useState(initialSidebarOpen);
   
   const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
+    const newState = !sidebarOpen;
+    setSidebarOpen(newState);
+    
+    if (onSidebarStateChange) {
+      onSidebarStateChange(newState);
+    }
   };
   
   const handleSidebarStateChange = (isOpen: boolean) => {
     setSidebarOpen(isOpen);
+    
+    if (onSidebarStateChange) {
+      onSidebarStateChange(isOpen);
+    }
   };
 
   return (
