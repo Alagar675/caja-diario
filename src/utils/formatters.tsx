@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 
 // Current locale (default to Colombian)
@@ -33,10 +32,21 @@ export const formatCurrency = (amount: number): string => {
 // Ensures format is always 000.000.000.000,00 (periods for thousands, comma for decimals)
 export const formatCurrencyValue = (value: number): string => {
   try {
-    // Colombian format uses period for thousands and comma for decimals
-    const parts = value.toFixed(2).split('.');
-    const integerPart = parts[0];
-    const decimalPart = parts.length > 1 ? parts[1] : '00';
+    // Handle potentially large numbers by converting to string first
+    const numberStr = value.toString();
+    
+    // Split into integer and decimal parts
+    let integerPart = '';
+    let decimalPart = '00';
+    
+    if (numberStr.includes('.')) {
+      const parts = numberStr.split('.');
+      integerPart = parts[0];
+      // Ensure decimal part is always 2 digits
+      decimalPart = parts[1].length > 1 ? parts[1].substring(0, 2) : parts[1].padEnd(2, '0');
+    } else {
+      integerPart = numberStr;
+    }
     
     // Add thousand separators (periods)
     let formattedInteger = '';
@@ -61,7 +71,8 @@ export const parseCurrencyValue = (formattedValue: string): number => {
 
   // For Colombian format: Remove all periods (thousand separators) and replace comma with period for JS parsing
   const cleanValue = formattedValue.replace(/\./g, '').replace(',', '.');
-  return parseFloat(cleanValue) || 0;
+  const result = parseFloat(cleanValue) || 0;
+  return isNaN(result) ? 0 : result;
 };
 
 // Format a date as a local string

@@ -67,7 +67,6 @@ const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
                 value={withdrawalAmount} 
                 onChange={setWithdrawalAmount}
                 placeholder="0,00"
-                maxDigits={30}
               />
             </div>
             <Button 

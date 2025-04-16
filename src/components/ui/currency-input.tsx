@@ -62,7 +62,11 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
           onChange={handleValueChange}
           onFocus={handleFocus}
           className={`pl-7 text-right font-mono text-lg tracking-wider ${className}`}
-          style={{ fontVariantNumeric: 'tabular-nums' }}
+          style={{ 
+            fontVariantNumeric: 'tabular-nums',
+            direction: 'rtl',  // Right to left input
+            textAlign: 'right' // Ensure text is right-aligned
+          }}
           inputMode="decimal"
           {...props}
         />
