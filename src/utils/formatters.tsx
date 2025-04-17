@@ -33,20 +33,12 @@ export const formatCurrency = (amount: number): string => {
 export const formatCurrencyValue = (value: number): string => {
   try {
     // Handle potentially large numbers by converting to string first
-    const numberStr = value.toString();
+    const valueStr = value.toFixed(2);
     
     // Split into integer and decimal parts
-    let integerPart = '';
-    let decimalPart = '00';
-    
-    if (numberStr.includes('.')) {
-      const parts = numberStr.split('.');
-      integerPart = parts[0];
-      // Ensure decimal part is always 2 digits
-      decimalPart = parts[1].length > 1 ? parts[1].substring(0, 2) : parts[1].padEnd(2, '0');
-    } else {
-      integerPart = numberStr;
-    }
+    const parts = valueStr.split('.');
+    const integerPart = parts[0];
+    const decimalPart = parts.length > 1 ? parts[1] : '00';
     
     // Add thousand separators (periods)
     let formattedInteger = '';
