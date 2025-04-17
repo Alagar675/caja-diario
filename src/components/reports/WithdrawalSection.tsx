@@ -67,6 +67,7 @@ const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
                 value={withdrawalAmount} 
                 onChange={setWithdrawalAmount}
                 placeholder="0,00"
+                inputDirection="ltr" // Use left-to-right input for better usability
               />
             </div>
             <Button 

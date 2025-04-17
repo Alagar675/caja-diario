@@ -65,6 +65,7 @@ const ChangeCalculator = ({
             value={formattedAmountToPay} 
             onChange={handleAmountToPayChange}
             placeholder="0,00"
+            inputDirection="ltr" // Use left-to-right input for better usability
           />
         </div>
 
@@ -75,6 +76,7 @@ const ChangeCalculator = ({
             value={formattedAmountReceived} 
             onChange={handleAmountReceivedChange}
             placeholder="0,00"
+            inputDirection="ltr" // Use left-to-right input for better usability
           />
         </div>
 

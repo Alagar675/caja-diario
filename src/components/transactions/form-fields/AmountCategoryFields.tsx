@@ -39,6 +39,7 @@ export function AmountCategoryFields({
           value={amount}
           onChange={setAmount}
           currencySymbol={currencySymbol}
+          inputDirection="ltr" // Use left-to-right input for better usability
           required
         />
       </div>

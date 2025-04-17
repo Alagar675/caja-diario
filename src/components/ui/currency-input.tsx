@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import { Input } from "@/components/ui/input"
 import { formatCurrencyValue, parseCurrencyValue } from "@/utils/formatters"
@@ -9,10 +10,20 @@ interface CurrencyInputProps extends Omit<React.ComponentProps<typeof Input>, "o
   currencySymbol?: string;
   placeholder?: string;
   maxDigits?: number;
+  inputDirection?: "ltr" | "rtl";
 }
 
 const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
-  ({ value, onChange, currencySymbol, placeholder = "0,00", className, maxDigits = 30, ...props }, ref) => {
+  ({ 
+    value, 
+    onChange, 
+    currencySymbol, 
+    placeholder = "0,00", 
+    className, 
+    maxDigits = 30, 
+    inputDirection = "ltr", // Default to left-to-right input
+    ...props 
+  }, ref) => {
     const { decimalSeparator, thousandSeparator, currencySymbol: localeCurrencySymbol } = useCurrencyLocale();
     const symbolToUse = currencySymbol || localeCurrencySymbol;
     
@@ -47,6 +58,9 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
     // When field gets focus, select all text for easy replacement
     const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
       e.target.select();
+      if (props.onFocus) {
+        props.onFocus(e);
+      }
     };
 
     return (
@@ -61,11 +75,11 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
           value={value}
           onChange={handleValueChange}
           onFocus={handleFocus}
-          className={`pl-7 text-right font-mono text-lg tracking-wider ${className}`}
+          className={`pl-7 ${inputDirection === 'rtl' ? 'text-right' : 'text-left'} font-mono text-lg tracking-wider ${className}`}
           style={{ 
             fontVariantNumeric: 'tabular-nums',
-            direction: 'rtl',  // Right to left input
-            textAlign: 'right' // Ensure text is right-aligned
+            direction: inputDirection,  // Use the inputDirection prop
+            textAlign: inputDirection === 'rtl' ? 'right' : 'left' // Align text based on direction
           }}
           inputMode="decimal"
           {...props}
