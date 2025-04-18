@@ -30,34 +30,36 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
         return;
       }
       
-      // Solo permitir dígitos, separadores decimales y de miles
-      const cleanValue = newValue.replace(/[^\d.,]/g, '');
+      // Replace any dot with a comma for decimals
+      let cleanValue = newValue.replace(/\./g, ',');
       
-      // Formatear mientras el usuario escribe
-      let formattedValue = cleanValue;
+      // Remove any character that is not a digit or comma
+      cleanValue = cleanValue.replace(/[^\d,]/g, '');
       
-      // Remover todos los separadores existentes
-      const valueWithoutSeparators = cleanValue.replace(/[.,]/g, '');
-      
-      // Agregar separadores de miles
-      const parts = [];
-      for (let i = valueWithoutSeparators.length; i > 0; i -= 3) {
-        parts.unshift(valueWithoutSeparators.slice(Math.max(0, i - 3), i));
+      // Handle decimal part (after comma)
+      if (cleanValue.includes(',')) {
+        const [integerPart, decimalPart] = cleanValue.split(',');
+        
+        // Limit decimal places to 2
+        if (decimalPart && decimalPart.length > 2) {
+          cleanValue = `${integerPart},${decimalPart.slice(0, 2)}`;
+        }
       }
       
-      // Reconstruir el valor con separadores
-      formattedValue = parts.join('.');
-      
-      // Agregar decimales si existen
+      // Format the integer part with thousand separators
+      let formattedValue = cleanValue;
       if (cleanValue.includes(',')) {
-        const decimals = cleanValue.split(',')[1];
-        formattedValue += `,${decimals}`;
+        const [integerPart, decimalPart] = cleanValue.split(',');
+        const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        formattedValue = `${formattedInteger},${decimalPart || ''}`;
+      } else {
+        formattedValue = cleanValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
       }
       
       onChange(formattedValue);
     };
 
-    // Cuando el campo obtiene el foco, seleccionar todo el texto
+    // When the field gets focus, select all text
     const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
       e.target.select();
       if (props.onFocus) {
