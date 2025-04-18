@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { CurrencyInput } from "@/components/ui/currency-input";
-import { formatCurrency, formatCurrencyValue, parseCurrencyValue } from "@/utils/formatters";
+import { formatCurrency, parseCurrencyValue } from "@/utils/formatters";
 import { useCurrencyLocale } from "@/hooks/useCurrencyLocale";
 
 interface ChangeCalculatorProps {
@@ -22,6 +22,7 @@ const ChangeCalculator = ({
 
   const localeInfo = useCurrencyLocale();
   
+  // Calculate change automatically when amounts change
   useEffect(() => {
     calculateChange();
   }, [amountToPay, amountReceived]);
@@ -65,7 +66,7 @@ const ChangeCalculator = ({
             value={formattedAmountToPay} 
             onChange={handleAmountToPayChange}
             placeholder="0,00"
-            inputDirection="ltr" // Use left-to-right input for better usability
+            inputDirection="ltr"
           />
         </div>
 
@@ -76,7 +77,7 @@ const ChangeCalculator = ({
             value={formattedAmountReceived} 
             onChange={handleAmountReceivedChange}
             placeholder="0,00"
-            inputDirection="ltr" // Use left-to-right input for better usability
+            inputDirection="ltr"
           />
         </div>
 
