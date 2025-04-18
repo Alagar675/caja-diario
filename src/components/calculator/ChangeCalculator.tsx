@@ -17,8 +17,8 @@ const ChangeCalculator = ({
   const [amountReceived, setAmountReceived] = useState<number>(0);
   const [change, setChange] = useState<number>(0);
 
-  const [formattedAmountToPay, setFormattedAmountToPay] = useState<string>("");
-  const [formattedAmountReceived, setFormattedAmountReceived] = useState<string>("");
+  const [formattedAmountToPay, setFormattedAmountToPay] = useState<string>("0,00");
+  const [formattedAmountReceived, setFormattedAmountReceived] = useState<string>("0,00");
 
   const localeInfo = useCurrencyLocale();
   

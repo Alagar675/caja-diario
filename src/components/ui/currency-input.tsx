@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import { Input } from "@/components/ui/input"
 import { formatCurrencyValue, parseCurrencyValue } from "@/utils/formatters"
@@ -19,7 +20,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
     currencySymbol, 
     placeholder = "0,00", 
     className,
-    maxDigits = 30,
+    maxDigits = 25, // Changed to 25 characters max
     inputDirection = "ltr",
     ...props 
   }, ref) => {
@@ -31,7 +32,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
       const rawValue = e.target.value;
 
       if (rawValue === '') {
-        onChange('');
+        onChange('0,00');
         return;
       }
       
@@ -43,10 +44,15 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
         cleanValue = `0${decimalSeparator}`;
       }
       
+      // Check if value exceeds maxDigits (including separators)
+      if (cleanValue.replace(decimalSeparator, '').length > maxDigits) {
+        return; // Do not update if exceeding max digits
+      }
+      
       // Check if we need to apply the thousand separators
       const numericValue = parseCurrencyValue(cleanValue);
       
-      // Format with the exact 000.000.000.000,00 pattern for miles
+      // Format with the Colombian format pattern 000.000.000.000,00
       const formattedValue = formatCurrencyValue(numericValue);
       
       onChange(formattedValue);
@@ -68,8 +74,8 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
         <Input
           ref={ref}
           type="text"
-          placeholder={placeholder}
-          value={value}
+          placeholder="0,00"
+          value={value || "0,00"}
           onChange={handleValueChange}
           onFocus={handleFocus}
           className={`pl-7 w-full ${inputDirection === 'rtl' ? 'text-right' : 'text-left'} font-mono text-lg tracking-wider ${className}`}

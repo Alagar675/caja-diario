@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 
 // Current locale (default to Colombian)
@@ -32,6 +33,10 @@ export const formatCurrency = (amount: number): string => {
 // Ensures format is always 000.000.000.000,00 (periods for thousands, comma for decimals)
 export const formatCurrencyValue = (value: number): string => {
   try {
+    if (isNaN(value) || value === 0) {
+      return "0,00";
+    }
+    
     // Handle potentially large numbers by converting to string first
     const valueStr = value.toFixed(2);
     
@@ -40,7 +45,7 @@ export const formatCurrencyValue = (value: number): string => {
     const integerPart = parts[0];
     const decimalPart = parts.length > 1 ? parts[1] : '00';
     
-    // Add thousand separators (periods) for displaying numbers in miles format
+    // Add thousand separators (periods) for displaying numbers with miles format
     let formattedInteger = '';
     for (let i = 0; i < integerPart.length; i++) {
       if (i > 0 && (integerPart.length - i) % 3 === 0) {
