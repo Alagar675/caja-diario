@@ -1,8 +1,8 @@
+
 import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
-import { parseCurrencyValue } from "@/utils/currency/currencyUtils";
 
 interface CurrencyInputFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange"> {
   value: string;
@@ -33,8 +33,6 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
     
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value;
-
-      // Remove non-numeric characters
       value = value.replace(/\D/g, "");
 
       if (value.length === 0) {
@@ -42,15 +40,12 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
         return;
       }
 
-      // Ensure two decimal places
       if (value.length === 1) value = "0" + value;
       if (value.length === 2) value = "0" + value;
 
-      // Split integer and decimal parts
       const integerPart = value.slice(0, -2);
       const decimalPart = value.slice(-2);
 
-      // Format integer part with thousand separators
       let formattedInteger = integerPart;
       if (formattedInteger === "") {
         formattedInteger = "0";
@@ -58,14 +53,12 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
         formattedInteger = formattedInteger.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
       }
 
-      // Combine with decimal separator
       const formattedValue = hideDecimals 
         ? formattedInteger 
         : `${formattedInteger},${decimalPart}`;
       
       onChange(formattedValue);
 
-      // Show feedback on first successful input
       if (showFeedback && isFirstInput && value.length > 0) {
         toast({
           title: "Formato de moneda",
@@ -76,11 +69,9 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
       }
     };
 
-    // Select all text on focus
     const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
       e.target.select();
       setIsFocused(true);
-      
       if (props.onFocus) {
         props.onFocus(e);
       }
@@ -88,7 +79,6 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
     
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
       setIsFocused(false);
-      
       if (props.onBlur) {
         props.onBlur(e);
       }
@@ -96,14 +86,6 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
 
     return (
       <div className="relative w-full">
-        {currencySymbol && symbolPosition === "prefix" && (
-          <span 
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 select-none z-10"
-            aria-hidden="true"
-          >
-            {currencySymbol}
-          </span>
-        )}
         <Input
           ref={ref}
           type="text"
@@ -114,9 +96,7 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
           onFocus={handleFocus}
           onBlur={handleBlur}
           className={cn(
-            "font-mono text-base tracking-wider",
-            symbolPosition === "prefix" && currencySymbol ? "pl-7" : "pl-3",
-            symbolPosition === "suffix" && currencySymbol ? "pr-7" : "pr-3",
+            "font-mono text-base tracking-wider pl-3 pr-3",
             isFocused && "border-primary",
             className
           )}
@@ -125,14 +105,6 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
           aria-label="Campo de entrada de moneda"
           {...props}
         />
-        {currencySymbol && symbolPosition === "suffix" && (
-          <span 
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 select-none z-10"
-            aria-hidden="true"
-          >
-            {currencySymbol}
-          </span>
-        )}
       </div>
     );
   }
