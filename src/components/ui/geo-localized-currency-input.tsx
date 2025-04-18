@@ -1,38 +1,11 @@
 
 import * as React from "react"
-import { cn } from "@/lib/utils"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useGeoLocaleDetection } from "@/hooks/useGeoLocaleDetection"
 import { Button } from "@/components/ui/button"
 import { Edit2, Globe, Check } from "lucide-react"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-
-interface CurrencyOption {
-  code: string;
-  symbol: string;
-  label: string;
-}
-
-const popularCurrencies: CurrencyOption[] = [
-  { code: 'USD', symbol: '$', label: 'USD (US Dollar)' },
-  { code: 'EUR', symbol: '€', label: 'EUR (Euro)' },
-  { code: 'GBP', symbol: '£', label: 'GBP (British Pound)' },
-  { code: 'JPY', symbol: '¥', label: 'JPY (Japanese Yen)' },
-  { code: 'COP', symbol: '$', label: 'COP (Peso Colombiano)' },
-  { code: 'MXN', symbol: '$', label: 'MXN (Peso Mexicano)' },
-  { code: 'BRL', symbol: 'R$', label: 'BRL (Real Brasileño)' },
-  { code: 'CAD', symbol: '$', label: 'CAD (Canadian Dollar)' },
-  { code: 'AUD', symbol: '$', label: 'AUD (Australian Dollar)' },
-  { code: 'CNY', symbol: '¥', label: 'CNY (Chinese Yuan)' },
-  { code: 'INR', symbol: '₹', label: 'INR (Indian Rupee)' },
-];
+import { useGeoLocaleDetection } from "@/hooks/useGeoLocaleDetection"
+import { CurrencyInputField } from "@/components/ui/currency-input-field"
+import { CurrencySelector } from "@/components/ui/currency-selector"
 
 interface GeoLocalizedCurrencyInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange"> {
   value: string;
@@ -63,20 +36,6 @@ const GeoLocalizedCurrencyInput = React.forwardRef<HTMLInputElement, GeoLocalize
       }
     }, [localeInfo.currencyCode, isEditing, localeInfo.loading, onCurrencyChange]);
     
-    const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value;
-      
-      // Allow empty input
-      if (!newValue) {
-        onChange("");
-        return;
-      }
-      
-      // Only allow digits, decimal separators, and thousand separators
-      const cleanValue = newValue.replace(/[^\d.,]/g, '');
-      onChange(cleanValue);
-    };
-    
     const handleCurrencyChange = (newCurrency: string) => {
       setSelectedCurrency(newCurrency);
       onCurrencyChange?.(newCurrency);
@@ -86,24 +45,35 @@ const GeoLocalizedCurrencyInput = React.forwardRef<HTMLInputElement, GeoLocalize
       setIsEditing(!isEditing);
     };
     
-    const getCurrentCurrency = () => {
-      const currency = popularCurrencies.find(c => c.code === selectedCurrency);
-      return currency || { code: selectedCurrency, symbol: localeInfo.currencySymbol, label: selectedCurrency };
-    };
-    
-    const currentCurrency = getCurrentCurrency();
-    
     // Generate placeholder based on locale
     const getPlaceholder = () => {
       const { thousandSeparator, decimalSeparator } = localeInfo;
       if (thousandSeparator === '.') {
         // Latin American format
-        return `${currentCurrency.symbol}10.000${decimalSeparator}00`;
+        return `10.000${decimalSeparator}00`;
       } else {
         // US/UK format
-        return `${currentCurrency.symbol}10${thousandSeparator}000${decimalSeparator}00`;
+        return `10${thousandSeparator}000${decimalSeparator}00`;
       }
     };
+
+    // Format the currency options for the selector
+    const currencyOptions = [
+      { code: 'USD', symbol: '$', label: 'USD (US Dollar)' },
+      { code: 'EUR', symbol: '€', label: 'EUR (Euro)' },
+      { code: 'GBP', symbol: '£', label: 'GBP (British Pound)' },
+      { code: 'JPY', symbol: '¥', label: 'JPY (Japanese Yen)' },
+      { code: 'COP', symbol: '$', label: 'COP (Peso Colombiano)' },
+      { code: 'MXN', symbol: '$', label: 'MXN (Peso Mexicano)' },
+      { code: 'BRL', symbol: 'R$', label: 'BRL (Real Brasileño)' },
+      { code: 'CAD', symbol: '$', label: 'CAD (Canadian Dollar)' },
+      { code: 'AUD', symbol: '$', label: 'AUD (Australian Dollar)' },
+      { code: 'CNY', symbol: '¥', label: 'CNY (Chinese Yuan)' },
+      { code: 'INR', symbol: '₹', label: 'INR (Indian Rupee)' },
+    ];
+    
+    const currentCurrency = currencyOptions.find(c => c.code === selectedCurrency) || 
+      { code: selectedCurrency, symbol: localeInfo.currencySymbol, label: selectedCurrency };
     
     // Show loading state while we detect locale
     if (localeInfo.loading) {
@@ -132,47 +102,31 @@ const GeoLocalizedCurrencyInput = React.forwardRef<HTMLInputElement, GeoLocalize
         <div className="flex items-center gap-2">
           {isEditing ? (
             <div className="flex-shrink-0">
-              <Select
-                value={selectedCurrency}
-                onValueChange={handleCurrencyChange}
-              >
-                <SelectTrigger className="w-[120px]">
-                  <SelectValue placeholder={currentCurrency.code} />
-                </SelectTrigger>
-                <SelectContent>
-                  {popularCurrencies.map((currency) => (
-                    <SelectItem key={currency.code} value={currency.code}>
-                      <div className="flex items-center gap-2">
-                        <span>{currency.symbol}</span>
-                        <span>{currency.label}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <CurrencySelector
+                selectedCurrency={selectedCurrency}
+                onCurrencyChange={handleCurrencyChange}
+                currencyOptions={currencyOptions}
+              />
             </div>
           ) : (
-            <div className="flex items-center gap-1 bg-gray-50 border rounded px-3 py-2 w-[120px] text-sm">
-              <Globe className="w-4 h-4 text-gray-500" />
-              <span className="font-medium">{currentCurrency.symbol} {currentCurrency.code}</span>
+            <div className="flex-shrink-0">
+              <CurrencySelector
+                selectedCurrency={selectedCurrency}
+                onCurrencyChange={handleCurrencyChange}
+                currencyOptions={currencyOptions}
+                isReadOnly={true}
+              />
             </div>
           )}
           
           <div className="relative flex-1">
-            <Input
+            <CurrencyInputField
               ref={ref}
-              type="text"
-              inputMode="decimal"
-              placeholder={getPlaceholder()}
               value={value}
-              onChange={handleValueChange}
-              className={cn(
-                "pl-3 pr-10 font-mono text-lg tracking-wider",
-                className
-              )}
-              style={{ 
-                fontVariantNumeric: 'tabular-nums',
-              }}
+              onChange={onChange}
+              placeholder={getPlaceholder()}
+              currencySymbol="" // We're showing the currency in the selector
+              className={className}
               {...props}
             />
           </div>
