@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import {
@@ -13,7 +12,6 @@ import {
   DollarSign,
   Euro,
   PoundSterling,
-  Yen,
   CurrencyIcon
 } from "lucide-react"
 
@@ -28,7 +26,7 @@ const currencies: CurrencyOption[] = [
   { code: 'USD', symbol: '$', label: 'USD', icon: <DollarSign className="h-4 w-4" /> },
   { code: 'EUR', symbol: '€', label: 'EUR', icon: <Euro className="h-4 w-4" /> },
   { code: 'GBP', symbol: '£', label: 'GBP', icon: <PoundSterling className="h-4 w-4" /> },
-  { code: 'JPY', symbol: '¥', label: 'JPY', icon: <Yen className="h-4 w-4" /> },
+  { code: 'JPY', symbol: '¥', label: 'JPY', icon: <CurrencyIcon className="h-4 w-4" /> },
   { code: 'COP', symbol: '$', label: 'COP', icon: <CurrencyIcon className="h-4 w-4" /> },
   { code: 'MXN', symbol: '$', label: 'MXN', icon: <CurrencyIcon className="h-4 w-4" /> },
 ];
@@ -51,21 +49,17 @@ const CurrencySelectorInput = React.forwardRef<HTMLInputElement, CurrencySelecto
     className,
     ...props 
   }, ref) => {
-    // Handle currency selection
     const handleCurrencyChange = (currencyCode: string) => {
       onCurrencyChange?.(currencyCode);
     };
 
-    // Handle value change
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
-      // Allow empty input
       if (!newValue) {
         onChange("");
         return;
       }
 
-      // Remove any existing currency symbols and spaces
       const cleanValue = newValue.replace(/[^\d.,]/g, '');
       onChange(cleanValue);
     };
