@@ -7,11 +7,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFinance, Transaction } from "@/context/FinanceContext";
 import { formatCurrency } from "@/utils/formatters";
 import { DailySummary } from "@/types/finance";
+
 interface QuickReportsProps {
   dailySummary: DailySummary;
   setOutputFormat: (format: "print" | "pdf") => void;
   onConfirmClose?: () => void;
 }
+
 const QuickReports: React.FC<QuickReportsProps> = ({
   dailySummary,
   setOutputFormat,
@@ -50,10 +52,13 @@ const QuickReports: React.FC<QuickReportsProps> = ({
       onConfirmClose();
     }
   };
+
   const getFilteredTransactions = (type: "income" | "expense") => {
     return transactions.filter(t => t.type === type).sort((a, b) => b.date.getTime() - a.date.getTime()).slice(0, 5);
   };
-  return <div className="space-y-4">
+
+  return (
+    <div className="space-y-4">
       <Button className="w-full justify-start" variant="outline">
         <Calendar className="mr-2 h-4 w-4" />
         Informe del día actual
@@ -157,6 +162,8 @@ const QuickReports: React.FC<QuickReportsProps> = ({
             </ScrollArea>}
         </CardContent>
       </Card>
-    </div>;
+    </div>
+  );
 };
+
 export default QuickReports;

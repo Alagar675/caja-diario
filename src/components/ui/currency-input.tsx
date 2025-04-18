@@ -20,7 +20,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
     currencySymbol, 
     placeholder = "0,00", 
     className, 
-    maxDigits = 30, 
+    maxDigits = 30, // Set a very high maximum by default
     inputDirection = "ltr", // Default to left-to-right input
     ...props 
   }, ref) => {
@@ -44,12 +44,12 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
         cleanValue = `0${decimalSeparator}`;
       }
       
-      // No limit on number of digits anymore
-
+      // No longer limiting the number of digits
+      
       // Check if we need to apply the thousand separators
       const numericValue = parseCurrencyValue(cleanValue);
       
-      // Format with the exact 000.000.000.000,00 pattern
+      // Format with the exact 000.000.000.000,00 pattern for millions
       const formattedValue = formatCurrencyValue(numericValue);
       
       onChange(formattedValue);
@@ -78,8 +78,8 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
           className={`pl-7 ${inputDirection === 'rtl' ? 'text-right' : 'text-left'} font-mono text-lg tracking-wider ${className}`}
           style={{ 
             fontVariantNumeric: 'tabular-nums',
-            direction: inputDirection,  // Use the inputDirection prop
-            textAlign: inputDirection === 'rtl' ? 'right' : 'left' // Align text based on direction
+            direction: inputDirection,
+            textAlign: inputDirection === 'rtl' ? 'right' : 'left'
           }}
           inputMode="decimal"
           {...props}

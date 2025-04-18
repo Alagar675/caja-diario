@@ -30,6 +30,7 @@ export const formatCurrency = (amount: number): string => {
 
 // Format a number as currency value without the currency symbol
 // Ensures format is always 000.000.000.000,00 (periods for thousands, comma for decimals)
+// Handling larger values in the millions and beyond
 export const formatCurrencyValue = (value: number): string => {
   try {
     // Handle potentially large numbers by converting to string first
@@ -40,7 +41,7 @@ export const formatCurrencyValue = (value: number): string => {
     const integerPart = parts[0];
     const decimalPart = parts.length > 1 ? parts[1] : '00';
     
-    // Add thousand separators (periods)
+    // Add thousand separators (periods) for million format
     let formattedInteger = '';
     for (let i = 0; i < integerPart.length; i++) {
       if (i > 0 && (integerPart.length - i) % 3 === 0) {
@@ -58,13 +59,27 @@ export const formatCurrencyValue = (value: number): string => {
 };
 
 // Parse a formatted number (handling both comma and period decimal separators)
+// Enhanced to handle large values in the millions
 export const parseCurrencyValue = (formattedValue: string): number => {
   if (!formattedValue || !formattedValue.trim()) return 0;
 
   // For Colombian format: Remove all periods (thousand separators) and replace comma with period for JS parsing
   const cleanValue = formattedValue.replace(/\./g, '').replace(',', '.');
-  const result = parseFloat(cleanValue) || 0;
-  return isNaN(result) ? 0 : result;
+  
+  // Handle large numbers safely
+  let result;
+  try {
+    result = parseFloat(cleanValue) || 0;
+    // Check if the value is a valid number and not too large
+    if (isNaN(result) || !isFinite(result)) {
+      console.warn("Number parsing resulted in invalid value:", result);
+      return 0;
+    }
+    return result;
+  } catch (e) {
+    console.error("Error parsing currency value:", e);
+    return 0;
+  }
 };
 
 // Format a date as a local string
