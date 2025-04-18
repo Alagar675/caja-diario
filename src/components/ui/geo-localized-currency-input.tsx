@@ -1,7 +1,6 @@
 
 import * as React from "react"
 import { Label } from "@/components/ui/label"
-import { Globe } from "lucide-react"
 import { useGeoLocaleDetection } from "@/hooks/useGeoLocaleDetection"
 import { CurrencyInputField } from "@/components/ui/currency-input-field"
 
@@ -24,26 +23,21 @@ const GeoLocalizedCurrencyInput = React.forwardRef<HTMLInputElement, GeoLocalize
   }, ref) => {
     const localeInfo = useGeoLocaleDetection();
 
-    // Update currency when localeInfo changes
     React.useEffect(() => {
       if (!localeInfo.loading) {
         onCurrencyChange?.(localeInfo.currencyCode);
       }
     }, [localeInfo.currencyCode, localeInfo.loading, onCurrencyChange]);
     
-    // Generate placeholder based on locale
     const getPlaceholder = () => {
       const { thousandSeparator, decimalSeparator } = localeInfo;
       if (thousandSeparator === '.') {
-        // Latin American format
         return `10.000${decimalSeparator}00`;
       } else {
-        // US/UK format
         return `10${thousandSeparator}000${decimalSeparator}00`;
       }
     };
     
-    // Show loading state while we detect locale
     if (localeInfo.loading) {
       return (
         <div className="space-y-2">
@@ -56,7 +50,7 @@ const GeoLocalizedCurrencyInput = React.forwardRef<HTMLInputElement, GeoLocalize
     }
     
     return (
-      <div className="space-y-2">
+      <div className="space-y-2 relative">
         <div className="flex items-center justify-between">
           {label && <Label className="text-sm text-gray-500">{label}</Label>}
           {localeInfo.error && (
@@ -72,17 +66,17 @@ const GeoLocalizedCurrencyInput = React.forwardRef<HTMLInputElement, GeoLocalize
             value={value}
             onChange={onChange}
             placeholder={getPlaceholder()}
-            currencySymbol={`${localeInfo.currencyCode} `}
+            currencySymbol=""
             className={className}
             {...props}
           />
         </div>
         
-        <div className="text-xs text-gray-500 flex items-center gap-1">
-          <Globe className="h-3 w-3" />
-          <span>
-            Detectado: {localeInfo.country} ({localeInfo.countryCode})
-          </span>
+        <div 
+          className="absolute bottom-[-20px] right-0 text-xs text-gray-500 opacity-70"
+          style={{ fontSize: '0.6rem' }}
+        >
+          {localeInfo.currencyCode}
         </div>
       </div>
     );
