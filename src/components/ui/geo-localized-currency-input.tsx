@@ -65,7 +65,7 @@ const GeoLocalizedCurrencyInput = React.forwardRef<HTMLInputElement, GeoLocalize
             ref={ref}
             value={value}
             onChange={onChange}
-            placeholder={getPlaceholder()}
+            placeholder=""
             currencySymbol=""
             className={className}
             {...props}

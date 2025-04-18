@@ -59,6 +59,7 @@ const ChangeCalculator = ({
             value={formattedAmountToPay}
             onChange={handleAmountToPayChange}
             onCurrencyChange={handleCurrencyChange}
+            placeholder=""
           />
         </div>
 
@@ -68,6 +69,7 @@ const ChangeCalculator = ({
             value={formattedAmountReceived}
             onChange={handleAmountReceivedChange}
             onCurrencyChange={handleCurrencyChange}
+            placeholder=""
           />
         </div>
 
@@ -76,7 +78,7 @@ const ChangeCalculator = ({
             className="h-10 flex items-center justify-end px-3 rounded-md bg-gray-100 text-lg"
             style={{ fontVariantNumeric: 'tabular-nums' }}
           >
-            {formatCurrency(change)}
+            {change > 0 ? formatCurrency(change) : ""}
           </div>
         </div>
         

@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -20,7 +19,7 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
   ({ 
     value, 
     onChange, 
-    placeholder = "0,00",
+    placeholder = "",
     currencySymbol = "",
     symbolPosition = "prefix",
     className,
@@ -95,11 +94,6 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
       }
     };
 
-    // Get the numeric value
-    const getNumericValue = React.useCallback(() => {
-      return parseCurrencyValue(value);
-    }, [value]);
-    
     return (
       <div className="relative w-full">
         {currencySymbol && symbolPosition === "prefix" && (
