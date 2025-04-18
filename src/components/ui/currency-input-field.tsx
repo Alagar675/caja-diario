@@ -3,19 +3,10 @@ import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
+import { formatCurrencyInput } from "@/utils/currency/currencyInputUtils";
+import { CurrencyInputProps } from "@/types/currency";
 
-interface CurrencyInputFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange"> {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  currencySymbol?: string;
-  symbolPosition?: "prefix" | "suffix";
-  className?: string;
-  showFeedback?: boolean;
-  hideDecimals?: boolean;
-}
-
-export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInputFieldProps>(
+export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
   ({ 
     value, 
     onChange, 
@@ -32,31 +23,10 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
     const [isFocused, setIsFocused] = React.useState(false);
     
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      let value = e.target.value;
-      
-      // Remove any non-numeric characters
-      value = value.replace(/[^\d]/g, "");
-      
-      if (value.length === 0) {
-        onChange("");
-        return;
-      }
-
-      // Format with thousand separators and decimals
-      const len = value.length;
-      const decimalPart = len > 2 ? value.slice(-2) : value.padStart(2, '0');
-      const integerPart = len > 2 ? value.slice(0, -2) : '0';
-      
-      // Add thousand separators
-      const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-      
-      const formattedValue = hideDecimals 
-        ? formattedInteger 
-        : `${formattedInteger},${decimalPart}`;
-      
+      const formattedValue = formatCurrencyInput(e.target.value, hideDecimals);
       onChange(formattedValue);
 
-      if (showFeedback && isFirstInput && value.length > 0) {
+      if (showFeedback && isFirstInput && formattedValue.length > 0) {
         toast({
           title: "Formato de moneda",
           description: "Los últimos dos dígitos corresponden a los decimales",
@@ -108,3 +78,4 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
 );
 
 CurrencyInputField.displayName = "CurrencyInputField";
+
