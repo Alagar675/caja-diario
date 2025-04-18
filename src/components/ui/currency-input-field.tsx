@@ -22,26 +22,33 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
   }, ref) => {
     
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value;
-      
-      // Allow empty input
-      if (!newValue) {
+      let value = e.target.value;
+
+      // Eliminar todo lo que no sea número
+      value = value.replace(/\D/g, "");
+
+      if (value.length === 0) {
         onChange("");
         return;
       }
-      
-      // Remove all non-digit characters
-      const digitsOnly = newValue.replace(/\D/g, '');
-      
-      // Handle the value as cents (last two digits are decimals)
-      const valueInCents = parseInt(digitsOnly, 10) || 0;
-      const integerPart = Math.floor(valueInCents / 100);
-      const decimalPart = (valueInCents % 100).toString().padStart(2, '0');
-      
-      // Format integer part with thousand separators
-      const formattedInteger = integerPart.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-      
-      // Combine integer and decimal parts
+
+      // Asegura que siempre haya al menos dos dígitos para los decimales
+      if (value.length === 1) value = "0" + value;
+      if (value.length === 2) value = "0" + value;
+
+      // Separar la parte entera de los decimales
+      const integerPart = value.slice(0, -2);
+      const decimalPart = value.slice(-2);
+
+      // Formatear la parte entera con puntos de mil
+      let formattedInteger = integerPart;
+      if (formattedInteger === "") {
+        formattedInteger = "0";
+      } else {
+        formattedInteger = formattedInteger.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      }
+
+      // Unir con la coma decimal
       const formattedValue = `${formattedInteger},${decimalPart}`;
       
       onChange(formattedValue);
@@ -73,6 +80,7 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
             className
           )}
           style={{ fontVariantNumeric: 'tabular-nums' }}
+          maxLength={20}
           {...props}
         />
       </div>
@@ -81,4 +89,3 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
 );
 
 CurrencyInputField.displayName = "CurrencyInputField";
-
