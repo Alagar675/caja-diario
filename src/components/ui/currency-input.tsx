@@ -26,35 +26,28 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
     const { decimalSeparator, thousandSeparator, currencySymbol: localeCurrencySymbol } = useCurrencyLocale();
     const symbolToUse = currencySymbol || localeCurrencySymbol;
     
-    // Handle amount change with automatic formatting
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const rawValue = e.target.value;
 
-      // Handle empty input
       if (rawValue === '') {
         onChange('');
         return;
       }
       
-      // Clean value: keep only digits and decimal separator
       let cleanValue = rawValue.replace(new RegExp(`[^\\d${decimalSeparator}]`, 'g'), '');
       
-      // Prevent user from entering more than maxDigits (before adding separators)
       const digitsOnly = cleanValue.replace(decimalSeparator, '');
       if (digitsOnly.length > maxDigits) {
-        return; // Do not update if exceeding max digits
+        return;
       }
       
-      // Convert to number for formatting
       const numericValue = parseCurrencyValue(cleanValue);
       
-      // Format with the proper format pattern (thousands with periods, decimals with comma)
       const formattedValue = cleanValue ? formatCurrencyValue(numericValue) : '';
       
       onChange(formattedValue);
     };
 
-    // When field gets focus, select all text for easy replacement
     const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
       e.target.select();
       if (props.onFocus) {
@@ -64,7 +57,9 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
 
     return (
       <div className="relative w-full">
-        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 z-10">
+        <span className={`absolute top-1/2 transform -translate-y-1/2 text-gray-500 z-10 ${
+          inputDirection === 'rtl' ? 'right-3' : 'left-3'
+        }`}>
           {symbolToUse}
         </span>
         <Input
@@ -76,12 +71,10 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
           value={value || ""}
           onChange={handleValueChange}
           onFocus={handleFocus}
-          className={`pl-7 w-full ${inputDirection === 'rtl' ? 'text-right' : 'text-left'} font-mono text-lg tracking-wider ${className}`}
+          className={`${inputDirection === 'rtl' ? 'pr-7 text-right' : 'pl-7 text-left'} w-full font-mono text-lg tracking-wider ${className}`}
           style={{ 
             fontVariantNumeric: 'tabular-nums',
-            direction: inputDirection,
-            textAlign: inputDirection === 'rtl' ? 'right' : 'left',
-            letterSpacing: '0.05em'
+            direction: inputDirection
           }}
           {...props}
         />

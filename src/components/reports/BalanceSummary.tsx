@@ -2,7 +2,7 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Banknote, CreditCard, FileText } from "lucide-react";
-import { formatCurrency } from "@/utils/formatters";
+import { CurrencyDisplay } from "@/components/ui/currency-display";
 
 interface BalanceSummaryProps {
   cashBalance: number;
@@ -15,6 +15,8 @@ const BalanceSummary: React.FC<BalanceSummaryProps> = ({
   transferBalance, 
   creditBalance 
 }) => {
+  const totalBalance = cashBalance + transferBalance + creditBalance;
+  
   return (
     <div className="mt-6">
       <h3 className="font-medium mb-3 text-xl text-center text-green-900">Saldos Actuales</h3>
@@ -26,7 +28,7 @@ const BalanceSummary: React.FC<BalanceSummaryProps> = ({
                 <Banknote className="h-5 w-5 mr-2 text-primary" />
                 <span className="text-sm font-medium">Efectivo</span>
               </div>
-              <span className="font-bold">{formatCurrency(cashBalance)}</span>
+              <CurrencyDisplay value={cashBalance} align="right" />
             </div>
           </CardContent>
         </Card>
@@ -38,7 +40,7 @@ const BalanceSummary: React.FC<BalanceSummaryProps> = ({
                 <CreditCard className="h-5 w-5 mr-2 text-primary" />
                 <span className="text-sm font-medium">Transferencias</span>
               </div>
-              <span className="font-bold">{formatCurrency(transferBalance)}</span>
+              <CurrencyDisplay value={transferBalance} align="right" />
             </div>
           </CardContent>
         </Card>
@@ -50,7 +52,16 @@ const BalanceSummary: React.FC<BalanceSummaryProps> = ({
                 <FileText className="h-5 w-5 mr-2 text-primary" />
                 <span className="text-sm font-medium">Créditos</span>
               </div>
-              <span className="font-bold">{formatCurrency(creditBalance)}</span>
+              <CurrencyDisplay value={creditBalance} align="right" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-primary/10">
+          <CardContent className="p-4">
+            <div className="text-center">
+              <h4 className="text-sm font-medium mb-1">Balance Total</h4>
+              <CurrencyDisplay value={totalBalance} size="xl" align="center" className="block" />
             </div>
           </CardContent>
         </Card>

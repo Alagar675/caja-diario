@@ -10,6 +10,7 @@ interface CurrencyDisplayProps {
   showSymbol?: boolean;
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   variant?: "default" | "positive" | "negative" | "muted";
+  align?: "left" | "center" | "right";
 }
 
 export function CurrencyDisplay({
@@ -18,7 +19,8 @@ export function CurrencyDisplay({
   className,
   showSymbol = true,
   size = "md",
-  variant = "default"
+  variant = "default",
+  align = "right"
 }: CurrencyDisplayProps) {
   const { symbol, position } = getCurrencyDisplayInfo(currencyCode);
   const formattedValue = formatCurrencyValue(value);
@@ -30,6 +32,12 @@ export function CurrencyDisplay({
     md: "text-base",
     lg: "text-lg",
     xl: "text-xl",
+  };
+  
+  const alignClasses = {
+    left: "text-left",
+    center: "text-center",
+    right: "text-right",
   };
   
   const variantClasses = {
@@ -44,6 +52,7 @@ export function CurrencyDisplay({
       className={cn(
         "font-mono tabular-nums",
         sizeClasses[size],
+        alignClasses[align],
         variantClasses[variant],
         isNegative && !variant && "text-red-600 dark:text-red-400",
         className
