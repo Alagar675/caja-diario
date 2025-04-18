@@ -23,6 +23,7 @@ interface EnhancedCurrencyInputProps extends Omit<React.InputHTMLAttributes<HTML
   className?: string;
   showConversion?: boolean;
   targetCurrency?: string;
+  showFeedback?: boolean; // Added showFeedback prop
 }
 
 export const EnhancedCurrencyInput = React.forwardRef<HTMLInputElement, EnhancedCurrencyInputProps>(
@@ -33,6 +34,7 @@ export const EnhancedCurrencyInput = React.forwardRef<HTMLInputElement, Enhanced
     label = "Valor en moneda local",
     helpText,
     showConversion = false,
+    showFeedback = false, // Add default value for showFeedback prop
     targetCurrency,
     className,
     ...props 
@@ -116,6 +118,7 @@ export const EnhancedCurrencyInput = React.forwardRef<HTMLInputElement, Enhanced
             currencySymbol={currencyInfo.symbol}
             symbolPosition={currencyInfo.position}
             className={className}
+            showFeedback={showFeedback} // Pass the showFeedback prop to CurrencyInputField
             {...props}
           />
           
