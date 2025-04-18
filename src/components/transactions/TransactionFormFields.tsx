@@ -36,6 +36,7 @@ interface TransactionFormFieldsProps {
   setDate: (value: string) => void;
   time: string;
   setTime: (value: string) => void;
+  setCurrencyCode?: (value: string) => void;
 }
 
 const TransactionFormFields = ({
@@ -63,7 +64,8 @@ const TransactionFormFields = ({
   date,
   setDate,
   time,
-  setTime
+  setTime,
+  setCurrencyCode
 }: TransactionFormFieldsProps) => {
   return (
     <div className="space-y-6">
@@ -73,6 +75,7 @@ const TransactionFormFields = ({
         setAmount={setAmount}
         category={category}
         setCategory={setCategory}
+        setCurrencyCode={setCurrencyCode}
       />
 
       <DescriptionField
