@@ -76,6 +76,8 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
         <Input
           ref={ref}
           type="text"
+          inputMode="decimal"
+          pattern="^\d{1,3}(\.?\d{3})*(\,\d{1,2})?$"
           placeholder="0,00"
           value={value || "0,00"}
           onChange={handleValueChange}
@@ -87,7 +89,6 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
             textAlign: inputDirection === 'rtl' ? 'right' : 'left',
             letterSpacing: '0.05em'
           }}
-          inputMode="decimal"
           {...props}
         />
       </div>
