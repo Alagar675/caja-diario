@@ -1,77 +1,73 @@
 
 import React from "react";
 import { Label } from "@/components/ui/label";
+import { EnhancedCurrencyInput } from "@/components/ui/enhanced-currency-input";
 import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
 } from "@/components/ui/select";
 import { TransactionType } from "@/types/finance";
-import { GeoLocalizedCurrencyInput } from "@/components/ui/geo-localized-currency-input";
 
 interface AmountCategoryFieldsProps {
   type: TransactionType;
   amount: string;
   setAmount: (value: string) => void;
   category: string;
-  setCategory: (value: string) => void;
-  setCurrencyCode?: (value: string) => void;
+  setCategory: (category: string) => void;
+  setCurrencyCode?: (code: string) => void;
 }
 
-const incomeCategories = [
-  "Ventas",
-  "Servicios",
-  "Transferencias",
-  "Préstamos",
-  "Inversiones",
-  "Otros ingresos"
-];
-
-const expenseCategories = [
-  "Compras",
-  "Servicios",
-  "Nómina",
-  "Impuestos",
-  "Alquiler",
-  "Transporte",
-  "Mantenimiento",
-  "Otros gastos"
-];
-
-const AmountCategoryFields = ({ 
-  type, 
-  amount, 
-  setAmount, 
-  category, 
+const AmountCategoryFields: React.FC<AmountCategoryFieldsProps> = ({
+  type,
+  amount,
+  setAmount,
+  category,
   setCategory,
   setCurrencyCode
-}: AmountCategoryFieldsProps) => {
-  const categories = type === "income" ? incomeCategories : expenseCategories;
+}) => {
+  // Income and expense categories
+  const incomeCategories = [
+    "Ventas en efectivo", 
+    "Ventas a crédito", 
+    "Recaudo Créditos", 
+    "Recaudos recurrentes", 
+    "Otros"
+  ];
   
-  const handleCurrencyChange = (currencyCode: string) => {
-    if (setCurrencyCode) {
-      setCurrencyCode(currencyCode);
-    }
-  };
+  const expenseCategories = [
+    "Pago de Facturas",
+    "Pagos recurrentes",
+    "Servicios públicos",
+    "Pago salarios",
+    "Otros"
+  ];
+  
+  const categories = type === "income" ? incomeCategories : expenseCategories;
+  const label = type === "income" ? "Valor del ingreso" : "Valor del egreso";
   
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div>
-        <GeoLocalizedCurrencyInput
-          label="Valor"
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="space-y-2">
+        <EnhancedCurrencyInput
           value={amount}
           onChange={setAmount}
-          onCurrencyChange={handleCurrencyChange}
+          onCurrencyChange={setCurrencyCode}
+          label={label}
+          showFeedback={true}
+          required
+          autoFocus
+          showConversion={false}
         />
       </div>
-      
-      <div>
+
+      <div className="space-y-2">
         <Label htmlFor="category">Categoría</Label>
-        <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger id="category">
-            <SelectValue placeholder="Seleccione una categoría" />
+        <Select value={category} onValueChange={setCategory} required>
+          <SelectTrigger>
+            <SelectValue placeholder="Seleccionar categoría" />
           </SelectTrigger>
           <SelectContent>
             {categories.map((cat) => (

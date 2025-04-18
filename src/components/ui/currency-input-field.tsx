@@ -3,14 +3,17 @@ import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
+import { parseCurrencyValue } from "@/utils/currency/currencyUtils";
 
 interface CurrencyInputFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange"> {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
   currencySymbol?: string;
+  symbolPosition?: "prefix" | "suffix";
   className?: string;
   showFeedback?: boolean;
+  hideDecimals?: boolean;
 }
 
 export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInputFieldProps>(
@@ -19,12 +22,15 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
     onChange, 
     placeholder = "0,00",
     currencySymbol = "",
+    symbolPosition = "prefix",
     className,
     showFeedback = false,
+    hideDecimals = false,
     ...props 
   }, ref) => {
     const { toast } = useToast();
     const [isFirstInput, setIsFirstInput] = React.useState(true);
+    const [isFocused, setIsFocused] = React.useState(false);
     
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value;
@@ -54,7 +60,9 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
       }
 
       // Combine with decimal separator
-      const formattedValue = `${formattedInteger},${decimalPart}`;
+      const formattedValue = hideDecimals 
+        ? formattedInteger 
+        : `${formattedInteger},${decimalPart}`;
       
       onChange(formattedValue);
 
@@ -72,14 +80,29 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
     // Select all text on focus
     const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
       e.target.select();
+      setIsFocused(true);
+      
       if (props.onFocus) {
         props.onFocus(e);
       }
     };
     
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+      setIsFocused(false);
+      
+      if (props.onBlur) {
+        props.onBlur(e);
+      }
+    };
+
+    // Get the numeric value
+    const getNumericValue = React.useCallback(() => {
+      return parseCurrencyValue(value);
+    }, [value]);
+    
     return (
       <div className="relative w-full">
-        {currencySymbol && (
+        {currencySymbol && symbolPosition === "prefix" && (
           <span 
             className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 select-none z-10"
             aria-hidden="true"
@@ -95,9 +118,12 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
           value={value}
           onChange={handleValueChange}
           onFocus={handleFocus}
+          onBlur={handleBlur}
           className={cn(
-            "pl-3 font-mono text-base tracking-wider",
-            currencySymbol && "pl-7",
+            "font-mono text-base tracking-wider",
+            symbolPosition === "prefix" && currencySymbol ? "pl-7" : "pl-3",
+            symbolPosition === "suffix" && currencySymbol ? "pr-7" : "pr-3",
+            isFocused && "border-primary",
             className
           )}
           style={{ fontVariantNumeric: 'tabular-nums' }}
@@ -105,10 +131,17 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
           aria-label="Campo de entrada de moneda"
           {...props}
         />
+        {currencySymbol && symbolPosition === "suffix" && (
+          <span 
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 select-none z-10"
+            aria-hidden="true"
+          >
+            {currencySymbol}
+          </span>
+        )}
       </div>
     );
   }
 );
 
 CurrencyInputField.displayName = "CurrencyInputField";
-

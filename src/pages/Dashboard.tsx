@@ -5,11 +5,13 @@ import DashboardTitle from "@/components/dashboard/DashboardTitle";
 import TransactionForm from "@/components/transactions/TransactionForm";
 import TransactionList from "@/components/transactions/TransactionList";
 import ChangeCalculator from "@/components/calculator/ChangeCalculator";
+import EnhancedCurrencyConverter from "@/components/calculator/EnhancedCurrencyConverter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true); // Set default to true to keep sidebar open
   const [transactionType, setTransactionType] = useState<"income" | "expense">("income");
+  const [activeCalculator, setActiveCalculator] = useState<"change" | "currency">("change");
 
   return (
     <div className="min-h-screen w-full bg-background">
@@ -40,7 +42,22 @@ const Dashboard = () => {
             </div>
             
             <div className="col-span-1 md:col-span-4">
-              <ChangeCalculator isVisible={!sidebarOpen} />
+              <Tabs 
+                defaultValue="change" 
+                onValueChange={(value) => setActiveCalculator(value as "change" | "currency")}
+                className="mb-6"
+              >
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="change">Cambio</TabsTrigger>
+                  <TabsTrigger value="currency">Conversor</TabsTrigger>
+                </TabsList>
+                <TabsContent value="change">
+                  <ChangeCalculator isVisible={!sidebarOpen} />
+                </TabsContent>
+                <TabsContent value="currency">
+                  <EnhancedCurrencyConverter isVisible={!sidebarOpen} />
+                </TabsContent>
+              </Tabs>
             </div>
           </div>
         </div>
