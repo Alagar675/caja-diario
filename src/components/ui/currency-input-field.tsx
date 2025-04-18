@@ -24,7 +24,7 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
     
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const formattedValue = formatCurrencyInput(e.target.value, hideDecimals);
-      onChange(formattedValue);
+      onChange(formattedValue === "0,00" ? "" : formattedValue);
 
       if (showFeedback && isFirstInput && formattedValue.length > 0) {
         toast({
@@ -78,4 +78,3 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
 );
 
 CurrencyInputField.displayName = "CurrencyInputField";
-

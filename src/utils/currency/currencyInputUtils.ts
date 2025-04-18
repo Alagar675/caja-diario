@@ -17,4 +17,3 @@ export const formatCurrencyInput = (value: string, hideDecimals: boolean = false
   
   return hideDecimals ? formattedInteger : `${formattedInteger},${decimalPart}`;
 };
-

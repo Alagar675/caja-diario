@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import { Input } from "@/components/ui/input"
 import { formatCurrencyValue, parseCurrencyValue } from "@/utils/formatters"
@@ -18,7 +17,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
     value, 
     onChange, 
     currencySymbol, 
-    placeholder = "0,00", 
+    placeholder = "", 
     className,
     maxDigits = 25,
     inputDirection = "ltr",
@@ -33,17 +32,12 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
 
       // Handle empty input
       if (rawValue === '') {
-        onChange('0,00');
+        onChange('');
         return;
       }
       
       // Clean value: keep only digits and decimal separator
       let cleanValue = rawValue.replace(new RegExp(`[^\\d${decimalSeparator}]`, 'g'), '');
-      
-      // Handle the case where the user enters the decimal separator first
-      if (cleanValue === decimalSeparator) {
-        cleanValue = `0${decimalSeparator}`;
-      }
       
       // Prevent user from entering more than maxDigits (before adding separators)
       const digitsOnly = cleanValue.replace(decimalSeparator, '');
@@ -55,7 +49,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
       const numericValue = parseCurrencyValue(cleanValue);
       
       // Format with the proper format pattern (thousands with periods, decimals with comma)
-      const formattedValue = formatCurrencyValue(numericValue);
+      const formattedValue = cleanValue ? formatCurrencyValue(numericValue) : '';
       
       onChange(formattedValue);
     };
@@ -78,8 +72,8 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
           type="text"
           inputMode="decimal"
           pattern="^\d{1,3}(\.?\d{3})*(\,\d{1,2})?$"
-          placeholder="0,00"
-          value={value || "0,00"}
+          placeholder=""
+          value={value || ""}
           onChange={handleValueChange}
           onFocus={handleFocus}
           className={`pl-7 w-full ${inputDirection === 'rtl' ? 'text-right' : 'text-left'} font-mono text-lg tracking-wider ${className}`}
