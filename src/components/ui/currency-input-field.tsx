@@ -30,31 +30,19 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
         return;
       }
       
-      // Replace any dot with a comma for decimals
-      let cleanValue = newValue.replace(/\./g, ',');
+      // Remove all non-digit characters
+      const digitsOnly = newValue.replace(/\D/g, '');
       
-      // Remove any character that is not a digit or comma
-      cleanValue = cleanValue.replace(/[^\d,]/g, '');
+      // Handle the value as cents (last two digits are decimals)
+      const valueInCents = parseInt(digitsOnly, 10) || 0;
+      const integerPart = Math.floor(valueInCents / 100);
+      const decimalPart = (valueInCents % 100).toString().padStart(2, '0');
       
-      // Handle decimal part (after comma)
-      if (cleanValue.includes(',')) {
-        const [integerPart, decimalPart] = cleanValue.split(',');
-        
-        // Limit decimal places to 2
-        if (decimalPart && decimalPart.length > 2) {
-          cleanValue = `${integerPart},${decimalPart.slice(0, 2)}`;
-        }
-      }
+      // Format integer part with thousand separators
+      const formattedInteger = integerPart.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
       
-      // Format the integer part with thousand separators
-      let formattedValue = cleanValue;
-      if (cleanValue.includes(',')) {
-        const [integerPart, decimalPart] = cleanValue.split(',');
-        const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        formattedValue = `${formattedInteger},${decimalPart || ''}`;
-      } else {
-        formattedValue = cleanValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-      }
+      // Combine integer and decimal parts
+      const formattedValue = `${formattedInteger},${decimalPart}`;
       
       onChange(formattedValue);
     };
@@ -75,13 +63,13 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
         <Input
           ref={ref}
           type="text"
-          inputMode="decimal"
+          inputMode="numeric"
           placeholder={placeholder}
           value={value}
           onChange={handleValueChange}
           onFocus={handleFocus}
           className={cn(
-            "pl-3 font-normal text-base",
+            "pl-3 font-mono text-base",
             className
           )}
           style={{ fontVariantNumeric: 'tabular-nums' }}
@@ -93,3 +81,4 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
 );
 
 CurrencyInputField.displayName = "CurrencyInputField";
+
