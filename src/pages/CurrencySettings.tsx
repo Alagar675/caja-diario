@@ -49,7 +49,7 @@ const CurrencySettings = () => {
       toast({
         title: "Configuración guardada",
         description: `La moneda principal se ha actualizado a ${selectedCurrency}`,
-        variant: "success",
+        variant: "default", // Changed from "success" to "default"
       });
       
       setIsSaving(false);
