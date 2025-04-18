@@ -33,6 +33,8 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
     
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value;
+      
+      // Remove non-numeric characters
       value = value.replace(/\D/g, "");
 
       if (value.length === 0) {
@@ -40,19 +42,16 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
         return;
       }
 
-      if (value.length === 1) value = "0" + value;
-      if (value.length === 2) value = "0" + value;
+      // Add leading zeros if needed
+      while (value.length < 3) {
+        value = "0" + value;
+      }
 
       const integerPart = value.slice(0, -2);
       const decimalPart = value.slice(-2);
 
-      let formattedInteger = integerPart;
-      if (formattedInteger === "") {
-        formattedInteger = "0";
-      } else {
-        formattedInteger = formattedInteger.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-      }
-
+      let formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      
       const formattedValue = hideDecimals 
         ? formattedInteger 
         : `${formattedInteger},${decimalPart}`;
@@ -90,7 +89,7 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
           ref={ref}
           type="text"
           inputMode="numeric"
-          placeholder={placeholder}
+          placeholder=""
           value={value}
           onChange={handleValueChange}
           onFocus={handleFocus}

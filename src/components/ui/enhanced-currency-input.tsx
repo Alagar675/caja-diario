@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -23,7 +22,7 @@ interface EnhancedCurrencyInputProps extends Omit<React.InputHTMLAttributes<HTML
   className?: string;
   showConversion?: boolean;
   targetCurrency?: string;
-  showFeedback?: boolean; // Added showFeedback prop
+  showFeedback?: boolean;
 }
 
 export const EnhancedCurrencyInput = React.forwardRef<HTMLInputElement, EnhancedCurrencyInputProps>(
@@ -34,7 +33,7 @@ export const EnhancedCurrencyInput = React.forwardRef<HTMLInputElement, Enhanced
     label = "Valor en moneda local",
     helpText,
     showConversion = false,
-    showFeedback = false, // Add default value for showFeedback prop
+    showFeedback = false,
     targetCurrency,
     className,
     ...props 
@@ -49,19 +48,13 @@ export const EnhancedCurrencyInput = React.forwardRef<HTMLInputElement, Enhanced
     }, [localeInfo.currencyCode, localeInfo.loading, onCurrencyChange]);
     
     const getPlaceholder = () => {
-      const { thousandSeparator, decimalSeparator } = localeInfo;
-      if (thousandSeparator === '.') {
-        return `10.000${decimalSeparator}00`;
-      } else {
-        return `10${thousandSeparator}000${decimalSeparator}00`;
-      }
+      return "";
     };
     
     const currencyInfo = React.useMemo(() => {
       return getCurrencyDisplayInfo(localeInfo.currencyCode);
     }, [localeInfo.currencyCode]);
     
-    // Calculate converted value if needed
     const convertedValue = React.useMemo(() => {
       if (!showConversion || !targetCurrency || conversionLoading) return null;
       
@@ -114,11 +107,11 @@ export const EnhancedCurrencyInput = React.forwardRef<HTMLInputElement, Enhanced
             ref={ref}
             value={value}
             onChange={onChange}
-            placeholder={getPlaceholder()}
+            placeholder=""
             currencySymbol={currencyInfo.symbol}
             symbolPosition={currencyInfo.position}
             className={className}
-            showFeedback={showFeedback} // Pass the showFeedback prop to CurrencyInputField
+            showFeedback={showFeedback}
             {...props}
           />
           
