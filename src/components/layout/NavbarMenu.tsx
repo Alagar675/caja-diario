@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useLocalStorageState from "@/hooks/useLocalStorageState";
 
@@ -41,6 +41,19 @@ const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, clo
           {item.name}
         </a>
       ))}
+      
+      {/* Agregar enlace a configuración de moneda */}
+      <a
+        href="/settings/currency"
+        className={isMobile ? "block py-2 text-base font-medium transition-colors hover:text-primary" : "text-sm font-medium transition-colors hover:text-primary"}
+        onClick={(e) => {
+          e.preventDefault();
+          handleNavigation("/settings/currency");
+        }}
+      >
+        Configuración
+      </a>
+      
       <div className={isMobile ? "flex flex-col space-y-2 pt-2 border-t" : "flex items-center space-x-4"}>
         <Button 
           variant={isMobile ? "outline" : "outline"} 

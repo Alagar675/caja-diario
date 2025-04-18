@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { formatName, getUserGender } from "@/utils/userUtils";
@@ -62,11 +62,21 @@ const Navbar = () => {
 
         <nav className="hidden md:flex items-center space-x-6">
           {user && (
-            <NavbarMenu 
-              menuItems={menuItems} 
-              saveLastAction={saveLastAction} 
-              onLogout={handleLogout}
-            />
+            <>
+              <NavbarMenu 
+                menuItems={menuItems} 
+                saveLastAction={saveLastAction} 
+                onLogout={handleLogout}
+              />
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => navigate("/settings/currency")}
+                title="Configuración de moneda"
+              >
+                <Settings className="h-5 w-5" />
+              </Button>
+            </>
           )}
           
           {!user && (

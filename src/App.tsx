@@ -13,6 +13,7 @@ import Reports from "./pages/Reports";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
+import CurrencySettings from "./pages/CurrencySettings";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
                 <Route path="/reports" element={<Reports />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/settings/currency" element={<CurrencySettings />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </FinanceProvider>

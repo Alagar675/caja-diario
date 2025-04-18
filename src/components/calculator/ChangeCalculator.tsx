@@ -3,8 +3,9 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { GeoLocalizedCurrencyInput } from "@/components/ui/geo-localized-currency-input";
-import { formatCurrency, parseCurrencyValue } from "@/utils/formatters";
+import { formatCurrency, updateLocaleSettings } from "@/utils/currency/currencyFormatter";
 import { useGeoLocaleDetection } from "@/hooks/useGeoLocaleDetection";
+import CurrencyConverter from "./CurrencyConverter";
 
 interface ChangeCalculatorProps {
   isVisible?: boolean;
@@ -41,14 +42,14 @@ const ChangeCalculator = ({
 
   const handleAmountToPayChange = (value: string) => {
     setFormattedAmountToPay(value);
-    const parsedValue = parseCurrencyValue(value);
-    setAmountToPay(parsedValue);
+    const parsedValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+    setAmountToPay(isNaN(parsedValue) ? 0 : parsedValue);
   };
 
   const handleAmountReceivedChange = (value: string) => {
     setFormattedAmountReceived(value);
-    const parsedValue = parseCurrencyValue(value);
-    setAmountReceived(parsedValue);
+    const parsedValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+    setAmountReceived(isNaN(parsedValue) ? 0 : parsedValue);
   };
   
   const handleCurrencyChange = (currency: string) => {
@@ -69,7 +70,7 @@ const ChangeCalculator = ({
         <CardTitle className="text-center text-blue-700 text-xl">
           Calculadora de Cambio
           <div className="text-xs font-normal text-gray-600 mt-1">
-            {localeInfo.currency} ({currencyCode || localeInfo.currencyCode})
+            {currencyCode || localeInfo.currencyCode}
           </div>
         </CardTitle>
       </CardHeader>
@@ -102,16 +103,12 @@ const ChangeCalculator = ({
             {formatCurrency(change)}
           </div>
         </div>
+        
+        {/* Añadir el conversor de divisas */}
+        <CurrencyConverter />
       </CardContent>
     </Card>
   );
-};
-
-// Helper function to update global locale settings
-const updateLocaleSettings = (locale: string, currency: string) => {
-  // Import from formatters.tsx
-  const { updateLocaleSettings: updateSettings } = require('@/utils/formatters');
-  updateSettings(locale, currency);
 };
 
 export default ChangeCalculator;
