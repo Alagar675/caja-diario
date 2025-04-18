@@ -17,6 +17,7 @@ const ChangeCalculator = ({
   const [amountReceived, setAmountReceived] = useState<number>(0);
   const [change, setChange] = useState<number>(0);
 
+  // Use initialized default values with proper formatting
   const [formattedAmountToPay, setFormattedAmountToPay] = useState<string>("0,00");
   const [formattedAmountReceived, setFormattedAmountReceived] = useState<string>("0,00");
 
@@ -34,12 +35,14 @@ const ChangeCalculator = ({
 
   const handleAmountToPayChange = (value: string) => {
     setFormattedAmountToPay(value);
-    setAmountToPay(parseCurrencyValue(value));
+    const parsedValue = parseCurrencyValue(value);
+    setAmountToPay(parsedValue);
   };
 
   const handleAmountReceivedChange = (value: string) => {
     setFormattedAmountReceived(value);
-    setAmountReceived(parseCurrencyValue(value));
+    const parsedValue = parseCurrencyValue(value);
+    setAmountReceived(parsedValue);
   };
 
   if (!isVisible) {

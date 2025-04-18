@@ -20,7 +20,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
     currencySymbol, 
     placeholder = "0,00", 
     className,
-    maxDigits = 25, // Changed to 25 characters max
+    maxDigits = 25,
     inputDirection = "ltr",
     ...props 
   }, ref) => {
@@ -31,6 +31,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const rawValue = e.target.value;
 
+      // Handle empty input
       if (rawValue === '') {
         onChange('0,00');
         return;
@@ -44,15 +45,16 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
         cleanValue = `0${decimalSeparator}`;
       }
       
-      // Check if value exceeds maxDigits (including separators)
-      if (cleanValue.replace(decimalSeparator, '').length > maxDigits) {
+      // Prevent user from entering more than maxDigits (before adding separators)
+      const digitsOnly = cleanValue.replace(decimalSeparator, '');
+      if (digitsOnly.length > maxDigits) {
         return; // Do not update if exceeding max digits
       }
       
-      // Check if we need to apply the thousand separators
+      // Convert to number for formatting
       const numericValue = parseCurrencyValue(cleanValue);
       
-      // Format with the Colombian format pattern 000.000.000.000,00
+      // Format with the proper format pattern (thousands with periods, decimals with comma)
       const formattedValue = formatCurrencyValue(numericValue);
       
       onChange(formattedValue);
