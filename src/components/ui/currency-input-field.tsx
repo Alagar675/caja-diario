@@ -16,7 +16,7 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
     value, 
     onChange, 
     placeholder = "0,00",
-    currencySymbol = "$",
+    currencySymbol = "",
     className,
     ...props 
   }, ref) => {
@@ -30,12 +30,34 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
         return;
       }
       
-      // Only allow digits, decimal separators, and thousand separators
+      // Solo permitir dígitos, separadores decimales y de miles
       const cleanValue = newValue.replace(/[^\d.,]/g, '');
-      onChange(cleanValue);
+      
+      // Formatear mientras el usuario escribe
+      let formattedValue = cleanValue;
+      
+      // Remover todos los separadores existentes
+      const valueWithoutSeparators = cleanValue.replace(/[.,]/g, '');
+      
+      // Agregar separadores de miles
+      const parts = [];
+      for (let i = valueWithoutSeparators.length; i > 0; i -= 3) {
+        parts.unshift(valueWithoutSeparators.slice(Math.max(0, i - 3), i));
+      }
+      
+      // Reconstruir el valor con separadores
+      formattedValue = parts.join('.');
+      
+      // Agregar decimales si existen
+      if (cleanValue.includes(',')) {
+        const decimals = cleanValue.split(',')[1];
+        formattedValue += `,${decimals}`;
+      }
+      
+      onChange(formattedValue);
     };
 
-    // When field gets focus, select all text for easy replacement
+    // Cuando el campo obtiene el foco, seleccionar todo el texto
     const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
       e.target.select();
       if (props.onFocus) {
@@ -57,7 +79,7 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
           onChange={handleValueChange}
           onFocus={handleFocus}
           className={cn(
-            "pl-7 font-mono text-lg tracking-wider",
+            "pl-3 font-normal text-base",
             className
           )}
           style={{ fontVariantNumeric: 'tabular-nums' }}

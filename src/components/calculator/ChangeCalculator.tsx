@@ -1,10 +1,8 @@
 
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { GeoLocalizedCurrencyInput } from "@/components/ui/geo-localized-currency-input";
-import { formatCurrency, updateLocaleSettings } from "@/utils/currency/currencyFormatter";
-import { useGeoLocaleDetection } from "@/hooks/useGeoLocaleDetection";
+import { formatCurrency, parseCurrencyValue } from "@/utils/currency/currencyFormatter";
 import CurrencyConverter from "./CurrencyConverter";
 
 interface ChangeCalculatorProps {
@@ -19,45 +17,28 @@ const ChangeCalculator = ({
   const [change, setChange] = useState<number>(0);
   const [formattedAmountToPay, setFormattedAmountToPay] = useState<string>("");
   const [formattedAmountReceived, setFormattedAmountReceived] = useState<string>("");
-  const [currencyCode, setCurrencyCode] = useState<string>(""); 
-  
-  const localeInfo = useGeoLocaleDetection();
-  
-  // Set default currency code when locale is detected
-  useEffect(() => {
-    if (!localeInfo.loading && !currencyCode) {
-      setCurrencyCode(localeInfo.currencyCode);
-    }
-  }, [localeInfo.loading, localeInfo.currencyCode, currencyCode]);
+  const [currencyCode, setCurrencyCode] = useState<string>("");
 
   // Calculate change automatically when amounts change
   useEffect(() => {
-    calculateChange();
-  }, [amountToPay, amountReceived]);
-
-  const calculateChange = () => {
     const calculatedChange = amountReceived - amountToPay;
     setChange(calculatedChange >= 0 ? calculatedChange : 0);
-  };
+  }, [amountToPay, amountReceived]);
 
   const handleAmountToPayChange = (value: string) => {
     setFormattedAmountToPay(value);
-    const parsedValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
-    setAmountToPay(isNaN(parsedValue) ? 0 : parsedValue);
+    const numericValue = parseCurrencyValue(value);
+    setAmountToPay(numericValue);
   };
 
   const handleAmountReceivedChange = (value: string) => {
     setFormattedAmountReceived(value);
-    const parsedValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
-    setAmountReceived(isNaN(parsedValue) ? 0 : parsedValue);
+    const numericValue = parseCurrencyValue(value);
+    setAmountReceived(numericValue);
   };
   
   const handleCurrencyChange = (currency: string) => {
     setCurrencyCode(currency);
-    // Update the global formatter settings when currency changes
-    if (localeInfo.locale) {
-      updateLocaleSettings(localeInfo.locale, currency);
-    }
   };
 
   if (!isVisible) {
@@ -69,9 +50,6 @@ const ChangeCalculator = ({
       <CardHeader className="bg-blue-50 border-b">
         <CardTitle className="text-center text-blue-700 text-xl">
           Calculadora de Cambio
-          <div className="text-xs font-normal text-gray-600 mt-1">
-            {currencyCode || localeInfo.currencyCode}
-          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4 pt-4">
@@ -94,17 +72,14 @@ const ChangeCalculator = ({
         </div>
 
         <div className="space-y-2 pt-2 border-t">
-          <Label htmlFor="change">Cambio</Label>
           <div 
-            id="change" 
-            className="h-10 flex items-center justify-end px-3 rounded-md bg-gray-100 font-mono font-medium text-lg tracking-wide"
+            className="h-10 flex items-center justify-end px-3 rounded-md bg-gray-100 text-lg"
             style={{ fontVariantNumeric: 'tabular-nums' }}
           >
             {formatCurrency(change)}
           </div>
         </div>
         
-        {/* Añadir el conversor de divisas */}
         <CurrencyConverter />
       </CardContent>
     </Card>
