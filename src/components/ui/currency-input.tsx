@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import { Input } from "@/components/ui/input"
 import { formatCurrencyValue, parseCurrencyValue } from "@/utils/formatters"
@@ -19,9 +18,9 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
     onChange, 
     currencySymbol, 
     placeholder = "0,00", 
-    className, 
-    maxDigits = 30, // Set a very high maximum by default
-    inputDirection = "ltr", // Default to left-to-right input
+    className,
+    maxDigits = 30,
+    inputDirection = "ltr",
     ...props 
   }, ref) => {
     const { decimalSeparator, thousandSeparator, currencySymbol: localeCurrencySymbol } = useCurrencyLocale();
@@ -44,8 +43,6 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
         cleanValue = `0${decimalSeparator}`;
       }
       
-      // No longer limiting the number of digits
-      
       // Check if we need to apply the thousand separators
       const numericValue = parseCurrencyValue(cleanValue);
       
@@ -64,8 +61,8 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
     };
 
     return (
-      <div className="relative">
-        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+      <div className="relative w-full">
+        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 z-10">
           {symbolToUse}
         </span>
         <Input
@@ -75,11 +72,12 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
           value={value}
           onChange={handleValueChange}
           onFocus={handleFocus}
-          className={`pl-7 ${inputDirection === 'rtl' ? 'text-right' : 'text-left'} font-mono text-lg tracking-wider ${className}`}
+          className={`pl-7 w-full ${inputDirection === 'rtl' ? 'text-right' : 'text-left'} font-mono text-lg tracking-wider ${className}`}
           style={{ 
             fontVariantNumeric: 'tabular-nums',
             direction: inputDirection,
-            textAlign: inputDirection === 'rtl' ? 'right' : 'left'
+            textAlign: inputDirection === 'rtl' ? 'right' : 'left',
+            letterSpacing: '0.05em'
           }}
           inputMode="decimal"
           {...props}
