@@ -52,13 +52,14 @@ const AmountCategoryFields: React.FC<AmountCategoryFieldsProps> = ({
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="space-y-2">
         <EnhancedCurrencyInput
-          value={amount}
+          value=""
           onChange={setAmount}
           onCurrencyChange={setCurrencyCode}
           label={label}
           showFeedback={true}
           required
           autoFocus
+          placeholder=""
           showConversion={false}
         />
       </div>
