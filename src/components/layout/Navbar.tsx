@@ -41,13 +41,6 @@ const Navbar = () => {
     path: "/reports"
   }];
 
-  if (user && isAdmin) {
-    menuItems.push({
-      name: "Administrador",
-      path: "/admin/settings"
-    });
-  }
-
   const formattedName = user ? formatName(user.name) : '';
   const userGender = user ? getUserGender(user.name) : 'male';
   
@@ -74,31 +67,11 @@ const Navbar = () => {
 
         <nav className="hidden md:flex items-center space-x-6">
           {user && (
-            <>
-              <NavbarMenu 
-                menuItems={menuItems} 
-                saveLastAction={saveLastAction} 
-                onLogout={handleLogout}
-              />
-              {isAdmin && (
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={() => navigate("/admin/settings")}
-                  title="Panel de Administrador"
-                >
-                  <Users className="h-5 w-5" />
-                </Button>
-              )}
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={() => navigate("/settings/currency")}
-                title="Configuración de moneda"
-              >
-                <Settings className="h-5 w-5" />
-              </Button>
-            </>
+            <NavbarMenu 
+              menuItems={menuItems} 
+              saveLastAction={saveLastAction} 
+              onLogout={handleLogout}
+            />
           )}
           
           {!user && (

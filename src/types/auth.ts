@@ -1,3 +1,4 @@
+
 export interface User {
   id: string;
   name: string;
@@ -16,4 +17,3 @@ export interface AuthContextType {
   logout: () => void;
 }
 
-export type { User, AuthContextType };

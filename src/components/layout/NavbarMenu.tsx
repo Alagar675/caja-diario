@@ -1,9 +1,10 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, Settings, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useLocalStorageState from "@/hooks/useLocalStorageState";
+import { useAuth } from "@/context/AuthContext";
 
 interface NavbarMenuProps {
   menuItems: Array<{ name: string; path: string }>;
@@ -16,10 +17,11 @@ interface NavbarMenuProps {
 const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, closeMenu }: NavbarMenuProps) => {
   const navigate = useNavigate();
   const { clearRecoveryState } = useLocalStorageState();
+  const { isAdmin } = useAuth();
 
   const handleNavigation = (path: string) => {
     saveLastAction(path);
-    clearRecoveryState(); // Clear recovery state when navigating to a new page
+    clearRecoveryState();
     navigate(path);
     if (isMobile && closeMenu) {
       closeMenu();
@@ -42,19 +44,25 @@ const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, clo
         </a>
       ))}
       
-      {/* Cambiar nombre a Configuración de moneda */}
-      <a
-        href="/settings/currency"
-        className={isMobile ? "block py-2 text-base font-medium transition-colors hover:text-primary" : "text-sm font-medium transition-colors hover:text-primary"}
-        onClick={(e) => {
-          e.preventDefault();
-          handleNavigation("/settings/currency");
-        }}
-      >
-        Configuración
-      </a>
-      
-      <div className={isMobile ? "flex flex-col space-y-2 pt-2 border-t" : "flex items-center space-x-4"}>
+      <div className={isMobile ? "flex flex-col space-y-2 pt-2 border-t" : "flex items-center space-x-2"}>
+        {isAdmin && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handleNavigation("/admin/settings")}
+            title="Panel de Administrador"
+          >
+            <Users className="h-4 w-4" />
+          </Button>
+        )}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => handleNavigation("/settings/currency")}
+          title="Configuración de moneda"
+        >
+          <Settings className="h-4 w-4" />
+        </Button>
         <Button 
           variant={isMobile ? "outline" : "outline"} 
           size={isMobile ? "default" : "sm"}
@@ -70,3 +78,4 @@ const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, clo
 };
 
 export default NavbarMenu;
+
