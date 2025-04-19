@@ -1,4 +1,3 @@
-
 export interface User {
   id: string;
   name: string;
@@ -16,3 +15,5 @@ export interface AuthContextType {
   register: (name: string, email: string, password: string, role?: "admin" | "user") => Promise<void>;
   logout: () => void;
 }
+
+export type { User, AuthContextType };
