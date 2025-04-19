@@ -13,7 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAuth } from "@/context/AuthContext";
@@ -134,16 +134,26 @@ const Login = () => {
                     <div className="grid gap-2">
                       <Label htmlFor="code">Código de verificación</Label>
                       <div className="flex justify-center py-4">
-                        <InputOTP maxLength={6} {...verificationForm.register("code")}>
-                          <InputOTPGroup>
-                            <InputOTPSlot index={0} />
-                            <InputOTPSlot index={1} />
-                            <InputOTPSlot index={2} />
-                            <InputOTPSlot index={3} />
-                            <InputOTPSlot index={4} />
-                            <InputOTPSlot index={5} />
-                          </InputOTPGroup>
-                        </InputOTP>
+                        <Controller
+                          control={verificationForm.control}
+                          name="code"
+                          render={({ field }) => (
+                            <InputOTP 
+                              maxLength={6} 
+                              value={field.value}
+                              onChange={(value) => field.onChange(value)}
+                            >
+                              <InputOTPGroup>
+                                <InputOTPSlot index={0} />
+                                <InputOTPSlot index={1} />
+                                <InputOTPSlot index={2} />
+                                <InputOTPSlot index={3} />
+                                <InputOTPSlot index={4} />
+                                <InputOTPSlot index={5} />
+                              </InputOTPGroup>
+                            </InputOTP>
+                          )}
+                        />
                       </div>
                       {verificationForm.formState.errors.code && (
                         <p className="text-sm text-red-500 text-center">{verificationForm.formState.errors.code?.message}</p>
