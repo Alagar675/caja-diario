@@ -16,6 +16,7 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
     className,
     showFeedback = false,
     hideDecimals = false,
+    inputDirection = "ltr",
     ...props 
   }, ref) => {
     const { toast } = useToast();
@@ -64,10 +65,14 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
           onBlur={handleBlur}
           className={cn(
             "font-mono text-base tracking-wider pl-3 pr-3",
+            inputDirection === 'rtl' ? 'text-right' : 'text-left',
             isFocused && "border-primary",
             className
           )}
-          style={{ fontVariantNumeric: 'tabular-nums' }}
+          style={{ 
+            fontVariantNumeric: 'tabular-nums',
+            direction: inputDirection
+          }}
           maxLength={20}
           aria-label="Campo de entrada de moneda"
           {...props}

@@ -8,5 +8,5 @@ export interface CurrencyInputProps extends Omit<React.InputHTMLAttributes<HTMLI
   className?: string;
   showFeedback?: boolean;
   hideDecimals?: boolean;
+  inputDirection?: "ltr" | "rtl";
 }
-
