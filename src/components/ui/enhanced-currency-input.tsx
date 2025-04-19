@@ -1,11 +1,9 @@
 
 import * as React from "react";
 import { CurrencyInputField } from "@/components/ui/currency-input-field";
-import { CurrencyLabel } from "@/components/ui/currency-label";
-import { CurrencyInfoDisplay } from "@/components/ui/currency-info-display";
-import { getCurrencyDisplayInfo } from "@/utils/currency/currencyUtils";
-import { useCurrencyConversion } from "@/hooks/useCurrencyConversion";
 import { useGeoLocaleDetection } from "@/hooks/useGeoLocaleDetection";
+import { CurrencyInputLoading } from "./currency/currency-input-loading";
+import { CurrencyInputWrapper } from "./currency/currency-input-wrapper";
 
 interface EnhancedCurrencyInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange"> {
   value: string;
@@ -28,12 +26,10 @@ export const EnhancedCurrencyInput = React.forwardRef<HTMLInputElement, Enhanced
     helpText,
     showConversion = false,
     showFeedback = false,
-    targetCurrency,
     className,
     ...props 
   }, ref) => {
     const localeInfo = useGeoLocaleDetection();
-    const { convertValue, loading: conversionLoading } = useCurrencyConversion();
     
     React.useEffect(() => {
       if (!localeInfo.loading) {
@@ -41,51 +37,28 @@ export const EnhancedCurrencyInput = React.forwardRef<HTMLInputElement, Enhanced
       }
     }, [localeInfo.currencyCode, localeInfo.loading, onCurrencyChange]);
     
-    const currencyInfo = React.useMemo(() => {
-      return getCurrencyDisplayInfo(localeInfo.currencyCode);
-    }, [localeInfo.currencyCode]);
-    
     if (localeInfo.loading) {
-      return (
-        <div className="space-y-2">
-          <CurrencyLabel label={label} />
-          <div className="flex items-center gap-2 animate-pulse">
-            <div className="h-10 flex-1 bg-gray-200 rounded"></div>
-          </div>
-        </div>
-      );
+      return <CurrencyInputLoading label={label} />;
     }
     
     return (
-      <div className="space-y-2 relative">
-        <CurrencyLabel 
-          label={label} 
-          tooltipContent="Los últimos dos dígitos corresponden a los decimales"
+      <CurrencyInputWrapper
+        label={label}
+        currencyCode={localeInfo.currencyCode}
+        error={localeInfo.error}
+        tooltipContent="Los últimos dos dígitos corresponden a los decimales"
+        helpText={helpText}
+      >
+        <CurrencyInputField
+          ref={ref}
+          value={value}
+          onChange={onChange}
+          placeholder=""
+          className={className}
+          showFeedback={showFeedback}
+          {...props}
         />
-        
-        <div className="relative">
-          <CurrencyInputField
-            ref={ref}
-            value={value}
-            onChange={onChange}
-            placeholder=""
-            currencySymbol={currencyInfo.symbol}
-            symbolPosition={currencyInfo.position}
-            className={className}
-            showFeedback={showFeedback}
-            {...props}
-          />
-          
-          {helpText && (
-            <p className="text-xs text-gray-500 mt-1">{helpText}</p>
-          )}
-        </div>
-        
-        <CurrencyInfoDisplay 
-          currencyCode={localeInfo.currencyCode}
-          error={localeInfo.error}
-        />
-      </div>
+      </CurrencyInputWrapper>
     );
   }
 );
