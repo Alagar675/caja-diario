@@ -29,7 +29,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const rawValue = e.target.value;
 
-      if (rawValue === '') {
+      if (!rawValue) {
         onChange('');
         return;
       }
@@ -42,8 +42,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
       }
       
       const numericValue = parseCurrencyValue(cleanValue);
-      
-      const formattedValue = cleanValue ? formatCurrencyValue(numericValue) : '';
+      const formattedValue = numericValue === 0 ? '' : formatCurrencyValue(numericValue);
       
       onChange(formattedValue);
     };

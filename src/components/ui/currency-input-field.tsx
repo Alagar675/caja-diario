@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -24,8 +23,14 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
     const [isFocused, setIsFocused] = React.useState(false);
     
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const formattedValue = formatCurrencyInput(e.target.value, hideDecimals);
-      onChange(formattedValue === "0,00" ? "" : formattedValue);
+      const rawValue = e.target.value;
+      if (!rawValue) {
+        onChange("");
+        return;
+      }
+
+      const formattedValue = formatCurrencyInput(rawValue, hideDecimals);
+      onChange(formattedValue);
 
       if (showFeedback && isFirstInput && formattedValue.length > 0) {
         toast({
