@@ -12,9 +12,8 @@ export const formatCurrencyInput = (value: string, hideDecimals: boolean = false
   const decimalPart = len > 2 ? value.slice(-2) : value.padStart(2, '0');
   const integerPart = len > 2 ? value.slice(0, -2) : value;
   
-  // Add thousand separators only if there's a value
-  const formattedInteger = integerPart === '0' ? '' : 
-    integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  // Add thousand separators immediately as numbers are typed
+  const formattedInteger = integerPart ? integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '';
   
-  return hideDecimals ? formattedInteger : `${formattedInteger || ''}${formattedInteger ? ',' : ''}${decimalPart}`;
+  return hideDecimals ? formattedInteger : `${formattedInteger}${formattedInteger ? ',' : ''}${decimalPart}`;
 };

@@ -56,9 +56,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
 
     return (
       <div className="relative w-full">
-        <span className={`absolute top-1/2 transform -translate-y-1/2 text-gray-500 z-10 ${
-          inputDirection === 'rtl' ? 'right-3' : 'left-3'
-        }`}>
+        <span className="absolute top-1/2 transform -translate-y-1/2 text-gray-500 z-10 left-3">
           {symbolToUse}
         </span>
         <Input
@@ -70,10 +68,10 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
           value={value || ""}
           onChange={handleValueChange}
           onFocus={handleFocus}
-          className={`${inputDirection === 'rtl' ? 'pr-7 text-right' : 'pl-7 text-left'} w-full font-mono text-lg tracking-wider ${className}`}
+          className={`pl-7 text-left w-full font-mono text-lg tracking-wider ${className}`}
           style={{ 
             fontVariantNumeric: 'tabular-nums',
-            direction: inputDirection
+            direction: 'ltr'
           }}
           {...props}
         />

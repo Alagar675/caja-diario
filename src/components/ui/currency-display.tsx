@@ -20,7 +20,7 @@ export function CurrencyDisplay({
   showSymbol = true,
   size = "md",
   variant = "default",
-  align = "right"
+  align = "left" // Changed default alignment to left
 }: CurrencyDisplayProps) {
   const { symbol, position } = getCurrencyDisplayInfo(currencyCode);
   const formattedValue = formatCurrencyValue(value);

@@ -69,14 +69,13 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
           onFocus={handleFocus}
           onBlur={handleBlur}
           className={cn(
-            "font-mono text-base tracking-wider pl-3 pr-3",
-            inputDirection === 'rtl' ? 'text-right' : 'text-left',
+            "font-mono text-base tracking-wider pl-3 pr-3 text-left",
             isFocused && "border-primary",
             className
           )}
           style={{ 
             fontVariantNumeric: 'tabular-nums',
-            direction: inputDirection
+            direction: 'ltr'
           }}
           maxLength={20}
           aria-label="Campo de entrada de moneda"
