@@ -53,6 +53,16 @@ const EnhancedCurrencyConverter: React.FC<EnhancedCurrencyConverterProps> = ({ i
     const result = convertValue(numericAmount, sourceCurrency, targetCurrency);
     setConvertedResult(result);
   };
+
+  const handleAmountChange = (value: string) => {
+    // Clear input if it starts with non-numeric characters
+    if (value.match(/^[^1-9]/)) {
+      setAmount('');
+      return;
+    }
+    
+    setAmount(value);
+  };
   
   if (!isVisible) return null;
   
@@ -76,9 +86,10 @@ const EnhancedCurrencyConverter: React.FC<EnhancedCurrencyConverterProps> = ({ i
             <div className="space-y-2">
               <CurrencyInputField
                 value={amount}
-                onChange={setAmount}
+                onChange={handleAmountChange}
                 className="w-full"
                 placeholder="0,00"
+                inputDirection="rtl"
               />
             </div>
             

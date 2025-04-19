@@ -1,7 +1,6 @@
 
-
 export const formatCurrencyInput = (value: string, hideDecimals: boolean = false): string => {
-  // Remove any leading separators, symbols, and non-numeric characters
+  // Remove any leading non-numeric characters (except digits 1-9)
   value = value.replace(/^[^1-9]*/, '').replace(/[^\d]/g, "");
   
   if (value.length === 0) {
@@ -24,8 +23,13 @@ export const stripNonNumeric = (value: string): string => {
 };
 
 export const handleCurrencyInput = (value: string, onChange: (value: string) => void) => {
+  // Clear input if starts with non-numeric characters from 1-9
+  if (value.match(/^[^1-9]/)) {
+    onChange('');
+    return;
+  }
+  
   const numericValue = stripNonNumeric(value);
   const formattedValue = formatCurrencyInput(numericValue);
   onChange(formattedValue);
 };
-

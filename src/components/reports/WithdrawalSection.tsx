@@ -30,7 +30,18 @@ const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
   withdrawalSummary,
   setWithdrawalHistoryDialog
 }) => {
-  return <div className="mt-6 border-t pt-6">
+  const handleAmountChange = (value: string) => {
+    // Clear input if it starts with non-numeric characters
+    if (value.match(/^[^1-9]/)) {
+      setWithdrawalAmount('');
+      return;
+    }
+    
+    setWithdrawalAmount(value);
+  };
+  
+  return (
+    <div className="mt-6 border-t pt-6">
       <div className="flex items-center justify-center mb-3 rounded-lg">
         <h3 className="text-lg text-red-900 text-center font-medium">Retiro de Saldos Actuales</h3>
       </div>
@@ -65,9 +76,9 @@ const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
             <div className="flex-1">
               <CurrencyInput 
                 value={withdrawalAmount} 
-                onChange={setWithdrawalAmount}
+                onChange={handleAmountChange}
                 placeholder="0,00"
-                inputDirection="ltr" // Use left-to-right input for better usability
+                inputDirection="rtl"
               />
             </div>
             <Button 
@@ -110,7 +121,8 @@ const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default WithdrawalSection;

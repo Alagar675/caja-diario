@@ -1,5 +1,4 @@
 
-
 import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -15,7 +14,7 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
     className,
     showFeedback = false,
     hideDecimals = false,
-    inputDirection = "ltr",
+    inputDirection = "rtl", // Ensure RTL is set as default
     ...props 
   }, ref) => {
     const { toast } = useToast();
@@ -87,4 +86,3 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
 );
 
 CurrencyInputField.displayName = "CurrencyInputField";
-

@@ -56,6 +56,7 @@ export const EnhancedCurrencyInput = React.forwardRef<HTMLInputElement, Enhanced
           placeholder=""
           className={className}
           showFeedback={showFeedback}
+          inputDirection="rtl"
           {...props}
         />
       </CurrencyInputWrapper>

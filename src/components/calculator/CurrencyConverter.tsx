@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -39,6 +40,20 @@ const CurrencyConverter = () => {
     setToCurrency(temp);
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    
+    // Clear input if it starts with non-numeric characters
+    if (value.match(/^[^1-9]/)) {
+      setAmount('');
+      return;
+    }
+    
+    // Only allow digits, dots, and commas
+    const cleanValue = value.replace(/[^\d.,]/g, '');
+    setAmount(cleanValue);
+  };
+
   const handleRefreshRates = () => {
     window.location.reload();
   };
@@ -61,7 +76,7 @@ const CurrencyConverter = () => {
           <Input
             id="amount"
             value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            onChange={handleInputChange}
             className="font-mono text-right"
             style={{ 
               fontVariantNumeric: 'tabular-nums',
