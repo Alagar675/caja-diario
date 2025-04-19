@@ -7,6 +7,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,7 @@ import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 
 const formSchema = z.object({
+  name: z.string().min(1, { message: "Por favor, ingrese su nombre." }),
   email: z.string().email({ message: "Por favor, ingrese un correo electrónico válido." }),
   password: z.string().min(6, { message: "La contraseña debe tener al menos 6 caracteres." }),
 });
@@ -36,12 +38,11 @@ const Register = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await signup(values.email, values.password, "");
-      toast.success('Registro exitoso! Redirigiendo al panel de control...');
-      navigate('/dashboard');
+      await signup(values.name, values.email, values.password);
+      toast.success('Registro exitoso! Redirigiendo al inicio de sesión...');
+      navigate('/login');
     } catch (error: any) {
       console.error("Registration error:", error);
-      toast.error(`Error al registrarse: ${error.message || 'Por favor, inténtelo de nuevo.'}`);
     }
   };
 
@@ -54,10 +55,23 @@ const Register = () => {
               <CardHeader>
                 <CardTitle>Crear una cuenta</CardTitle>
                 <CardDescription>
-                  Ingrese su correo electrónico y contraseña para registrarse.
+                  Ingrese sus datos para registrarse.
                 </CardDescription>
               </CardHeader>
               <CardContent className="grid gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="name">Nombre completo</Label>
+                  <Input
+                    id="name"
+                    placeholder="Tu nombre"
+                    type="text"
+                    disabled={isSubmitting}
+                    {...register("name")}
+                  />
+                  {errors.name && (
+                    <p className="text-sm text-red-500">{errors.name?.message}</p>
+                  )}
+                </div>
                 <div className="grid gap-2">
                   <Label htmlFor="email">Correo electrónico</Label>
                   <Input
@@ -87,18 +101,22 @@ const Register = () => {
                     <p className="text-sm text-red-500">{errors.password?.message}</p>
                   )}
                 </div>
-                <Button disabled={isSubmitting} onClick={handleSubmit(onSubmit)}>
+              </CardContent>
+              <CardFooter className="flex flex-col space-y-2">
+                <Button 
+                  className="w-full" 
+                  disabled={isSubmitting} 
+                  onClick={handleSubmit(onSubmit)}
+                >
                   {isSubmitting ? "Creando cuenta..." : "Crear cuenta"}
                 </Button>
-              </CardContent>
-              <div className="px-6 py-4">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-center">
                   ¿Ya tienes una cuenta?{" "}
                   <Link to="/login" className="text-primary hover:underline">
                     Inicia sesión
                   </Link>
                 </p>
-              </div>
+              </CardFooter>
             </Card>
           </div>
         </div>

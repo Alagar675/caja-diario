@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Menu, X, Settings } from "lucide-react";
+import { Menu, X, Settings, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { formatName, getUserGender } from "@/utils/userUtils";
@@ -16,7 +16,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
   const [showRecoveryAlert, setShowRecoveryAlert] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
   const { saveLastAction, checkRecoveryNeeded } = useLocalStorageState();
   
@@ -40,6 +40,14 @@ const Navbar = () => {
     name: "Informes",
     path: "/reports"
   }];
+
+  // Add admin settings menu item if user is admin
+  if (user && isAdmin) {
+    menuItems.push({
+      name: "Administración",
+      path: "/admin/settings"
+    });
+  }
 
   const formattedName = user ? formatName(user.name) : '';
   const userGender = user ? getUserGender(user.name) : 'male';
@@ -68,6 +76,16 @@ const Navbar = () => {
                 saveLastAction={saveLastAction} 
                 onLogout={handleLogout}
               />
+              {isAdmin && (
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => navigate("/admin/settings")}
+                  title="Configuración del Sistema"
+                >
+                  <Users className="h-5 w-5" />
+                </Button>
+              )}
               <Button 
                 variant="ghost" 
                 size="icon" 
