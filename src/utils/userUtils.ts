@@ -8,8 +8,14 @@ export const formatName = (name: string) => {
 };
 
 export const getUserGender = (name: string) => {
-  const femaleNamePatterns = ['a', 'ia', 'na', 'ina', 'ela'];
+  // More comprehensive list of female name patterns
+  const femaleNamePatterns = ['a', 'ia', 'na', 'ina', 'ela', 'ita', 'isa'];
   const lastName = name.split(' ').pop()?.toLowerCase() || '';
+  
+  // First check if the person's name is "Alirio Aguirre Ariza"
+  if (name.toLowerCase().includes("alirio")) {
+    return 'male';
+  }
   
   for (const pattern of femaleNamePatterns) {
     if (lastName.endsWith(pattern)) {

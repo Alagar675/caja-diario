@@ -51,6 +51,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     }
     
+    // Check if admin user exists, if not create it
+    const usersStr = localStorage.getItem("app_users");
+    const users = usersStr ? JSON.parse(usersStr) : [];
+    
+    if (users.length === 0) {
+      // Create default admin user
+      const adminUser = {
+        id: "user-admin-" + Date.now(),
+        name: "Alirio Aguirre Ariza",
+        email: "admin@example.com",
+        password: "admin123",
+        role: "admin"
+      };
+      
+      localStorage.setItem("app_users", JSON.stringify([adminUser]));
+      console.log("Default admin user created");
+    }
+    
     setIsLoading(false);
   }, []);
 

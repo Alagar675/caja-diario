@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import {
   Card,
@@ -14,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
-import { Trash2, Edit } from "lucide-react";
+import { Trash2, Edit, Shield } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -32,6 +33,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getUserGender } from "@/utils/userUtils";
 
 const userFormSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
@@ -48,11 +50,11 @@ interface UserData {
 }
 
 const UserManagement = () => {
-  const { register } = useAuth();
+  const { register: registerUser, user: currentUser } = useAuth();
   const [users, setUsers] = useState<UserData[]>([]);
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
-  const [currentUser, setCurrentUser] = useState<UserData | null>(null);
+  const [currentSelectedUser, setCurrentSelectedUser] = useState<UserData | null>(null);
 
   const {
     register: registerForm,
@@ -97,7 +99,7 @@ const UserManagement = () => {
 
   const onAddUser = async (data: z.infer<typeof userFormSchema>) => {
     try {
-      await register(data.name, data.email, data.password, data.role);
+      await registerUser(data.name, data.email, data.password, data.role);
       toast.success("Usuario agregado exitosamente");
       reset();
       setOpenAddDialog(false);
@@ -108,7 +110,7 @@ const UserManagement = () => {
   };
 
   const onEditUser = async (data: z.infer<typeof userFormSchema>) => {
-    if (!currentUser) return;
+    if (!currentSelectedUser) return;
     
     try {
       // Get all users
@@ -116,7 +118,7 @@ const UserManagement = () => {
       if (!usersStr) return;
       
       const allUsers = JSON.parse(usersStr);
-      const userIndex = allUsers.findIndex((u: any) => u.id === currentUser.id);
+      const userIndex = allUsers.findIndex((u: any) => u.id === currentSelectedUser.id);
       
       if (userIndex === -1) {
         toast.error("Usuario no encontrado");
@@ -149,6 +151,22 @@ const UserManagement = () => {
       if (!usersStr) return;
       
       const allUsers = JSON.parse(usersStr);
+      
+      // Check if trying to delete the only admin
+      const adminUsers = allUsers.filter((u: any) => u.role === "admin");
+      const deletingUser = allUsers.find((u: any) => u.id === userId);
+      
+      if (adminUsers.length === 1 && deletingUser.role === "admin") {
+        toast.error("No se puede eliminar al único administrador");
+        return;
+      }
+      
+      // Check if trying to delete current user
+      if (currentUser && deletingUser.id === currentUser.id) {
+        toast.error("No puedes eliminar tu propio usuario");
+        return;
+      }
+      
       const updatedUsers = allUsers.filter((u: any) => u.id !== userId);
       
       localStorage.setItem("app_users", JSON.stringify(updatedUsers));
@@ -160,12 +178,16 @@ const UserManagement = () => {
   };
 
   const editUser = (user: UserData) => {
-    setCurrentUser(user);
+    setCurrentSelectedUser(user);
     setValue("name", user.name);
     setValue("email", user.email);
     setValue("password", ""); // Don't set password for security
     setValue("role", user.role);
     setOpenEditDialog(true);
+  };
+
+  const isAdminUser = (user: UserData) => {
+    return user.name.toLowerCase().includes("alirio") || user.role === "admin";
   };
 
   return (
@@ -207,7 +229,10 @@ const UserManagement = () => {
               ) : (
                 users.map((user) => (
                   <TableRow key={user.id}>
-                    <TableCell>{user.name}</TableCell>
+                    <TableCell className="flex items-center gap-2">
+                      {isAdminUser(user) && <Shield className="h-4 w-4 text-purple-600" title="Usuario Administrador Principal" />}
+                      {user.name}
+                    </TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>
                       <span className={`capitalize font-medium ${user.role === "admin" ? "text-purple-600" : "text-green-600"}`}>
@@ -218,7 +243,13 @@ const UserManagement = () => {
                       <Button variant="ghost" size="icon" onClick={() => editUser(user)}>
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => deleteUser(user.id)}>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={() => deleteUser(user.id)}
+                        disabled={isAdminUser(user) && user.name === "Alirio Aguirre Ariza"}
+                        title={isAdminUser(user) && user.name === "Alirio Aguirre Ariza" ? "No se puede eliminar al administrador principal" : ""}
+                      >
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </TableCell>
@@ -310,6 +341,7 @@ const UserManagement = () => {
                 id="edit-name"
                 placeholder="Nombre del usuario"
                 {...registerForm("name")}
+                disabled={currentSelectedUser?.name === "Alirio Aguirre Ariza"}
               />
               {errors.name && (
                 <p className="text-sm text-red-500">{errors.name.message}</p>
@@ -342,8 +374,9 @@ const UserManagement = () => {
             <div className="grid gap-2">
               <Label htmlFor="edit-role">Rol</Label>
               <Select 
-                defaultValue={currentUser?.role || "user"} 
+                defaultValue={currentSelectedUser?.role || "user"} 
                 onValueChange={val => setValue("role", val as "admin" | "user")}
+                disabled={currentSelectedUser?.name === "Alirio Aguirre Ariza"}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccionar rol" />
