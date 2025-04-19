@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -35,7 +36,7 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
       if (showFeedback && isFirstInput && formattedValue.length > 0) {
         toast({
           title: "Formato de moneda",
-          description: "Los últimos dos dígitos corresponden a los decimales",
+          description: "Ingrese los números de izquierda a derecha. Los últimos dos dígitos serán los decimales",
           duration: 3000,
         });
         setIsFirstInput(false);
