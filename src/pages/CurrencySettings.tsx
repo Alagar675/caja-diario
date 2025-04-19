@@ -1,6 +1,6 @@
-
 import React, { useState, useEffect } from "react";
 import AppLayout from "@/components/layout/AppLayout";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
   Card, 
   CardContent, 
@@ -19,9 +19,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
-import { Globe, CheckCircle, RefreshCcw, AlertTriangle } from "lucide-react";
-import { useGeoLocaleDetection } from "@/hooks/useGeoLocaleDetection";
+import { useToast } from "@/hooks/use-toast";
+import { CheckCircle, RefreshCcw, AlertTriangle, Settings2 } from "lucide-react";
 import { currencyMap } from "@/utils/currency/currencyHelpers";
 import { updateLocaleSettings } from "@/utils/currency/currencyFormatter";
 import { useCurrencyConversion } from "@/hooks/useCurrencyConversion";
@@ -37,28 +36,37 @@ import {
 
 const CurrencySettings = () => {
   const { toast } = useToast();
-  const localeInfo = useGeoLocaleDetection();
   const [selectedCurrency, setSelectedCurrency] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const { rates, loading: ratesLoading, error: ratesError } = useCurrencyConversion();
+  const [showFirstTimeAlert, setShowFirstTimeAlert] = useState(false);
   
   useEffect(() => {
-    if (!localeInfo.loading && !selectedCurrency) {
-      setSelectedCurrency(localeInfo.currencyCode);
+    const hasSelectedCurrency = localStorage.getItem('userSelectedCurrency');
+    if (!hasSelectedCurrency) {
+      setShowFirstTimeAlert(true);
+    } else {
+      setSelectedCurrency(hasSelectedCurrency);
     }
-  }, [localeInfo.loading, localeInfo.currencyCode, selectedCurrency]);
+  }, []);
   
   const handleSaveCurrency = () => {
+    if (!selectedCurrency) {
+      toast({
+        title: "Error",
+        description: "Debe seleccionar una moneda",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSaving(true);
     
-    // Simular un tiempo de guardado
     setTimeout(() => {
-      // Guardar en localStorage para persistencia
       localStorage.setItem('userSelectedCurrency', selectedCurrency);
       
-      // Actualizar la configuración global
-      updateLocaleSettings(localeInfo.locale, selectedCurrency);
+      updateLocaleSettings('es-CO', selectedCurrency);
       
       toast({
         title: "Configuración guardada",
@@ -68,6 +76,7 @@ const CurrencySettings = () => {
       
       setLastUpdate(new Date());
       setIsSaving(false);
+      setShowFirstTimeAlert(false);
     }, 800);
   };
   
@@ -84,7 +93,7 @@ const CurrencySettings = () => {
     if (!rates || Object.keys(rates).length === 0) return [];
     
     return Object.entries(rates)
-      .filter(([code]) => code !== localeInfo.currencyCode) // Remove base currency
+      .filter(([code]) => code !== selectedCurrency) // Remove selected currency
       .sort((a, b) => a[0].localeCompare(b[0])); // Sort alphabetically
   };
 
@@ -92,8 +101,20 @@ const CurrencySettings = () => {
     <div className="min-h-screen w-full bg-background">
       <AppLayout initialSidebarOpen={true}>
         <div className="w-full container mx-auto py-8 max-w-7xl px-4 sm:px-6 lg:px-8">
+          {showFirstTimeAlert && (
+            <Alert variant="destructive" className="mb-6 animate-bounce">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                ¡Importante! Debe seleccionar una moneda principal para la aplicación
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-            <h1 className="text-3xl font-bold tracking-tight">Configuración de Moneda</h1>
+            <div className="flex items-center gap-2">
+              <Settings2 className="h-6 w-6 text-primary" />
+              <h1 className="text-3xl font-bold tracking-tight">Configuración de Moneda</h1>
+            </div>
             
             {lastUpdate && (
               <Badge variant="outline" className="flex items-center gap-1">
@@ -114,29 +135,11 @@ const CurrencySettings = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-1">
-                  <label className="text-sm font-medium">Moneda actual</label>
-                  <div className="flex items-center gap-2 text-sm p-2 bg-gray-50 rounded-md">
-                    <Globe className="h-4 w-4 text-gray-500" />
-                    <span className="font-medium">
-                      {localeInfo.loading 
-                        ? "Detectando..." 
-                        : `${localeInfo.currencyCode}`}
-                    </span>
-                    <span className="text-gray-500">
-                      {localeInfo.loading 
-                        ? "" 
-                        : `- ${currencyMap[localeInfo.currencyCode]?.name || "Desconocida"}`}
-                    </span>
-                  </div>
-                </div>
-                
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Seleccionar moneda</label>
                   <Select 
                     value={selectedCurrency} 
                     onValueChange={setSelectedCurrency}
-                    disabled={localeInfo.loading}
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Seleccionar moneda" />
@@ -159,22 +162,11 @@ const CurrencySettings = () => {
                     </p>
                   )}
                 </div>
-                
-                <div className="pt-4 text-sm text-gray-500">
-                  <p>Esta configuración afectará a todas las partes de la aplicación que muestren valores monetarios.</p>
-                </div>
               </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button 
-                  variant="outline"
-                  onClick={() => setSelectedCurrency(localeInfo.currencyCode)}
-                  disabled={selectedCurrency === localeInfo.currencyCode || localeInfo.loading}
-                >
-                  Restablecer
-                </Button>
+              <CardFooter className="flex justify-end">
                 <Button 
                   onClick={handleSaveCurrency} 
-                  disabled={!selectedCurrency || selectedCurrency === localStorage.getItem('userSelectedCurrency') || isSaving}
+                  disabled={!selectedCurrency || isSaving}
                 >
                   {isSaving ? (
                     <>
@@ -213,7 +205,7 @@ const CurrencySettings = () => {
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">Moneda base:</span>
                       <Badge className="font-mono">
-                        {localeInfo.currencyCode} - {getCurrencyName(localeInfo.currencyCode)}
+                        {selectedCurrency} - {getCurrencyName(selectedCurrency)}
                       </Badge>
                     </div>
                     
