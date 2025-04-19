@@ -26,6 +26,7 @@ export const TransactionCurrencyInput: React.FC<TransactionCurrencyInputProps> =
       autoFocus
       placeholder=""
       showConversion={false}
+      className="text-right"
     />
   );
 };

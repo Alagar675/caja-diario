@@ -3,7 +3,7 @@ import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
-import { formatCurrencyInput } from "@/utils/currency/currencyInputUtils";
+import { handleCurrencyInput } from "@/utils/currency/currencyInputUtils";
 import { CurrencyInputProps } from "@/types/currency";
 
 export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
@@ -11,8 +11,6 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
     value, 
     onChange, 
     placeholder = "",
-    currencySymbol = "",
-    symbolPosition = "prefix",
     className,
     showFeedback = false,
     hideDecimals = false,
@@ -30,13 +28,12 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
         return;
       }
 
-      const formattedValue = formatCurrencyInput(rawValue, hideDecimals);
-      onChange(formattedValue);
+      handleCurrencyInput(rawValue, onChange);
 
-      if (showFeedback && isFirstInput && formattedValue.length > 0) {
+      if (showFeedback && isFirstInput && rawValue.length > 0) {
         toast({
           title: "Formato de moneda",
-          description: "Ingrese los números de izquierda a derecha. Los últimos dos dígitos serán los decimales",
+          description: "Ingrese los números de derecha a izquierda. Los últimos dos dígitos serán los decimales",
           duration: 3000,
         });
         setIsFirstInput(false);
@@ -59,30 +56,28 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
     };
 
     return (
-      <div className="relative w-full">
-        <Input
-          ref={ref}
-          type="text"
-          inputMode="numeric"
-          placeholder=""
-          value={value}
-          onChange={handleValueChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          className={cn(
-            "font-mono text-base tracking-wider pl-3 pr-3 text-left",
-            isFocused && "border-primary",
-            className
-          )}
-          style={{ 
-            fontVariantNumeric: 'tabular-nums',
-            direction: 'ltr'
-          }}
-          maxLength={20}
-          aria-label="Campo de entrada de moneda"
-          {...props}
-        />
-      </div>
+      <Input
+        ref={ref}
+        type="text"
+        inputMode="numeric"
+        placeholder=""
+        value={value}
+        onChange={handleValueChange}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        className={cn(
+          "font-mono text-base tracking-wider pl-3 pr-3 text-right",
+          isFocused && "border-primary",
+          className
+        )}
+        style={{ 
+          fontVariantNumeric: 'tabular-nums',
+          direction: 'ltr'
+        }}
+        maxLength={20}
+        aria-label="Campo de entrada de moneda"
+        {...props}
+      />
     );
   }
 );

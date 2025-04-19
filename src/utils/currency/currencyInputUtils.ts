@@ -7,13 +7,23 @@ export const formatCurrencyInput = (value: string, hideDecimals: boolean = false
     return "";
   }
 
-  // Format with thousand separators and decimals
+  // Handle right-to-left input formatting
   const len = value.length;
   const decimalPart = len > 2 ? value.slice(-2) : value.padStart(2, '0');
-  const integerPart = len > 2 ? value.slice(0, -2) : value;
+  const integerPart = len > 2 ? value.slice(0, -2) : '';
   
-  // Add thousand separators immediately as numbers are typed
+  // Add thousand separators from right to left
   const formattedInteger = integerPart ? integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '';
   
   return hideDecimals ? formattedInteger : `${formattedInteger}${formattedInteger ? ',' : ''}${decimalPart}`;
+};
+
+export const stripNonNumeric = (value: string): string => {
+  return value.replace(/[^\d]/g, '');
+};
+
+export const handleCurrencyInput = (value: string, onChange: (value: string) => void) => {
+  const numericValue = stripNonNumeric(value);
+  const formattedValue = formatCurrencyInput(numericValue);
+  onChange(formattedValue);
 };
