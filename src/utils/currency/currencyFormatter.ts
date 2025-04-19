@@ -35,6 +35,7 @@ export const formatCurrencyValue = (value: number): string => {
     const integerPart = parts[0];
     const decimalPart = parts.length > 1 ? parts[1] : '00';
     
+    // Format with thousand separators
     let formattedInteger = '';
     for (let i = 0; i < integerPart.length; i++) {
       if (i > 0 && (integerPart.length - i) % 3 === 0) {
@@ -53,6 +54,7 @@ export const formatCurrencyValue = (value: number): string => {
 export const parseCurrencyValue = (formattedValue: string): number => {
   if (!formattedValue || !formattedValue.trim()) return 0;
 
+  // Replace thousand separators and convert decimal comma to point
   const cleanValue = formattedValue.replace(/\./g, '').replace(',', '.');
   
   try {
@@ -67,3 +69,4 @@ export const parseCurrencyValue = (formattedValue: string): number => {
     return 0;
   }
 };
+

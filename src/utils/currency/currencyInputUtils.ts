@@ -1,35 +1,56 @@
 
+/**
+ * Currency input utility functions for right-to-left input formatting
+ * with dot as thousand separator and comma as decimal separator
+ */
+
 export const formatCurrencyInput = (value: string, hideDecimals: boolean = false): string => {
-  // Remove any leading non-numeric characters (except digits 1-9)
-  value = value.replace(/^[^1-9]*/, '').replace(/[^\d]/g, "");
-  
-  if (value.length === 0) {
+  // If empty, return empty string
+  if (!value || value === "") {
     return "";
   }
 
-  // Handle right-to-left input formatting
+  // Ensure value is just digits
+  value = value.replace(/\D/g, "");
+  
+  // Handle right-to-left input formatting (last two digits are decimal part)
   const len = value.length;
   const decimalPart = len > 2 ? value.slice(-2) : value.padStart(2, '0');
   const integerPart = len > 2 ? value.slice(0, -2) : '';
   
   // Add thousand separators from right to left
-  const formattedInteger = integerPart ? integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '';
+  let formattedInteger = '';
+  if (integerPart) {
+    formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
   
   return hideDecimals ? formattedInteger : `${formattedInteger}${formattedInteger ? ',' : ''}${decimalPart}`;
 };
 
+/**
+ * Strip all non-numeric characters
+ */
 export const stripNonNumeric = (value: string): string => {
-  return value.replace(/[^\d]/g, '');
+  return value.replace(/\D/g, '');
 };
 
-export const handleCurrencyInput = (value: string, onChange: (value: string) => void) => {
-  // Clear input if starts with non-numeric characters from 1-9
-  if (value.match(/^[^1-9]/)) {
-    onChange('');
-    return;
-  }
+/**
+ * Convert formatted currency string to numeric value
+ */
+export const parseCurrencyValue = (formattedValue: string): number => {
+  if (!formattedValue) return 0;
   
-  const numericValue = stripNonNumeric(value);
-  const formattedValue = formatCurrencyInput(numericValue);
-  onChange(formattedValue);
+  // Replace thousand separators and convert decimal comma to point
+  const cleanValue = formattedValue.replace(/\./g, '').replace(',', '.');
+  const numValue = parseFloat(cleanValue);
+  
+  return isNaN(numValue) ? 0 : numValue;
 };
+
+/**
+ * Get placeholder text based on locale settings
+ */
+export const getCurrencyPlaceholder = (): string => {
+  return "0,00";
+};
+

@@ -15,6 +15,7 @@ interface EnhancedCurrencyInputProps extends Omit<React.InputHTMLAttributes<HTML
   showConversion?: boolean;
   targetCurrency?: string;
   showFeedback?: boolean;
+  hideDecimals?: boolean;
 }
 
 export const EnhancedCurrencyInput = React.forwardRef<HTMLInputElement, EnhancedCurrencyInputProps>(
@@ -26,14 +27,15 @@ export const EnhancedCurrencyInput = React.forwardRef<HTMLInputElement, Enhanced
     helpText,
     showConversion = false,
     showFeedback = false,
+    hideDecimals = false,
     className,
     ...props 
   }, ref) => {
     const localeInfo = useGeoLocaleDetection();
     
     React.useEffect(() => {
-      if (!localeInfo.loading) {
-        onCurrencyChange?.(localeInfo.currencyCode);
+      if (!localeInfo.loading && onCurrencyChange) {
+        onCurrencyChange(localeInfo.currencyCode);
       }
     }, [localeInfo.currencyCode, localeInfo.loading, onCurrencyChange]);
     
@@ -56,6 +58,7 @@ export const EnhancedCurrencyInput = React.forwardRef<HTMLInputElement, Enhanced
           placeholder=""
           className={className}
           showFeedback={showFeedback}
+          hideDecimals={hideDecimals}
           inputDirection="rtl"
           {...props}
         />
@@ -65,3 +68,4 @@ export const EnhancedCurrencyInput = React.forwardRef<HTMLInputElement, Enhanced
 );
 
 EnhancedCurrencyInput.displayName = "EnhancedCurrencyInput";
+

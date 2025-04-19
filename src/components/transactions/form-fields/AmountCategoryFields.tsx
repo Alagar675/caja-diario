@@ -44,3 +44,4 @@ const AmountCategoryFields: React.FC<AmountCategoryFieldsProps> = ({
 };
 
 export default AmountCategoryFields;
+

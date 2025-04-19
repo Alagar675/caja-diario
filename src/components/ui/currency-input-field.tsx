@@ -3,8 +3,8 @@ import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
-import { handleCurrencyInput } from "@/utils/currency/currencyInputUtils";
 import { CurrencyInputProps } from "@/types/currency";
+import { formatCurrencyInput, stripNonNumeric } from "@/utils/currency/currencyInputUtils";
 
 export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
   ({ 
@@ -24,18 +24,27 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const rawValue = e.target.value;
       
-      // Clear input if it starts with non-numeric characters
-      if (rawValue.match(/^[^1-9]/)) {
+      // Only allow digits (except leading zeros)
+      if (rawValue === "" || rawValue === "0") {
         onChange("");
         return;
       }
-
-      handleCurrencyInput(rawValue, onChange);
+      
+      // Remove any non-numeric characters and format
+      const numericValue = stripNonNumeric(rawValue);
+      const formattedValue = formatCurrencyInput(numericValue, hideDecimals);
+      
+      // Check maximum length (considering formatting characters)
+      if (stripNonNumeric(formattedValue).length > 25) {
+        return;
+      }
+      
+      onChange(formattedValue);
 
       if (showFeedback && isFirstInput && rawValue.length > 0) {
         toast({
           title: "Formato de moneda",
-          description: "Ingrese los números de derecha a izquierda. Los últimos dos dígitos serán los decimales",
+          description: "Los últimos dos dígitos corresponden a los decimales",
           duration: 3000,
         });
         setIsFirstInput(false);
@@ -62,7 +71,7 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
         ref={ref}
         type="text"
         inputMode="numeric"
-        placeholder=""
+        placeholder={placeholder}
         value={value}
         onChange={handleValueChange}
         onFocus={handleFocus}
@@ -77,7 +86,7 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
           direction: 'rtl',
           textAlign: 'right'
         }}
-        maxLength={20}
+        maxLength={35} // Allow more for formatting characters
         aria-label="Campo de entrada de moneda"
         {...props}
       />
@@ -86,3 +95,4 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
 );
 
 CurrencyInputField.displayName = "CurrencyInputField";
+

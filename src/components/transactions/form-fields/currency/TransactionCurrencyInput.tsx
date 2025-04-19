@@ -30,3 +30,4 @@ export const TransactionCurrencyInput: React.FC<TransactionCurrencyInputProps> =
     />
   );
 };
+
