@@ -44,7 +44,7 @@ const Navbar = () => {
   // Add admin settings menu item if user is admin
   if (user && isAdmin) {
     menuItems.push({
-      name: "Administración",
+      name: "Administrador",
       path: "/admin/settings"
     });
   }
@@ -81,7 +81,7 @@ const Navbar = () => {
                   variant="ghost" 
                   size="icon" 
                   onClick={() => navigate("/admin/settings")}
-                  title="Configuración del Sistema"
+                  title="Panel de Administrador"
                 >
                   <Users className="h-5 w-5" />
                 </Button>

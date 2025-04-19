@@ -42,7 +42,7 @@ const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, clo
         </a>
       ))}
       
-      {/* Agregar enlace a configuración de moneda */}
+      {/* Cambiar nombre a Configuración de moneda */}
       <a
         href="/settings/currency"
         className={isMobile ? "block py-2 text-base font-medium transition-colors hover:text-primary" : "text-sm font-medium transition-colors hover:text-primary"}

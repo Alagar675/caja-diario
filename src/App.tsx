@@ -15,6 +15,7 @@ import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
 import CurrencySettings from "./pages/CurrencySettings";
 import AdminSettings from "./pages/AdminSettings";
+import ForgotPassword from "./pages/ForgotPassword";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 
                 {/* Protected routes */}
                 <Route path="/dashboard" element={

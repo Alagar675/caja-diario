@@ -7,7 +7,7 @@ import CategoryManagement from "@/components/settings/CategoryManagement";
 import CurrencySettings from "@/components/settings/CurrencySettings";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
-import { Settings } from "lucide-react"; // Importar el icono de configuración
+import { Users } from "lucide-react"; // Importar el icono de usuarios
 
 const AdminSettings = () => {
   const { isAdmin, isAuthenticated } = useAuth();
@@ -22,12 +22,12 @@ const AdminSettings = () => {
       <AppLayout initialSidebarOpen={true}>
         <div className="w-full container mx-auto py-8 max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2 mb-6">
-            <Settings className="h-6 w-6 text-primary" /> {/* Añadir icono de configuración */}
-            <h1 className="text-3xl font-bold">Configuración del Sistema</h1>
+            <Users className="h-6 w-6 text-primary" /> {/* Cambiar icono a Users */}
+            <h1 className="text-3xl font-bold">Panel de Administrador</h1> {/* Cambiar título */}
           </div>
           
           <Tabs defaultValue="users" className="w-full">
-            <TabsList className="grid grid-cols-4 mb-8"> {/* Cambié a 4 columnas para añadir divisas */}
+            <TabsList className="grid grid-cols-4 mb-8">
               <TabsTrigger value="users">Gestión de Usuarios</TabsTrigger>
               <TabsTrigger value="categories">Gestión de Categorías</TabsTrigger>
               <TabsTrigger value="currency">Configuración de Divisas</TabsTrigger>

@@ -3,6 +3,7 @@ import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Link } from "react-router-dom";
 
 interface LoginFormFieldsProps {
   form: UseFormReturn<{
@@ -36,6 +37,11 @@ const LoginFormFields: React.FC<LoginFormFieldsProps> = ({ form }) => {
         {form.formState.errors.password && (
           <p className="text-sm text-red-500">{form.formState.errors.password?.message}</p>
         )}
+      </div>
+      <div className="text-sm text-right">
+        <Link to="/forgot-password" className="text-primary hover:underline">
+          ¿Olvidaste tu contraseña?
+        </Link>
       </div>
     </div>
   );
