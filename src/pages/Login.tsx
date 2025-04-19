@@ -2,8 +2,6 @@
 import React, { useState } from "react";
 import AppLayout from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -13,12 +11,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import LoginFormFields from "@/components/auth/LoginFormFields";
+import VerificationFormFields from "@/components/auth/VerificationFormFields";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Por favor, ingrese un correo electrónico válido." }),
@@ -84,30 +83,8 @@ const Login = () => {
                       Ingresa tus credenciales para acceder a tu cuenta
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="grid gap-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="email">Correo Electrónico</Label>
-                      <Input 
-                        id="email" 
-                        type="email" 
-                        placeholder="ejemplo@correo.com" 
-                        {...loginForm.register("email")} 
-                      />
-                      {loginForm.formState.errors.email && (
-                        <p className="text-sm text-red-500">{loginForm.formState.errors.email?.message}</p>
-                      )}
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="password">Contraseña</Label>
-                      <Input 
-                        id="password" 
-                        type="password" 
-                        {...loginForm.register("password")} 
-                      />
-                      {loginForm.formState.errors.password && (
-                        <p className="text-sm text-red-500">{loginForm.formState.errors.password?.message}</p>
-                      )}
-                    </div>
+                  <CardContent>
+                    <LoginFormFields form={loginForm} />
                   </CardContent>
                   <CardFooter className="flex flex-col space-y-2">
                     <Button 
@@ -130,35 +107,8 @@ const Login = () => {
                       Ingresa el código de verificación enviado a tu correo electrónico
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="grid gap-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="code">Código de verificación</Label>
-                      <div className="flex justify-center py-4">
-                        <Controller
-                          control={verificationForm.control}
-                          name="code"
-                          render={({ field }) => (
-                            <InputOTP 
-                              maxLength={6} 
-                              value={field.value}
-                              onChange={(value) => field.onChange(value)}
-                            >
-                              <InputOTPGroup>
-                                <InputOTPSlot index={0} />
-                                <InputOTPSlot index={1} />
-                                <InputOTPSlot index={2} />
-                                <InputOTPSlot index={3} />
-                                <InputOTPSlot index={4} />
-                                <InputOTPSlot index={5} />
-                              </InputOTPGroup>
-                            </InputOTP>
-                          )}
-                        />
-                      </div>
-                      {verificationForm.formState.errors.code && (
-                        <p className="text-sm text-red-500 text-center">{verificationForm.formState.errors.code?.message}</p>
-                      )}
-                    </div>
+                  <CardContent>
+                    <VerificationFormFields form={verificationForm} />
                   </CardContent>
                   <CardFooter className="flex flex-col space-y-2">
                     <Button 
