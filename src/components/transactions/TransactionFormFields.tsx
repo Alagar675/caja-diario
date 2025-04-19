@@ -1,6 +1,7 @@
 
 import React from "react";
 import { TransactionType, PaymentMethod } from "@/types/finance";
+import { FormFieldsLayout } from "./form-fields/layout/FormFieldsLayout";
 import {
   AmountCategoryFields,
   DescriptionField,
@@ -39,78 +40,51 @@ interface TransactionFormFieldsProps {
   setCurrencyCode?: (value: string) => void;
 }
 
-const TransactionFormFields = ({
-  type,
-  amount,
-  setAmount,
-  category,
-  setCategory,
-  description,
-  setDescription,
-  paymentMethod,
-  setPaymentMethod,
-  bankName,
-  setBankName,
-  transferNumber,
-  setTransferNumber,
-  creditorName,
-  setCreditorName,
-  dueDate,
-  setDueDate,
-  recipientName,
-  setRecipientName,
-  recipientId,
-  setRecipientId,
-  date,
-  setDate,
-  time,
-  setTime,
-  setCurrencyCode
-}: TransactionFormFieldsProps) => {
+const TransactionFormFields: React.FC<TransactionFormFieldsProps> = (props) => {
   return (
-    <div className="space-y-6">
+    <FormFieldsLayout>
       <AmountCategoryFields
-        type={type}
-        amount={amount}
-        setAmount={setAmount}
-        category={category}
-        setCategory={setCategory}
-        setCurrencyCode={setCurrencyCode}
+        type={props.type}
+        amount={props.amount}
+        setAmount={props.setAmount}
+        category={props.category}
+        setCategory={props.setCategory}
+        setCurrencyCode={props.setCurrencyCode}
       />
 
       <DescriptionField
-        description={description}
-        setDescription={setDescription}
+        description={props.description}
+        setDescription={props.setDescription}
       />
 
       <PaymentMethodField
-        paymentMethod={paymentMethod}
-        setPaymentMethod={setPaymentMethod}
+        paymentMethod={props.paymentMethod}
+        setPaymentMethod={props.setPaymentMethod}
       />
 
-      {paymentMethod === "transfer" && (
+      {props.paymentMethod === "transfer" && (
         <TransferDetailsFields
-          bankName={bankName}
-          setBankName={setBankName}
-          transferNumber={transferNumber}
-          setTransferNumber={setTransferNumber}
+          bankName={props.bankName}
+          setBankName={props.setBankName}
+          transferNumber={props.transferNumber}
+          setTransferNumber={props.setTransferNumber}
         />
       )}
 
       <RecipientFields
-        recipientName={recipientName}
-        setRecipientName={setRecipientName}
-        recipientId={recipientId}
-        setRecipientId={setRecipientId}
+        recipientName={props.recipientName}
+        setRecipientName={props.setRecipientName}
+        recipientId={props.recipientId}
+        setRecipientId={props.setRecipientId}
       />
 
       <DateTimeFields
-        date={date}
-        setDate={setDate}
-        time={time}
-        setTime={setTime}
+        date={props.date}
+        setDate={props.setDate}
+        time={props.time}
+        setTime={props.setTime}
       />
-    </div>
+    </FormFieldsLayout>
   );
 };
 
