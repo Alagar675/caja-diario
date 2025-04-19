@@ -23,7 +23,9 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
     
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const rawValue = e.target.value;
-      if (!rawValue) {
+      
+      // Clear input if it starts with non-numeric characters
+      if (rawValue.match(/^[^1-9]/)) {
         onChange("");
         return;
       }

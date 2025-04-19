@@ -1,7 +1,7 @@
 
 export const formatCurrencyInput = (value: string, hideDecimals: boolean = false): string => {
-  // Remove any non-numeric characters and leading separators
-  value = value.replace(/^[.,]/, '').replace(/[^\d]/g, "");
+  // Remove any leading separators, symbols, and non-numeric characters
+  value = value.replace(/^[^1-9]*/, '').replace(/[^\d]/g, "");
   
   if (value.length === 0) {
     return "";
