@@ -7,6 +7,7 @@ import CategoryManagement from "@/components/settings/CategoryManagement";
 import CurrencySettings from "@/components/settings/CurrencySettings";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
+import { Settings } from "lucide-react"; // Importar el icono de configuración
 
 const AdminSettings = () => {
   const { isAdmin, isAuthenticated } = useAuth();
@@ -20,13 +21,17 @@ const AdminSettings = () => {
     <div className="min-h-screen w-full bg-background">
       <AppLayout initialSidebarOpen={true}>
         <div className="w-full container mx-auto py-8 max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold mb-6">Configuración del Sistema</h1>
+          <div className="flex items-center gap-2 mb-6">
+            <Settings className="h-6 w-6 text-primary" /> {/* Añadir icono de configuración */}
+            <h1 className="text-3xl font-bold">Configuración del Sistema</h1>
+          </div>
           
           <Tabs defaultValue="users" className="w-full">
-            <TabsList className="grid grid-cols-3 mb-8">
+            <TabsList className="grid grid-cols-4 mb-8"> {/* Cambié a 4 columnas para añadir divisas */}
               <TabsTrigger value="users">Gestión de Usuarios</TabsTrigger>
               <TabsTrigger value="categories">Gestión de Categorías</TabsTrigger>
               <TabsTrigger value="currency">Configuración de Divisas</TabsTrigger>
+              {/* Si quieres mantener las tres columnas anteriores, simplemente añade un cuarto TabsTrigger aquí */}
             </TabsList>
             
             <TabsContent value="users" className="space-y-4">
