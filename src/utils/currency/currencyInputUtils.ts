@@ -13,6 +13,14 @@ export const formatCurrencyInput = (value: string, hideDecimals: boolean = false
   // Ensure value is just digits
   value = value.replace(/\D/g, "");
   
+  // Remove leading zeros
+  value = value.replace(/^0+/, '');
+  
+  // If value becomes empty after removing zeros, return empty
+  if (!value) {
+    return "";
+  }
+
   // Handle right-to-left input formatting (last two digits are decimal part)
   const len = value.length;
   const decimalPart = len > 2 ? value.slice(-2) : value.padStart(2, '0');
