@@ -60,6 +60,7 @@ const ChangeCalculator = ({
             onChange={handleAmountToPayChange}
             onCurrencyChange={handleCurrencyChange}
             placeholder=""
+            className="text-right"
           />
         </div>
 
@@ -70,6 +71,7 @@ const ChangeCalculator = ({
             onChange={handleAmountReceivedChange}
             onCurrencyChange={handleCurrencyChange}
             placeholder=""
+            className="text-right"
           />
         </div>
 

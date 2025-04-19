@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -20,14 +19,12 @@ const CurrencyConverter = () => {
   
   const { rates, loading, error, convert } = useCurrencyConverter(localeInfo.currencyCode);
   
-  // Set the default from currency when locale is detected
   useEffect(() => {
     if (!localeInfo.loading && !fromCurrency) {
       setFromCurrency(localeInfo.currencyCode);
     }
   }, [localeInfo.loading, localeInfo.currencyCode, fromCurrency]);
 
-  // Handle conversion when inputs change
   useEffect(() => {
     if (fromCurrency && toCurrency && !loading) {
       const numericAmount = parseCurrencyValue(amount);
@@ -36,14 +33,12 @@ const CurrencyConverter = () => {
     }
   }, [amount, fromCurrency, toCurrency, rates, loading, convert]);
 
-  // Swap currencies
   const handleSwapCurrencies = () => {
     const temp = fromCurrency;
     setFromCurrency(toCurrency);
     setToCurrency(temp);
   };
 
-  // Handle refresh rates
   const handleRefreshRates = () => {
     window.location.reload();
   };
@@ -67,7 +62,11 @@ const CurrencyConverter = () => {
             id="amount"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="font-mono"
+            className="font-mono text-right"
+            style={{ 
+              fontVariantNumeric: 'tabular-nums',
+              direction: 'rtl'
+            }}
           />
         </div>
         
@@ -130,13 +129,13 @@ const CurrencyConverter = () => {
               Actualizar
             </Button>
           </div>
-          <div className="h-10 flex items-center justify-end px-3 mt-1 rounded-md bg-gray-100 font-mono font-medium text-lg">
+          <div className="h-10 flex items-center justify-end px-3 mt-1 rounded-md bg-gray-100 font-mono font-medium text-lg text-right">
             {loading ? (
               <span className="text-sm text-gray-500">Cargando...</span>
             ) : error ? (
               <span className="text-sm text-red-500">{error}</span>
             ) : (
-              <span>{convertedAmount} {toCurrency}</span>
+              <span className="w-full text-right">{convertedAmount} {toCurrency}</span>
             )}
           </div>
         </div>

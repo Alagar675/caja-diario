@@ -72,7 +72,8 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
         )}
         style={{ 
           fontVariantNumeric: 'tabular-nums',
-          direction: 'ltr'
+          direction: 'rtl',
+          textAlign: 'right'
         }}
         maxLength={20}
         aria-label="Campo de entrada de moneda"
