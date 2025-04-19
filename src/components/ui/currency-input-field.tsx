@@ -1,4 +1,5 @@
 
+
 import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -86,3 +87,4 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
 );
 
 CurrencyInputField.displayName = "CurrencyInputField";
+

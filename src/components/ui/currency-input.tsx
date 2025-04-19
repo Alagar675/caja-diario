@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import { Input } from "@/components/ui/input"
 import { formatCurrencyValue, parseCurrencyValue } from "@/utils/formatters"
@@ -30,6 +31,12 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
       const rawValue = e.target.value;
 
       if (!rawValue) {
+        onChange('');
+        return;
+      }
+      
+      // Clear input if it starts with non-numeric characters
+      if (rawValue.match(/^[^1-9]/)) {
         onChange('');
         return;
       }
@@ -68,10 +75,10 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
           value={value || ""}
           onChange={handleValueChange}
           onFocus={handleFocus}
-          className={`pl-7 text-left w-full font-mono text-lg tracking-wider ${className}`}
+          className={`pl-7 text-right w-full font-mono text-lg tracking-wider ${className}`}
           style={{ 
             fontVariantNumeric: 'tabular-nums',
-            direction: 'ltr'
+            direction: 'rtl'
           }}
           {...props}
         />
@@ -83,3 +90,4 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
 CurrencyInput.displayName = "CurrencyInput";
 
 export { CurrencyInput };
+

@@ -1,4 +1,5 @@
 
+
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { formatCurrencyValue, getCurrencyDisplayInfo } from "@/utils/currency/currencyUtils";
@@ -20,7 +21,7 @@ export function CurrencyDisplay({
   showSymbol = true,
   size = "md",
   variant = "default",
-  align = "left" // Changed default alignment to left
+  align = "right" // Changed default alignment to right
 }: CurrencyDisplayProps) {
   const { symbol, position } = getCurrencyDisplayInfo(currencyCode);
   const formattedValue = formatCurrencyValue(value);
@@ -65,3 +66,4 @@ export function CurrencyDisplay({
     </span>
   );
 }
+

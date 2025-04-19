@@ -1,4 +1,5 @@
 
+
 export const formatCurrencyInput = (value: string, hideDecimals: boolean = false): string => {
   // Remove any leading separators, symbols, and non-numeric characters
   value = value.replace(/^[^1-9]*/, '').replace(/[^\d]/g, "");
@@ -27,3 +28,4 @@ export const handleCurrencyInput = (value: string, onChange: (value: string) => 
   const formattedValue = formatCurrencyInput(numericValue);
   onChange(formattedValue);
 };
+

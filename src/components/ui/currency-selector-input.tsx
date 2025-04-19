@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import {
@@ -60,6 +61,12 @@ const CurrencySelectorInput = React.forwardRef<HTMLInputElement, CurrencySelecto
         return;
       }
 
+      // Clear input if it starts with non-numeric characters
+      if (newValue.match(/^[^1-9]/)) {
+        onChange("");
+        return;
+      }
+
       const cleanValue = newValue.replace(/[^\d.,]/g, '');
       onChange(cleanValue);
     };
@@ -105,11 +112,12 @@ const CurrencySelectorInput = React.forwardRef<HTMLInputElement, CurrencySelecto
             value={value}
             onChange={handleValueChange}
             className={cn(
-              "pl-2 pr-2 font-mono text-lg tracking-wider",
+              "pl-2 pr-2 font-mono text-lg tracking-wider text-right",
               className
             )}
             style={{ 
               fontVariantNumeric: 'tabular-nums',
+              direction: 'rtl'
             }}
             {...props}
           />
@@ -122,3 +130,4 @@ const CurrencySelectorInput = React.forwardRef<HTMLInputElement, CurrencySelecto
 CurrencySelectorInput.displayName = "CurrencySelectorInput";
 
 export { CurrencySelectorInput, type CurrencySelectorInputProps };
+
