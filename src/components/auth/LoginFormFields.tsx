@@ -1,15 +1,14 @@
 
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
-import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface LoginFormFieldsProps {
   form: UseFormReturn<{
-    email: string;
-    password: string;
-  }>;
+    email?: string;
+    password?: string;
+  }, any, undefined>;
 }
 
 const LoginFormFields: React.FC<LoginFormFieldsProps> = ({ form }) => {

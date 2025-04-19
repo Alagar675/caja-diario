@@ -6,8 +6,8 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 
 interface VerificationFormFieldsProps {
   form: UseFormReturn<{
-    code: string;
-  }>;
+    code?: string;
+  }, any, undefined>;
 }
 
 const VerificationFormFields: React.FC<VerificationFormFieldsProps> = ({ form }) => {
@@ -21,7 +21,7 @@ const VerificationFormFields: React.FC<VerificationFormFieldsProps> = ({ form })
           render={({ field }) => (
             <InputOTP 
               maxLength={6} 
-              value={field.value}
+              value={field.value || ""}
               onChange={(value) => field.onChange(value)}
             >
               <InputOTPGroup>
