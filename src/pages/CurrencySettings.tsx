@@ -26,6 +26,14 @@ import { currencyMap } from "@/utils/currency/currencyHelpers";
 import { updateLocaleSettings } from "@/utils/currency/currencyFormatter";
 import { useCurrencyConversion } from "@/hooks/useCurrencyConversion";
 import { CurrencyDisplay } from "@/components/ui/currency-display";
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from "@/components/ui/table";
 
 const CurrencySettings = () => {
   const { toast } = useToast();
@@ -69,6 +77,15 @@ const CurrencySettings = () => {
   // Get currency name from code
   const getCurrencyName = (code: string) => {
     return currencyMap[code]?.name || "Moneda desconocida";
+  };
+
+  // Prepare exchange rate data for table display
+  const getCurrencyRatesForDisplay = () => {
+    if (!rates || Object.keys(rates).length === 0) return [];
+    
+    return Object.entries(rates)
+      .filter(([code]) => code !== localeInfo.currencyCode) // Remove base currency
+      .sort((a, b) => a[0].localeCompare(b[0])); // Sort alphabetically
   };
 
   return (
@@ -181,7 +198,7 @@ const CurrencySettings = () => {
                   Tasas de cambio entre diferentes monedas
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent>
                 {ratesLoading ? (
                   <div className="flex items-center justify-center h-40">
                     <RefreshCcw className="h-8 w-8 text-gray-400 animate-spin" />
@@ -195,33 +212,34 @@ const CurrencySettings = () => {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">Moneda base:</span>
-                      <Badge>{localeInfo.currencyCode}</Badge>
+                      <Badge className="font-mono">
+                        {localeInfo.currencyCode} - {getCurrencyName(localeInfo.currencyCode)}
+                      </Badge>
                     </div>
                     
                     <Separator />
                     
-                    <div className="space-y-2 max-h-60 overflow-y-auto">
-                      {Object.entries(rates).slice(0, 12).map(([currency, rate]) => (
-                        <div key={currency} className="flex justify-between items-center py-1">
-                          <div className="flex items-center">
-                            <span className="font-medium text-sm">{currency}</span>
-                            <span className="text-xs text-gray-500 ml-1">- {getCurrencyName(currency)}</span>
-                          </div>
-                          <div className="text-sm">
-                            <CurrencyDisplay 
-                              value={1} 
-                              currencyCode={localeInfo.currencyCode} 
-                              showSymbol={true}
-                              size="sm"
-                            /> = <CurrencyDisplay 
-                              value={rate} 
-                              currencyCode={currency} 
-                              showSymbol={true}
-                              size="sm"
-                            />
-                          </div>
-                        </div>
-                      ))}
+                    <div className="max-h-[300px] overflow-y-auto pr-1">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="w-[100px]">Código</TableHead>
+                            <TableHead>Moneda</TableHead>
+                            <TableHead className="text-right">Tasa</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {getCurrencyRatesForDisplay().map(([code, rate]) => (
+                            <TableRow key={code}>
+                              <TableCell className="font-mono font-medium">{code}</TableCell>
+                              <TableCell>{getCurrencyName(code)}</TableCell>
+                              <TableCell className="text-right font-mono">
+                                {parseFloat(rate.toString()).toFixed(4)}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
                     </div>
                   </div>
                 )}
