@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, X, Settings, Users } from "lucide-react";
@@ -11,6 +10,7 @@ import LogoutHandler from "./LogoutHandler";
 import RecoveryHandler from "./RecoveryHandler";
 import MobileMenu from "./MobileMenu";
 import useLocalStorageState from "@/hooks/useLocalStorageState";
+import Image from "@/components/ui/image";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -41,7 +41,6 @@ const Navbar = () => {
     path: "/reports"
   }];
 
-  // Add admin settings menu item if user is admin
   if (user && isAdmin) {
     menuItems.push({
       name: "Administrador",
@@ -55,7 +54,12 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b shadow-sm dark:bg-gray-950">
       <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center">
+        <div className="flex items-center space-x-2">
+          <Image 
+            src="/lovable-uploads/b256ddc8-8d54-47ff-81a7-e14b2f25201e.png" 
+            alt="Daily Cash Report Logo" 
+            className="h-10 w-10 object-cover"
+          />
           <a href="/dashboard" className="flex items-center space-x-2">
             <span className="font-bold text-blue-700 text-xl">Daily Cash Report</span>
           </a>
