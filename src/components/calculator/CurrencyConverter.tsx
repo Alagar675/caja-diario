@@ -5,11 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowDownUp, RefreshCw } from "lucide-react";
 import { useCurrencyConverter } from "@/hooks/useCurrencyConverter";
 import { useGeoLocaleDetection } from "@/hooks/useGeoLocaleDetection";
-import { parseCurrencyValue } from "@/utils/currency/currencyFormatter";
+import { parseCurrencyValue } from "@/components/transactions/form-fields/currency/TransactionCurrencyInput";
 import { currencyMap } from "@/utils/currency/currencyHelpers";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { TransactionCurrencyInput } from "@/components/transactions/form-fields/currency/TransactionCurrencyInput";
+
+const AUTO_REFRESH_INTERVAL = 30000; // 30 seconds
 
 const CurrencyConverter = () => {
   const localeInfo = useGeoLocaleDetection();
@@ -27,11 +29,21 @@ const CurrencyConverter = () => {
   }, [localeInfo.loading, localeInfo.currencyCode, fromCurrency]);
 
   useEffect(() => {
+    // Initial rates fetch
     if (fromCurrency && toCurrency && !loading) {
       const numericAmount = parseCurrencyValue(amount);
       const result = convert(numericAmount, fromCurrency, toCurrency);
       setConvertedAmount(result.toFixed(2));
     }
+
+    // Set up auto-refresh interval
+    const refreshInterval = setInterval(() => {
+      if (fromCurrency && toCurrency) {
+        window.location.reload();
+      }
+    }, AUTO_REFRESH_INTERVAL);
+
+    return () => clearInterval(refreshInterval);
   }, [amount, fromCurrency, toCurrency, rates, loading, convert]);
 
   const handleSwapCurrencies = () => {

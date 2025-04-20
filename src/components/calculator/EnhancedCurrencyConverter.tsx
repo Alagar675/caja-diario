@@ -10,6 +10,8 @@ import { CurrencyConverterTabs } from "./components/CurrencyConverterTabs";
 import { CurrencySelectionGrid } from "./components/CurrencySelectionGrid";
 import { ConversionResult } from "./components/ConversionResult";
 
+const AUTO_REFRESH_INTERVAL = 30000; // 30 seconds
+
 interface EnhancedCurrencyConverterProps {
   isVisible?: boolean;
 }
@@ -38,6 +40,17 @@ const EnhancedCurrencyConverter: React.FC<EnhancedCurrencyConverterProps> = ({ i
     }
     setMostUsedCurrencies(baseCurrencies);
   }, [localeInfo.currencyCode]);
+  
+  useEffect(() => {
+    // Set up auto-refresh interval
+    const refreshInterval = setInterval(() => {
+      if (sourceCurrency && targetCurrency) {
+        window.location.reload();
+      }
+    }, AUTO_REFRESH_INTERVAL);
+
+    return () => clearInterval(refreshInterval);
+  }, [sourceCurrency, targetCurrency]);
   
   const handleSwapCurrencies = () => {
     setSourceCurrency(targetCurrency);
