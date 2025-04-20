@@ -3,18 +3,10 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Banknote, CreditCard, FileText } from "lucide-react";
 import { CurrencyDisplay } from "@/components/ui/currency-display";
+import { useCategories } from "@/hooks/useCategories";
 
-interface BalanceSummaryProps {
-  cashBalance: number;
-  transferBalance: number;
-  creditBalance: number;
-}
-
-const BalanceSummary: React.FC<BalanceSummaryProps> = ({ 
-  cashBalance, 
-  transferBalance, 
-  creditBalance 
-}) => {
+const BalanceSummary: React.FC = () => {
+  const { cashBalance, transferBalance, creditBalance } = useCategories();
   const totalBalance = cashBalance + transferBalance + creditBalance;
   
   return (

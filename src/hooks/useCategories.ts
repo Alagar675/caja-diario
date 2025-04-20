@@ -1,14 +1,16 @@
-
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Category } from "@/types/categories";
 import { z } from "zod";
 import { categoryFormSchema } from "@/components/settings/categories/CategoryForm";
+import { useFinance } from "@/context/FinanceContext";
 
 export const useCategories = () => {
   const [incomeCategories, setIncomeCategories] = useState<Category[]>([]);
   const [expenseCategories, setExpenseCategories] = useState<Category[]>([]);
   const [categoryType, setCategoryType] = useState<"income" | "expense">("income");
+  const { getBalanceSummary } = useFinance();
+  const { cashBalance, transferBalance, creditBalance } = getBalanceSummary();
 
   useEffect(() => {
     loadCategories();
@@ -139,6 +141,9 @@ export const useCategories = () => {
     setCategoryType,
     addCategory,
     editCategory,
-    deleteCategory
+    deleteCategory,
+    cashBalance,
+    transferBalance,
+    creditBalance
   };
 };
