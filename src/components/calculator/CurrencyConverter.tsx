@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowDownUp, RefreshCw } from "lucide-react";
 import { useCurrencyConverter } from "@/hooks/useCurrencyConverter";
 import { useGeoLocaleDetection } from "@/hooks/useGeoLocaleDetection";
-import { parseCurrencyValue } from "@/components/transactions/form-fields/currency/TransactionCurrencyInput";
+import { parseCurrencyValue } from "@/utils/currency/currencyUtils";
 import { currencyMap } from "@/utils/currency/currencyHelpers";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
