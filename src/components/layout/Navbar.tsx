@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, X, Settings, Users } from "lucide-react";
@@ -49,7 +50,7 @@ const Navbar = () => {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center space-x-2">
           <Image 
-            src="/lovable-uploads/b256ddc8-8d54-47ff-81a7-e14b2f25201e.png" 
+            src="/lovable-uploads/1dd588be-cbaf-47c8-8924-e510ea18d27f.png" 
             alt="Daily Cash Report Logo" 
             className="h-10 w-10 object-cover"
           />
