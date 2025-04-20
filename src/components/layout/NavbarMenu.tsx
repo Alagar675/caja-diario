@@ -28,9 +28,14 @@ const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, clo
     }
   };
 
+  const allMenuItems = isAdmin ? [
+    ...menuItems,
+    { name: "Panel de Administrador", path: "/admin/settings" }
+  ] : menuItems;
+
   return (
     <>
-      {menuItems.map(item => (
+      {allMenuItems.map(item => (
         <a
           key={item.name}
           href={item.path}
@@ -45,16 +50,6 @@ const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, clo
       ))}
       
       <div className={isMobile ? "flex flex-col space-y-2 pt-2 border-t" : "flex items-center space-x-2"}>
-        {isAdmin && (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => handleNavigation("/admin/settings")}
-            title="Panel de Administrador"
-          >
-            <Users className="h-4 w-4" />
-          </Button>
-        )}
         <Button
           variant="ghost"
           size="icon"
@@ -78,4 +73,3 @@ const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, clo
 };
 
 export default NavbarMenu;
-
