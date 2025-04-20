@@ -8,41 +8,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2, Edit } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
-const categoryFormSchema = z.object({
-  name: z.string().min(1, "El nombre es requerido"),
-  description: z.string().optional(),
-});
-
-interface Category {
-  id: string;
-  name: string;
-  description: string;
-}
+import { toast } from "sonner";
+import { Category } from "@/types/categories";
+import { categoryFormSchema } from "./categories/CategoryForm";
+import CategoryList from "./categories/CategoryList";
+import CategoryDialogs from "./categories/CategoryDialogs";
+import { z } from "zod";
 
 const CategoryManagement = () => {
   const [incomeCategories, setIncomeCategories] = useState<Category[]>([]);
@@ -51,20 +23,6 @@ const CategoryManagement = () => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [currentCategory, setCurrentCategory] = useState<Category | null>(null);
   const [categoryType, setCategoryType] = useState<"income" | "expense">("income");
-
-  const {
-    register: registerForm,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    setValue,
-  } = useForm<z.infer<typeof categoryFormSchema>>({
-    resolver: zodResolver(categoryFormSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-    },
-  });
 
   useEffect(() => {
     loadCategories();
@@ -81,7 +39,6 @@ const CategoryManagement = () => {
         setIncomeCategories([]);
       }
     } else {
-      // Set default income categories if none exist
       const defaultIncomeCategories = [
         { id: "inc-1", name: "Salario", description: "Ingresos por salario" },
         { id: "inc-2", name: "Ventas", description: "Ingresos por ventas" },
@@ -100,7 +57,6 @@ const CategoryManagement = () => {
         setExpenseCategories([]);
       }
     } else {
-      // Set default expense categories if none exist
       const defaultExpenseCategories = [
         { id: "exp-1", name: "Servicios", description: "Gastos de servicios públicos" },
         { id: "exp-2", name: "Alimentación", description: "Gastos en alimentos" },
@@ -131,7 +87,6 @@ const CategoryManagement = () => {
       }
       
       toast.success(`Categoría de ${categoryType === "income" ? "ingreso" : "egreso"} agregada exitosamente`);
-      reset();
       setOpenAddDialog(false);
     } catch (error: any) {
       toast.error("Error al agregar categoría: " + error.message);
@@ -162,7 +117,6 @@ const CategoryManagement = () => {
       
       toast.success("Categoría actualizada exitosamente");
       setOpenEditDialog(false);
-      reset();
     } catch (error: any) {
       toast.error("Error al actualizar categoría: " + error.message);
     }
@@ -190,13 +144,6 @@ const CategoryManagement = () => {
     }
   };
 
-  const editCategory = (category: Category) => {
-    setCurrentCategory(category);
-    setValue("name", category.name);
-    setValue("description", category.description || "");
-    setOpenEditDialog(true);
-  };
-
   return (
     <div className="space-y-6">
       <Card>
@@ -219,170 +166,49 @@ const CategoryManagement = () => {
             
             <TabsContent value="income">
               <div className="flex justify-end mb-4">
-                <Button onClick={() => {
-                  reset();
-                  setCategoryType("income");
-                  setOpenAddDialog(true);
-                }}>
+                <Button onClick={() => setOpenAddDialog(true)}>
                   Agregar Categoría de Ingreso
                 </Button>
               </div>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Nombre</TableHead>
-                    <TableHead>Descripción</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {incomeCategories.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={3} className="text-center py-4 italic text-muted-foreground">
-                        No hay categorías de ingresos
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    incomeCategories.map((category) => (
-                      <TableRow key={category.id}>
-                        <TableCell>{category.name}</TableCell>
-                        <TableCell>{category.description || "-"}</TableCell>
-                        <TableCell className="text-right">
-                          <Button variant="ghost" size="icon" onClick={() => editCategory(category)}>
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="icon" onClick={() => deleteCategory(category)}>
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
+              <CategoryList
+                categories={incomeCategories}
+                onEdit={(category) => {
+                  setCurrentCategory(category);
+                  setOpenEditDialog(true);
+                }}
+                onDelete={deleteCategory}
+              />
             </TabsContent>
             
             <TabsContent value="expense">
               <div className="flex justify-end mb-4">
-                <Button onClick={() => {
-                  reset();
-                  setCategoryType("expense");
-                  setOpenAddDialog(true);
-                }}>
+                <Button onClick={() => setOpenAddDialog(true)}>
                   Agregar Categoría de Egreso
                 </Button>
               </div>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Nombre</TableHead>
-                    <TableHead>Descripción</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {expenseCategories.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={3} className="text-center py-4 italic text-muted-foreground">
-                        No hay categorías de egresos
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    expenseCategories.map((category) => (
-                      <TableRow key={category.id}>
-                        <TableCell>{category.name}</TableCell>
-                        <TableCell>{category.description || "-"}</TableCell>
-                        <TableCell className="text-right">
-                          <Button variant="ghost" size="icon" onClick={() => editCategory(category)}>
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="icon" onClick={() => deleteCategory(category)}>
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
+              <CategoryList
+                categories={expenseCategories}
+                onEdit={(category) => {
+                  setCurrentCategory(category);
+                  setOpenEditDialog(true);
+                }}
+                onDelete={deleteCategory}
+              />
             </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
 
-      {/* Add Category Dialog */}
-      <Dialog open={openAddDialog} onOpenChange={setOpenAddDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              Agregar Categoría de {categoryType === "income" ? "Ingreso" : "Egreso"}
-            </DialogTitle>
-            <DialogDescription>
-              Complete el formulario para agregar una nueva categoría.
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleSubmit(onAddCategory)} className="space-y-4">
-            <div className="grid gap-2">
-              <Label htmlFor="name">Nombre</Label>
-              <Input
-                id="name"
-                placeholder="Nombre de la categoría"
-                {...registerForm("name")}
-              />
-              {errors.name && (
-                <p className="text-sm text-red-500">{errors.name.message}</p>
-              )}
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="description">Descripción (opcional)</Label>
-              <Input
-                id="description"
-                placeholder="Descripción breve"
-                {...registerForm("description")}
-              />
-            </div>
-            <DialogFooter>
-              <Button type="submit">Guardar</Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit Category Dialog */}
-      <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Editar Categoría</DialogTitle>
-            <DialogDescription>
-              Actualice la información de la categoría.
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleSubmit(onEditCategory)} className="space-y-4">
-            <div className="grid gap-2">
-              <Label htmlFor="edit-name">Nombre</Label>
-              <Input
-                id="edit-name"
-                placeholder="Nombre de la categoría"
-                {...registerForm("name")}
-              />
-              {errors.name && (
-                <p className="text-sm text-red-500">{errors.name.message}</p>
-              )}
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="edit-description">Descripción (opcional)</Label>
-              <Input
-                id="edit-description"
-                placeholder="Descripción breve"
-                {...registerForm("description")}
-              />
-            </div>
-            <DialogFooter>
-              <Button type="submit">Actualizar</Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <CategoryDialogs
+        openAddDialog={openAddDialog}
+        setOpenAddDialog={setOpenAddDialog}
+        openEditDialog={openEditDialog}
+        setOpenEditDialog={setOpenEditDialog}
+        currentCategory={currentCategory}
+        categoryType={categoryType}
+        onAddCategory={onAddCategory}
+        onEditCategory={onEditCategory}
+      />
     </div>
   );
 };
