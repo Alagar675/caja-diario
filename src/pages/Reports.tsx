@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -139,11 +138,7 @@ const Reports = () => {
                 onConfirmClose={handleDailyCashClose}
               />
               
-              <BalanceSummary 
-                cashBalance={balanceSummary.cashBalance} 
-                transferBalance={balanceSummary.transferBalance} 
-                creditBalance={balanceSummary.creditBalance} 
-              />
+              <BalanceSummary />
               
               <WithdrawalSection 
                 selectedBalanceType={selectedBalanceType} 
