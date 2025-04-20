@@ -1,7 +1,4 @@
-
 import React, { useState, useEffect } from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowDownUp, RefreshCw } from "lucide-react";
@@ -10,6 +7,7 @@ import { useGeoLocaleDetection } from "@/hooks/useGeoLocaleDetection";
 import { parseCurrencyValue } from "@/utils/currency/currencyFormatter";
 import { currencyMap } from "@/utils/currency/currencyHelpers";
 import { Button } from "@/components/ui/button";
+import { TransactionCurrencyInput } from "@/components/transactions/form-fields/currency/TransactionCurrencyInput";
 
 const CurrencyConverter = () => {
   const localeInfo = useGeoLocaleDetection();
@@ -40,18 +38,8 @@ const CurrencyConverter = () => {
     setToCurrency(temp);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    
-    // Clear input if it starts with non-numeric characters
-    if (value.match(/^[^1-9]/)) {
-      setAmount('');
-      return;
-    }
-    
-    // Only allow digits, dots, and commas
-    const cleanValue = value.replace(/[^\d.,]/g, '');
-    setAmount(cleanValue);
+  const handleInputChange = (value: string) => {
+    setAmount(value);
   };
 
   const handleRefreshRates = () => {
@@ -72,16 +60,10 @@ const CurrencyConverter = () => {
       </CardHeader>
       <CardContent className="space-y-4 pt-4">
         <div className="space-y-2">
-          <Label htmlFor="amount">Cantidad</Label>
-          <Input
-            id="amount"
-            value={amount}
-            onChange={handleInputChange}
-            className="font-mono text-right"
-            style={{ 
-              fontVariantNumeric: 'tabular-nums',
-              direction: 'rtl'
-            }}
+          <TransactionCurrencyInput
+            amount={amount}
+            setAmount={handleInputChange}
+            label="Cantidad"
           />
         </div>
         

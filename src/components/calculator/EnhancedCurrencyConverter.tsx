@@ -1,13 +1,11 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
-import { CurrencyInputField } from "@/components/ui/currency-input-field";
+import { TransactionCurrencyInput } from "@/components/transactions/form-fields/currency/TransactionCurrencyInput";
 import { parseCurrencyValue } from "@/utils/currency/currencyUtils";
 import { useCurrencyConversion } from "@/hooks/useCurrencyConversion";
 import { useGeoLocaleDetection } from "@/hooks/useGeoLocaleDetection";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { CurrencyConverterTabs } from "./components/CurrencyConverterTabs";
 import { CurrencySelectionGrid } from "./components/CurrencySelectionGrid";
 import { ConversionResult } from "./components/ConversionResult";
@@ -55,12 +53,6 @@ const EnhancedCurrencyConverter: React.FC<EnhancedCurrencyConverterProps> = ({ i
   };
 
   const handleAmountChange = (value: string) => {
-    // Clear input if it starts with non-numeric characters
-    if (value.match(/^[^1-9]/)) {
-      setAmount('');
-      return;
-    }
-    
     setAmount(value);
   };
   
@@ -84,12 +76,10 @@ const EnhancedCurrencyConverter: React.FC<EnhancedCurrencyConverterProps> = ({ i
         ) : (
           <>
             <div className="space-y-2">
-              <CurrencyInputField
-                value={amount}
-                onChange={handleAmountChange}
-                className="w-full"
-                placeholder="0,00"
-                inputDirection="rtl"
+              <TransactionCurrencyInput
+                amount={amount}
+                setAmount={handleAmountChange}
+                label="Valor a convertir"
               />
             </div>
             

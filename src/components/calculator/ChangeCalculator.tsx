@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { GeoLocalizedCurrencyInput } from "@/components/ui/geo-localized-currency-input";
+import { TransactionCurrencyInput } from "@/components/transactions/form-fields/currency/TransactionCurrencyInput";
 import { formatCurrency, parseCurrencyValue } from "@/utils/currency/currencyFormatter";
 import CurrencyConverter from "./CurrencyConverter";
 
@@ -26,26 +25,12 @@ const ChangeCalculator = ({
   }, [amountToPay, amountReceived]);
 
   const handleAmountToPayChange = (value: string) => {
-    // Clear input if it starts with non-numeric characters
-    if (value.match(/^[^1-9]/)) {
-      setFormattedAmountToPay("");
-      setAmountToPay(0);
-      return;
-    }
-    
     setFormattedAmountToPay(value);
     const numericValue = parseCurrencyValue(value);
     setAmountToPay(numericValue);
   };
 
   const handleAmountReceivedChange = (value: string) => {
-    // Clear input if it starts with non-numeric characters
-    if (value.match(/^[^1-9]/)) {
-      setFormattedAmountReceived("");
-      setAmountReceived(0);
-      return;
-    }
-    
     setFormattedAmountReceived(value);
     const numericValue = parseCurrencyValue(value);
     setAmountReceived(numericValue);
@@ -68,24 +53,20 @@ const ChangeCalculator = ({
       </CardHeader>
       <CardContent className="space-y-4 pt-4">
         <div className="space-y-2">
-          <GeoLocalizedCurrencyInput 
+          <TransactionCurrencyInput 
+            amount={formattedAmountToPay}
+            setAmount={handleAmountToPayChange}
             label="Valor a pagar"
-            value={formattedAmountToPay}
-            onChange={handleAmountToPayChange}
-            onCurrencyChange={handleCurrencyChange}
-            placeholder=""
-            className="text-right"
+            setCurrencyCode={setCurrencyCode}
           />
         </div>
 
         <div className="space-y-2">
-          <GeoLocalizedCurrencyInput
+          <TransactionCurrencyInput
+            amount={formattedAmountReceived}
+            setAmount={handleAmountReceivedChange}
             label="Dinero recibido"
-            value={formattedAmountReceived}
-            onChange={handleAmountReceivedChange}
-            onCurrencyChange={handleCurrencyChange}
-            placeholder=""
-            className="text-right"
+            setCurrencyCode={setCurrencyCode}
           />
         </div>
 
