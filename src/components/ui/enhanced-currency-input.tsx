@@ -27,7 +27,7 @@ export const EnhancedCurrencyInput = React.forwardRef<HTMLInputElement, Enhanced
     helpText,
     showConversion = false,
     showFeedback = false,
-    hideDecimals = true, // Changed default to true to hide decimals
+    hideDecimals, // Changed from default=true to undefined to allow explicit setting
     className,
     ...props 
   }, ref) => {
@@ -48,7 +48,7 @@ export const EnhancedCurrencyInput = React.forwardRef<HTMLInputElement, Enhanced
         label={label}
         currencyCode={localeInfo.currencyCode}
         error={localeInfo.error}
-        tooltipContent="Ingrese valores enteros sin decimales"
+        tooltipContent={hideDecimals ? "Ingrese valores enteros sin decimales" : "Ingrese valores con o sin decimales"}
         helpText={helpText}
       >
         <CurrencyInputField

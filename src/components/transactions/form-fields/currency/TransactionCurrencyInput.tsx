@@ -7,13 +7,15 @@ interface TransactionCurrencyInputProps {
   setAmount: (value: string) => void;
   label: string;
   setCurrencyCode?: (code: string) => void;
+  hideDecimals?: boolean;
 }
 
 export const TransactionCurrencyInput: React.FC<TransactionCurrencyInputProps> = ({
   amount,
   setAmount,
   label,
-  setCurrencyCode
+  setCurrencyCode,
+  hideDecimals
 }) => {
   return (
     <EnhancedCurrencyInput
@@ -26,7 +28,7 @@ export const TransactionCurrencyInput: React.FC<TransactionCurrencyInputProps> =
       autoFocus
       placeholder=""
       showConversion={false}
-      hideDecimals={true}
+      hideDecimals={hideDecimals}
       className="text-right"
     />
   );

@@ -78,6 +78,7 @@ const CurrencyConverter = () => {
             amount={amount}
             setAmount={handleInputChange}
             label="Cantidad"
+            hideDecimals={true}
           />
         </div>
         

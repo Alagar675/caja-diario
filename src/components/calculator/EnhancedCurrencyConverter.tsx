@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,7 +42,6 @@ const EnhancedCurrencyConverter: React.FC<EnhancedCurrencyConverterProps> = ({ i
   }, [localeInfo.currencyCode]);
   
   useEffect(() => {
-    // Set up auto-refresh interval
     const refreshInterval = setInterval(() => {
       if (sourceCurrency && targetCurrency) {
         window.location.reload();
@@ -95,6 +93,7 @@ const EnhancedCurrencyConverter: React.FC<EnhancedCurrencyConverterProps> = ({ i
                 amount={amount}
                 setAmount={handleAmountChange}
                 label="Valor a convertir"
+                hideDecimals={true}
               />
             </div>
             

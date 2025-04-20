@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TransactionCurrencyInput } from "@/components/transactions/form-fields/currency/TransactionCurrencyInput";
@@ -58,6 +59,7 @@ const ChangeCalculator = ({
             setAmount={handleAmountToPayChange}
             label="Valor a pagar"
             setCurrencyCode={setCurrencyCode}
+            hideDecimals={false}
           />
         </div>
 
@@ -67,6 +69,7 @@ const ChangeCalculator = ({
             setAmount={handleAmountReceivedChange}
             label="Dinero recibido"
             setCurrencyCode={setCurrencyCode}
+            hideDecimals={false}
           />
         </div>
 
