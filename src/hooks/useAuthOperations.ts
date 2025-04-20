@@ -12,11 +12,11 @@ export const useAuthOperations = () => {
       setIsLoading(true);
       
       // Create a temporary user with admin role
-      const tempUser = {
+      const tempUser: User = {
         id: "temp-" + Date.now(),
         name: "Usuario Temporal",
         email: email,
-        role: "admin"
+        role: "admin" as const
       };
       
       localStorage.setItem("user", JSON.stringify(tempUser));
@@ -35,11 +35,11 @@ export const useAuthOperations = () => {
     try {
       setIsLoading(true);
       
-      const userData = {
+      const userData: User = {
         id: "temp-" + Date.now(),
         name: "Usuario Temporal",
         email: email,
-        role: "admin"
+        role: "admin" as const
       };
       
       localStorage.setItem("user", JSON.stringify(userData));
@@ -58,11 +58,11 @@ export const useAuthOperations = () => {
     try {
       setIsLoading(true);
       
-      const newUser = {
+      const newUser: User = {
         id: "user-" + Date.now(),
         name,
         email,
-        role: "admin" // Temporarily setting all users as admin
+        role: "admin" as const // Temporarily setting all users as admin
       };
       
       localStorage.setItem("user", JSON.stringify(newUser));

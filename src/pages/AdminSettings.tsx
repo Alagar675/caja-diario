@@ -5,25 +5,16 @@ import AppLayout from "@/components/layout/AppLayout";
 import UserManagement from "@/components/settings/UserManagement";
 import CategoryManagement from "@/components/settings/CategoryManagement";
 import CurrencySettings from "@/components/settings/CurrencySettings";
-import { useAuth } from "@/context/AuthContext";
-import { Navigate } from "react-router-dom";
-import { Users } from "lucide-react"; // Importar el icono de usuarios
+import { Users } from "lucide-react";
 
 const AdminSettings = () => {
-  const { isAdmin, isAuthenticated } = useAuth();
-
-  // Redirect if not authenticated or not admin
-  if (!isAuthenticated || !isAdmin) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
   return (
     <div className="min-h-screen w-full bg-background">
       <AppLayout initialSidebarOpen={true}>
         <div className="w-full container mx-auto py-8 max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2 mb-6">
-            <Users className="h-6 w-6 text-primary" /> {/* Cambiar icono a Users */}
-            <h1 className="text-3xl font-bold">Panel de Administrador</h1> {/* Cambiar título */}
+            <Users className="h-6 w-6 text-primary" />
+            <h1 className="text-3xl font-bold">Panel de Administrador</h1>
           </div>
           
           <Tabs defaultValue="users" className="w-full">
@@ -31,7 +22,6 @@ const AdminSettings = () => {
               <TabsTrigger value="users">Gestión de Usuarios</TabsTrigger>
               <TabsTrigger value="categories">Gestión de Categorías</TabsTrigger>
               <TabsTrigger value="currency">Configuración de Divisas</TabsTrigger>
-              {/* Si quieres mantener las tres columnas anteriores, simplemente añade un cuarto TabsTrigger aquí */}
             </TabsList>
             
             <TabsContent value="users" className="space-y-4">
@@ -53,3 +43,4 @@ const AdminSettings = () => {
 };
 
 export default AdminSettings;
+
