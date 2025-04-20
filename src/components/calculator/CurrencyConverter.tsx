@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +8,7 @@ import { useGeoLocaleDetection } from "@/hooks/useGeoLocaleDetection";
 import { parseCurrencyValue } from "@/utils/currency/currencyFormatter";
 import { currencyMap } from "@/utils/currency/currencyHelpers";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { TransactionCurrencyInput } from "@/components/transactions/form-fields/currency/TransactionCurrencyInput";
 
 const CurrencyConverter = () => {
