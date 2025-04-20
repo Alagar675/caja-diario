@@ -4,7 +4,7 @@
  * with dot as thousand separator and comma as decimal separator
  */
 
-export const formatCurrencyInput = (value: string, hideDecimals: boolean = true): string => {
+export const formatCurrencyInput = (value: string, hideDecimals: boolean = false): string => {
   // If empty, return empty string
   if (!value || value === "") {
     return "";

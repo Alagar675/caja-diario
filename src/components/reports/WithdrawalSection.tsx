@@ -66,6 +66,7 @@ const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
                 amount={withdrawalAmount}
                 setAmount={setWithdrawalAmount}
                 label="Monto a retirar"
+                hideDecimals={false}
               />
             </div>
             <Button 

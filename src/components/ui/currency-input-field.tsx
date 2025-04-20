@@ -13,7 +13,7 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
     placeholder = "",
     className,
     showFeedback = false,
-    hideDecimals = true, // Changed default to true
+    hideDecimals = false, // Cambiado el valor por defecto a false para permitir decimales
     inputDirection = "rtl", // Ensure RTL is set as default
     ...props 
   }, ref) => {
