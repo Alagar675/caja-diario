@@ -11,27 +11,18 @@ export const useAuthOperations = () => {
     try {
       setIsLoading(true);
       
-      if (email && password) {
-        const usersStr = localStorage.getItem("app_users");
-        const users = usersStr ? JSON.parse(usersStr) : [];
-        
-        const foundUser = users.find((u: any) => u.email === email && u.password === password);
-        
-        if (!foundUser) {
-          throw new Error("Credenciales inválidas");
-        }
-        
-        const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        localStorage.setItem(`verification_${email}`, verificationCode);
-        
-        toast.info(`Código de verificación generado: ${verificationCode}`, {
-          description: "En una aplicación real, este código sería enviado por correo electrónico"
-        });
-        
-        return email;
-      } else {
-        throw new Error("Email y contraseña son requeridos");
-      }
+      // Create a temporary user with admin role
+      const tempUser = {
+        id: "temp-" + Date.now(),
+        name: "Usuario Temporal",
+        email: email,
+        role: "admin"
+      };
+      
+      localStorage.setItem("user", JSON.stringify(tempUser));
+      setUser(tempUser);
+      return email;
+      
     } catch (error) {
       toast.error("Error al iniciar sesión: " + (error as Error).message);
       throw error;
@@ -44,32 +35,17 @@ export const useAuthOperations = () => {
     try {
       setIsLoading(true);
       
-      const storedCode = localStorage.getItem(`verification_${email}`);
-      
-      if (!storedCode || storedCode !== code) {
-        throw new Error("Código de verificación inválido");
-      }
-      
-      localStorage.removeItem(`verification_${email}`);
-      
-      const usersStr = localStorage.getItem("app_users");
-      const users = usersStr ? JSON.parse(usersStr) : [];
-      const userData = users.find((u: any) => u.email === email);
-      
-      if (!userData) {
-        throw new Error("Usuario no encontrado");
-      }
-      
-      const authenticatedUser = {
-        id: userData.id,
-        name: userData.name,
-        email: userData.email,
-        role: userData.role || "user",
+      const userData = {
+        id: "temp-" + Date.now(),
+        name: "Usuario Temporal",
+        email: email,
+        role: "admin"
       };
       
-      localStorage.setItem("user", JSON.stringify(authenticatedUser));
-      setUser(authenticatedUser);
+      localStorage.setItem("user", JSON.stringify(userData));
+      setUser(userData);
       toast.success("Inicio de sesión exitoso");
+      
     } catch (error) {
       toast.error("Error en la verificación: " + (error as Error).message);
       throw error;
@@ -82,47 +58,17 @@ export const useAuthOperations = () => {
     try {
       setIsLoading(true);
       
-      if (name && email && password) {
-        const usersStr = localStorage.getItem("app_users");
-        const users = usersStr ? JSON.parse(usersStr) : [];
-        
-        if (users.some((u: any) => u.email === email)) {
-          throw new Error("El correo electrónico ya está registrado");
-        }
-        
-        const newUser = {
-          id: "user-" + Date.now(),
-          name,
-          email,
-          password,
-          role
-        };
-        
-        users.push(newUser);
-        localStorage.setItem("app_users", JSON.stringify(users));
-        
-        if (users.length === 1) {
-          newUser.role = "admin";
-        }
-        
-        toast.success("Usuario registrado exitosamente");
-        
-        if (user?.role === "admin") {
-          return;
-        }
-        
-        const authenticatedUser = {
-          id: newUser.id,
-          name: newUser.name,
-          email: newUser.email,
-          role: newUser.role
-        };
-        
-        localStorage.setItem("user", JSON.stringify(authenticatedUser));
-        setUser(authenticatedUser);
-      } else {
-        throw new Error("Todos los campos son requeridos");
-      }
+      const newUser = {
+        id: "user-" + Date.now(),
+        name,
+        email,
+        role: "admin" // Temporarily setting all users as admin
+      };
+      
+      localStorage.setItem("user", JSON.stringify(newUser));
+      setUser(newUser);
+      toast.success("Usuario registrado exitosamente");
+      
     } catch (error) {
       toast.error("Error al registrarse: " + (error as Error).message);
       throw error;
@@ -133,6 +79,7 @@ export const useAuthOperations = () => {
 
   const logout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("app_users");
     setUser(null);
     toast.info("Sesión cerrada");
   };
