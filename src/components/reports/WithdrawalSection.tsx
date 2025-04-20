@@ -1,10 +1,9 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowDown, History } from "lucide-react";
 import { formatCurrency, parseCurrencyValue } from "@/utils/formatters";
-import { CurrencyInput } from "@/components/ui/currency-input";
+import { TransactionCurrencyInput } from "@/components/transactions/form-fields/currency/TransactionCurrencyInput";
 
 interface WithdrawalSectionProps {
   selectedBalanceType: "cash" | "transfer" | "credit" | null;
@@ -30,16 +29,6 @@ const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
   withdrawalSummary,
   setWithdrawalHistoryDialog
 }) => {
-  const handleAmountChange = (value: string) => {
-    // Clear input if it starts with non-numeric characters
-    if (value.match(/^[^1-9]/)) {
-      setWithdrawalAmount('');
-      return;
-    }
-    
-    setWithdrawalAmount(value);
-  };
-  
   return (
     <div className="mt-6 border-t pt-6">
       <div className="flex items-center justify-center mb-3 rounded-lg">
@@ -71,19 +60,17 @@ const WithdrawalSection: React.FC<WithdrawalSectionProps> = ({
         </div>
         
         <div className="space-y-2 w-full max-w-xs">
-          <label className="text-sm font-medium">Monto a retirar</label>
           <div className="flex space-x-2">
             <div className="flex-1">
-              <CurrencyInput 
-                value={withdrawalAmount} 
-                onChange={handleAmountChange}
-                placeholder="0,00"
-                inputDirection="rtl"
+              <TransactionCurrencyInput
+                amount={withdrawalAmount}
+                setAmount={setWithdrawalAmount}
+                label="Monto a retirar"
               />
             </div>
             <Button 
               onClick={handleWithdrawalRequest} 
-              className="flex items-center whitespace-nowrap" 
+              className="flex items-center whitespace-nowrap mt-8" 
               disabled={!selectedBalanceType || !withdrawalAmount || parseCurrencyValue(withdrawalAmount) <= 0}
             >
               <ArrowDown className="mr-1 h-4 w-4" />
