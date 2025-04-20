@@ -33,7 +33,7 @@ const CurrencyConverter = () => {
     if (fromCurrency && toCurrency && !loading) {
       const numericAmount = parseCurrencyValue(amount);
       const result = convert(numericAmount, fromCurrency, toCurrency);
-      setConvertedAmount(result.toFixed(2));
+      setConvertedAmount(Math.floor(result).toString());
     }
 
     // Set up auto-refresh interval

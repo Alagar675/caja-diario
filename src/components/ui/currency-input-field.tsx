@@ -13,7 +13,7 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
     placeholder = "",
     className,
     showFeedback = false,
-    hideDecimals = false,
+    hideDecimals = true, // Changed default to true
     inputDirection = "rtl", // Ensure RTL is set as default
     ...props 
   }, ref) => {
@@ -44,7 +44,7 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
       if (showFeedback && isFirstInput && rawValue.length > 0) {
         toast({
           title: "Formato de moneda",
-          description: "Los últimos dos dígitos corresponden a los decimales",
+          description: hideDecimals ? "Ingrese solo valores enteros" : "Los últimos dos dígitos corresponden a los decimales",
           duration: 3000,
         });
         setIsFirstInput(false);
@@ -95,4 +95,3 @@ export const CurrencyInputField = React.forwardRef<HTMLInputElement, CurrencyInp
 );
 
 CurrencyInputField.displayName = "CurrencyInputField";
-

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -62,7 +63,8 @@ const EnhancedCurrencyConverter: React.FC<EnhancedCurrencyConverterProps> = ({ i
     if (!amount || !sourceCurrency || !targetCurrency) return;
     const numericAmount = parseCurrencyValue(amount);
     const result = convertValue(numericAmount, sourceCurrency, targetCurrency);
-    setConvertedResult(result);
+    // Round to integer
+    setConvertedResult(Math.floor(result));
   };
 
   const handleAmountChange = (value: string) => {

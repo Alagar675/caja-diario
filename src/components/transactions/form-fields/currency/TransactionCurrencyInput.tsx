@@ -21,13 +21,13 @@ export const TransactionCurrencyInput: React.FC<TransactionCurrencyInputProps> =
       onChange={setAmount}
       onCurrencyChange={setCurrencyCode}
       label={label}
-      showFeedback={true}
+      showFeedback={false}
       required
       autoFocus
       placeholder=""
       showConversion={false}
+      hideDecimals={true}
       className="text-right"
     />
   );
 };
-

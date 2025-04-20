@@ -11,27 +11,25 @@
 export const formatCurrencyValue = (value: number): string => {
   try {
     if (isNaN(value) || value === 0) {
-      return "0,00";
+      return "0";
     }
     
-    const valueStr = value.toFixed(2);
-    const parts = valueStr.split('.');
-    const integerPart = parts[0];
-    const decimalPart = parts.length > 1 ? parts[1] : '00';
+    // Format as integer
+    const valueStr = Math.floor(value).toString();
     
     // Format with thousand separators
     let formattedInteger = '';
-    for (let i = 0; i < integerPart.length; i++) {
-      if (i > 0 && (integerPart.length - i) % 3 === 0) {
+    for (let i = 0; i < valueStr.length; i++) {
+      if (i > 0 && (valueStr.length - i) % 3 === 0) {
         formattedInteger += '.';
       }
-      formattedInteger += integerPart[i];
+      formattedInteger += valueStr[i];
     }
     
-    return `${formattedInteger},${decimalPart}`;
+    return formattedInteger;
   } catch (error) {
     console.error('Error formatting currency value:', error);
-    return '0,00';
+    return '0';
   }
 };
 
@@ -43,11 +41,12 @@ export const formatCurrencyValue = (value: number): string => {
 export const parseCurrencyValue = (formattedValue: string): number => {
   if (!formattedValue || !formattedValue.trim()) return 0;
 
-  // Replace thousand separators and convert decimal comma to point
-  const cleanValue = formattedValue.replace(/\./g, '').replace(',', '.');
+  // Replace thousand separators
+  const cleanValue = formattedValue.replace(/\./g, '');
   
   try {
-    const result = parseFloat(cleanValue) || 0;
+    // Convert to integer
+    const result = parseInt(cleanValue) || 0;
     if (isNaN(result) || !isFinite(result)) {
       console.warn("Number parsing resulted in invalid value:", result);
       return 0;
@@ -63,7 +62,7 @@ export const parseCurrencyValue = (formattedValue: string): number => {
  * Get an appropriate placeholder for currency input based on locale
  */
 export const getCurrencyPlaceholder = (thousandSeparator: string = '.', decimalSeparator: string = ','): string => {
-  return `10${thousandSeparator}000${decimalSeparator}00`;
+  return `10${thousandSeparator}000`;
 };
 
 /**

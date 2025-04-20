@@ -4,7 +4,7 @@
  * with dot as thousand separator and comma as decimal separator
  */
 
-export const formatCurrencyInput = (value: string, hideDecimals: boolean = false): string => {
+export const formatCurrencyInput = (value: string, hideDecimals: boolean = true): string => {
   // If empty, return empty string
   if (!value || value === "") {
     return "";
@@ -21,18 +21,24 @@ export const formatCurrencyInput = (value: string, hideDecimals: boolean = false
     return "";
   }
 
-  // Handle right-to-left input formatting (last two digits are decimal part)
-  const len = value.length;
-  const decimalPart = len > 2 ? value.slice(-2) : value.padStart(2, '0');
-  const integerPart = len > 2 ? value.slice(0, -2) : '';
-  
-  // Add thousand separators from right to left
-  let formattedInteger = '';
-  if (integerPart) {
-    formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  // Handle formatting based on hideDecimals flag
+  if (hideDecimals) {
+    // Format as integer with thousand separators
+    return value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  } else {
+    // Handle right-to-left input formatting (last two digits are decimal part)
+    const len = value.length;
+    const decimalPart = len > 2 ? value.slice(-2) : value.padStart(2, '0');
+    const integerPart = len > 2 ? value.slice(0, -2) : '';
+    
+    // Add thousand separators from right to left
+    let formattedInteger = '';
+    if (integerPart) {
+      formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+    
+    return `${formattedInteger}${formattedInteger ? ',' : ''}${decimalPart}`;
   }
-  
-  return hideDecimals ? formattedInteger : `${formattedInteger}${formattedInteger ? ',' : ''}${decimalPart}`;
 };
 
 /**
@@ -59,6 +65,5 @@ export const parseCurrencyValue = (formattedValue: string): number => {
  * Get placeholder text based on locale settings
  */
 export const getCurrencyPlaceholder = (): string => {
-  return "0,00";
+  return "0";
 };
-
