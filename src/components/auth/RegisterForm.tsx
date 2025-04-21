@@ -33,10 +33,15 @@ const RegisterForm = () => {
     try {
       setIsLoading(true);
       await register(name, email, password);
+      toast.success("Usuario registrado exitosamente");
       navigate("/dashboard");
     } catch (error: any) {
       console.error("Registration error:", error);
-      toast.error(error.message || "Error al registrarse");
+      if (error.code === "user_already_exists") {
+        toast.error("Este email ya está registrado. Intente iniciar sesión.");
+      } else {
+        toast.error(error.message || "Error al registrarse");
+      }
     } finally {
       setIsLoading(false);
     }

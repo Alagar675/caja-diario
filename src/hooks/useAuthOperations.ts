@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { User } from "@/types/auth";
 import { toast } from "sonner";
@@ -37,8 +36,13 @@ export const useAuthOperations = () => {
         return userData.email;
       }
       throw new Error("No user data returned");
-    } catch (error) {
-      toast.error("Error al iniciar sesión: " + (error as Error).message);
+    } catch (error: any) {
+      console.error("Login error:", error);
+      if (error.message === "Invalid login credentials") {
+        toast.error("Credenciales inválidas");
+      } else {
+        toast.error("Error al iniciar sesión: " + error.message);
+      }
       throw error;
     } finally {
       setIsLoading(false);
@@ -80,6 +84,15 @@ export const useAuthOperations = () => {
     try {
       setIsLoading(true);
       
+      const { data: existingUsers } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', email);
+      
+      if (existingUsers && existingUsers.length > 0) {
+        throw { code: "user_already_exists", message: "Usuario ya registrado" };
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -104,8 +117,8 @@ export const useAuthOperations = () => {
         setUser(userData);
         toast.success("Usuario registrado exitosamente");
       }
-    } catch (error) {
-      toast.error("Error al registrarse: " + (error as Error).message);
+    } catch (error: any) {
+      console.error("Registration error:", error);
       throw error;
     } finally {
       setIsLoading(false);
