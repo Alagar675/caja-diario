@@ -6,8 +6,10 @@ export const useLocalStorageState = () => {
   
   const saveLastAction = (action: string) => {
     localStorage.setItem("lastAction", action);
-    localStorage.setItem("needsRecovery", "true");
-    localStorage.setItem("abnormalExit", "true");
+    // Solo configuramos estos valores si realmente necesitamos recuperación
+    // Para navegación normal, estos valores deberían ser false
+    // localStorage.setItem("needsRecovery", "true");
+    // localStorage.setItem("abnormalExit", "true");
   };
   
   const clearRecoveryState = () => {
@@ -22,11 +24,18 @@ export const useLocalStorageState = () => {
     
     return abnormalExit === "true" && needsRecovery === "true" && lastAction;
   };
+  
+  const navigateSafely = (path: string) => {
+    saveLastAction(path);
+    clearRecoveryState(); // Asegurarnos que la navegación sea normal
+    navigate(path, { replace: true });
+  };
 
   return {
     saveLastAction,
     clearRecoveryState,
-    checkRecoveryNeeded
+    checkRecoveryNeeded,
+    navigateSafely
   };
 };
 

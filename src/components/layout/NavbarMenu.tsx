@@ -1,9 +1,8 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { LogOut, Settings, Users } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import useLocalStorageState from "@/hooks/useLocalStorageState";
 import { useAuth } from "@/context/AuthContext";
 
 interface NavbarMenuProps {
@@ -16,13 +15,21 @@ interface NavbarMenuProps {
 
 const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, closeMenu }: NavbarMenuProps) => {
   const navigate = useNavigate();
-  const { clearRecoveryState } = useLocalStorageState();
   const { isAdmin } = useAuth();
 
-  const handleNavigation = (path: string) => {
+  const handleNavigation = (path: string, event?: React.MouseEvent) => {
+    if (event) {
+      event.preventDefault();
+    }
+    
+    // Guardar la acción pero marcar como salida normal
     saveLastAction(path);
-    clearRecoveryState();
-    navigate(path);
+    localStorage.setItem("needsRecovery", "false");
+    localStorage.setItem("abnormalExit", "false");
+    
+    // Usar navigate con replace para evitar problemas de historial
+    navigate(path, { replace: true });
+    
     if (isMobile && closeMenu) {
       closeMenu();
     }
@@ -36,24 +43,21 @@ const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, clo
   return (
     <>
       {allMenuItems.map(item => (
-        <a
+        <Button
           key={item.name}
-          href={item.path}
-          className={isMobile ? "block py-2 text-base font-medium transition-colors hover:text-primary" : "text-sm font-medium transition-colors hover:text-primary"}
-          onClick={(e) => {
-            e.preventDefault();
-            handleNavigation(item.path);
-          }}
+          variant="ghost"
+          className={isMobile ? "w-full justify-start" : ""}
+          onClick={(e) => handleNavigation(item.path, e)}
         >
           {item.name}
-        </a>
+        </Button>
       ))}
       
       <div className={isMobile ? "flex flex-col space-y-2 pt-2 border-t" : "flex items-center space-x-2"}>
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => handleNavigation("/settings/currency")}
+          onClick={(e) => handleNavigation("/settings/currency", e)}
           title="Configuración de moneda"
         >
           <Settings className="h-4 w-4" />
@@ -61,8 +65,11 @@ const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, clo
         <Button 
           variant={isMobile ? "outline" : "outline"} 
           size={isMobile ? "default" : "sm"}
-          onClick={onLogout} 
-          className={isMobile ? "justify-center" : "flex items-center gap-1"}
+          onClick={(e) => {
+            e.preventDefault();
+            onLogout();
+          }} 
+          className={isMobile ? "justify-start" : "flex items-center gap-1"}
         >
           <LogOut className="h-4 w-4" />
           <span>{isMobile ? "Cerrar sesión" : "Salir"}</span>

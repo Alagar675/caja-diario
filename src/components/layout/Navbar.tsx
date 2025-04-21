@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Menu, X, Settings, Users } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { formatName, getUserGender } from "@/utils/userUtils";
@@ -19,7 +19,7 @@ const Navbar = () => {
   const [showRecoveryAlert, setShowRecoveryAlert] = useState(false);
   const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
-  const { saveLastAction, checkRecoveryNeeded } = useLocalStorageState();
+  const { saveLastAction, checkRecoveryNeeded, navigateSafely } = useLocalStorageState();
   
   useEffect(() => {
     if (checkRecoveryNeeded()) {
@@ -27,12 +27,22 @@ const Navbar = () => {
     }
   }, [checkRecoveryNeeded]);
   
-  const handleLogout = () => {
+  const handleLogout = (event?: React.MouseEvent) => {
+    if (event) {
+      event.preventDefault();
+    }
     localStorage.setItem("abnormalExit", "false");
     setShowLogoutAlert(true);
   };
   
   const closeMenu = () => setIsMenuOpen(false);
+  
+  const handleLogoClick = (event?: React.MouseEvent) => {
+    if (event) {
+      event.preventDefault();
+    }
+    navigateSafely("/dashboard");
+  };
   
   const menuItems = [{
     name: "Inicio",
@@ -52,11 +62,16 @@ const Navbar = () => {
           <Image 
             src="/lovable-uploads/1dd588be-cbaf-47c8-8924-e510ea18d27f.png" 
             alt="Daily Cash Report Logo" 
-            className="h-10 w-10 object-cover"
+            className="h-10 w-10 object-cover cursor-pointer"
+            onClick={handleLogoClick}
           />
-          <a href="/dashboard" className="flex items-center space-x-2">
-            <span className="font-bold text-blue-700 text-xl">Daily Cash Report</span>
-          </a>
+          <Button
+            variant="ghost"
+            className="font-bold text-blue-700 text-xl"
+            onClick={handleLogoClick}
+          >
+            Daily Cash Report
+          </Button>
         </div>
 
         {user && (
@@ -77,10 +92,23 @@ const Navbar = () => {
           
           {!user && (
             <div className="flex items-center space-x-2">
-              <Button variant="ghost" onClick={() => navigate("/login")} className="text-sm">
+              <Button 
+                variant="ghost" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigateSafely("/login");
+                }} 
+                className="text-sm"
+              >
                 Iniciar sesión
               </Button>
-              <Button onClick={() => navigate("/register")} className="text-sm bg-primary text-white">
+              <Button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigateSafely("/register");
+                }} 
+                className="text-sm bg-primary text-white"
+              >
                 Registrarse
               </Button>
             </div>

@@ -16,7 +16,7 @@ export const useAuthOperations = () => {
         id: "temp-" + Date.now(),
         name: "Usuario Temporal",
         email: email,
-        role: "admin" as const
+        role: "admin"
       };
       
       localStorage.setItem("user", JSON.stringify(tempUser));
@@ -39,7 +39,7 @@ export const useAuthOperations = () => {
         id: "temp-" + Date.now(),
         name: "Usuario Temporal",
         email: email,
-        role: "admin" as const
+        role: "admin"
       };
       
       localStorage.setItem("user", JSON.stringify(userData));
@@ -62,7 +62,7 @@ export const useAuthOperations = () => {
         id: "user-" + Date.now(),
         name,
         email,
-        role: "admin" as const // Temporarily setting all users as admin
+        role: "admin" // Temporarily setting all users as admin
       };
       
       localStorage.setItem("user", JSON.stringify(newUser));

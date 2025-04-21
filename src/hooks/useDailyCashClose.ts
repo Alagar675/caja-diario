@@ -22,6 +22,11 @@ export const useDailyCashClose = () => {
     
     setCloseSuccessDialogOpen(true);
     toast.success("Cierre de caja completado exitosamente");
+    
+    // Redirigir al dashboard después del cierre
+    setTimeout(() => {
+      navigate("/dashboard", { replace: true });
+    }, 1500);
   };
   
   const handleExitApplication = () => {
@@ -34,8 +39,8 @@ export const useDailyCashClose = () => {
     setTimeout(() => {
       // Log the user out completely
       logout();
-      // Redirect to login page
-      navigate("/login");
+      // Redirect to login page with replace to evitar problemas de historial
+      navigate("/login", { replace: true });
     }, 1500);
   };
   

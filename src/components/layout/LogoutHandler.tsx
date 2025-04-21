@@ -13,9 +13,11 @@ const LogoutHandler = ({ showLogoutAlert, setShowLogoutAlert }: LogoutHandlerPro
 
   const handleCancel = () => setShowLogoutAlert(false);
   
-  const goToReports = () => {
-    saveLastAction("/reports");
-    navigate("/reports");
+  const goToReports = (event?: React.MouseEvent) => {
+    if (event) {
+      event.preventDefault();
+    }
+    navigate("/reports", { replace: true });
     setShowLogoutAlert(false);
     
     setTimeout(() => {
@@ -32,8 +34,8 @@ const LogoutHandler = ({ showLogoutAlert, setShowLogoutAlert }: LogoutHandlerPro
   
   const saveLastAction = (action: string) => {
     localStorage.setItem("lastAction", action);
-    localStorage.setItem("needsRecovery", "true");
-    localStorage.setItem("abnormalExit", "true");
+    localStorage.setItem("needsRecovery", "false"); // No necesitamos recuperación cuando usamos navegación controlada
+    localStorage.setItem("abnormalExit", "false"); // Marcamos como salida normal
   };
 
   return (

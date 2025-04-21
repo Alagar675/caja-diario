@@ -1,3 +1,4 @@
+
 import React from "react";
 import { cn } from "@/lib/utils";
 import UserProfileDisplay from "./UserProfileDisplay";
@@ -12,7 +13,7 @@ interface MobileMenuProps {
   userGender: "male" | "female";
   menuItems: Array<{ name: string; path: string }>;
   saveLastAction: (action: string) => void;
-  handleLogout: () => void;
+  handleLogout: (event?: React.MouseEvent) => void;
   closeMenu: () => void;
 }
 
@@ -27,6 +28,18 @@ const MobileMenu = ({
   closeMenu,
 }: MobileMenuProps) => {
   const navigate = useNavigate();
+  
+  const handleNavigation = (path: string, event?: React.MouseEvent) => {
+    if (event) {
+      event.preventDefault();
+    }
+    
+    saveLastAction(path);
+    localStorage.setItem("needsRecovery", "false");
+    localStorage.setItem("abnormalExit", "false");
+    navigate(path, { replace: true });
+    closeMenu();
+  };
 
   return (
     <div
@@ -57,19 +70,13 @@ const MobileMenu = ({
           <div className="flex flex-col space-y-2">
             <Button
               variant="ghost"
-              onClick={() => {
-                navigate("/login");
-                closeMenu();
-              }}
+              onClick={(e) => handleNavigation("/login", e)}
               className="justify-center"
             >
               Iniciar sesión
             </Button>
             <Button
-              onClick={() => {
-                navigate("/register");
-                closeMenu();
-              }}
+              onClick={(e) => handleNavigation("/register", e)}
               className="justify-center bg-primary text-white"
             >
               Registrarse

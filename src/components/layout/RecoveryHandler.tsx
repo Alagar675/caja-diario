@@ -23,13 +23,17 @@ const RecoveryHandler = ({ showRecoveryAlert, setShowRecoveryAlert }: RecoveryHa
     }
   }, [checkIfCashClosureNeeded]);
   
-  const handleRecovery = () => {
+  const handleRecovery = (event?: React.MouseEvent) => {
+    if (event) {
+      event.preventDefault();
+    }
+    
     const lastAction = localStorage.getItem("lastAction");
     if (lastAction) {
       localStorage.setItem("needsRecovery", "false");
       localStorage.setItem("abnormalExit", "false");
       try {
-        navigate(lastAction);
+        navigate(lastAction, { replace: true });
         toast.success("Sesión restaurada correctamente");
         
         // After recovering session, check if cash close is needed
@@ -37,7 +41,7 @@ const RecoveryHandler = ({ showRecoveryAlert, setShowRecoveryAlert }: RecoveryHa
           setShowCashCloseAlert(true);
         }
       } catch (error) {
-        navigate("/dashboard");
+        navigate("/dashboard", { replace: true });
         toast.error("Error al restaurar. Redirigiendo al inicio");
       }
     }
@@ -48,12 +52,15 @@ const RecoveryHandler = ({ showRecoveryAlert, setShowRecoveryAlert }: RecoveryHa
     localStorage.setItem("needsRecovery", "false");
     localStorage.setItem("abnormalExit", "false");
     setShowRecoveryAlert(false);
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
   
-  const handleGoToCashClose = () => {
+  const handleGoToCashClose = (event?: React.MouseEvent) => {
+    if (event) {
+      event.preventDefault();
+    }
     setShowCashCloseAlert(false);
-    navigate("/reports");
+    navigate("/reports", { replace: true });
     
     // Highlight the cash close button
     setTimeout(() => {
