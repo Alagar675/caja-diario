@@ -26,20 +26,23 @@ const CashCloseAlert = ({
 }: CashCloseAlertProps) => {
   // Permite habilitar "Usuario Temporal" para test
   const activarModoTemporal = () => {
-    // Cerrar la alerta y permitir que el usuario pruebe la app temporalmente
     onOpenChange(false);
-    // Guardamos una marca en localStorage para simular el "Modo Usuario Temporal"
     localStorage.setItem("temporalUserMode", "active");
-    // Aquí podrías agregar un toast para informar del modo temporal si lo deseas
-    // Ejemplo (requiere importar { toast } de "@/hooks/use-toast" si es necesario):
-    // toast.info("Modo Usuario Temporal activado. La aplicación está activa para test.");
+    // Puedes mostrar un toast aquí si deseas (modo test)
+  };
+
+  // Limpia el modo temporal y procede con el cierre de caja real
+  const handleRealCashClose = () => {
+    localStorage.removeItem("temporalUserMode");
+    onGoToCashClose();
+    onOpenChange(false); // Cierra la alerta (opcional)
   };
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          {/* Hacemos la etiqueta clickable */}
+          {/* Etiqueta clickable para modo temporal (TEST) */}
           <AlertDialogTitle
             className="cursor-pointer text-blue-700 underline"
             title="Click para activar aplicación en modo temporal"
@@ -73,7 +76,7 @@ const CashCloseAlert = ({
         </Alert>
 
         <AlertDialogFooter>
-          <AlertDialogAction onClick={onGoToCashClose}>
+          <AlertDialogAction onClick={handleRealCashClose}>
             Realizar Cierre de Caja
           </AlertDialogAction>
         </AlertDialogFooter>
