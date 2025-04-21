@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
+import { toast } from "react-toastify";
 
 const RegisterForm = () => {
   const [name, setName] = useState("");
@@ -20,10 +20,12 @@ const RegisterForm = () => {
     e.preventDefault();
     
     if (!name || !email || !password) {
+      toast.error("Por favor complete todos los campos");
       return;
     }
     
     if (password !== confirmPassword) {
+      toast.error("Las contraseñas no coinciden");
       return;
     }
 
@@ -31,8 +33,9 @@ const RegisterForm = () => {
       setIsLoading(true);
       await register(name, email, password);
       navigate("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Registration error:", error);
+      toast.error(error.message || "Error al registrarse");
     } finally {
       setIsLoading(false);
     }

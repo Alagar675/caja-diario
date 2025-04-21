@@ -1,23 +1,61 @@
 
 import { useEffect } from "react";
 import { User } from "@/types/auth";
+import { supabase } from "@/integrations/supabase/client";
 
 export const useAuthInit = (setUser: (user: User | null) => void, setIsLoading: (loading: boolean) => void) => {
   useEffect(() => {
-    // Clear any existing users data
-    localStorage.removeItem("app_users");
-    
-    const storedUser = localStorage.getItem("user");
-    
-    if (storedUser) {
+    const initAuth = async () => {
       try {
-        setUser(JSON.parse(storedUser));
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session?.user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+
+          const userData: User = {
+            id: session.user.id,
+            name: profile?.full_name || session.user.email?.split('@')[0] || '',
+            email: session.user.email || '',
+            role: "admin"
+          };
+          setUser(userData);
+        }
       } catch (error) {
-        console.error("Failed to parse stored user:", error);
+        console.error("Error initializing auth:", error);
         localStorage.removeItem("user");
+      } finally {
+        setIsLoading(false);
       }
-    }
-    
-    setIsLoading(false);
+    };
+
+    initAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+
+        const userData: User = {
+          id: session.user.id,
+          name: profile?.full_name || session.user.email?.split('@')[0] || '',
+          email: session.user.email || '',
+          role: "admin"
+        };
+        setUser(userData);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [setUser, setIsLoading]);
 };

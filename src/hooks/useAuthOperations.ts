@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { User } from "@/types/auth";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export const useAuthOperations = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -10,19 +11,32 @@ export const useAuthOperations = () => {
   const login = async (email: string, password: string): Promise<string> => {
     try {
       setIsLoading(true);
-      
-      // Create a temporary user with admin role
-      const tempUser: User = {
-        id: "temp-" + Date.now(),
-        name: "Usuario Temporal",
-        email: email,
-        role: "admin" as const
-      };
-      
-      localStorage.setItem("user", JSON.stringify(tempUser));
-      setUser(tempUser);
-      return email;
-      
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .single();
+
+        const userData: User = {
+          id: data.user.id,
+          name: profile?.full_name || data.user.email?.split('@')[0] || '',
+          email: data.user.email || '',
+          role: "admin"
+        };
+
+        localStorage.setItem("user", JSON.stringify(userData));
+        setUser(userData);
+        return userData.email;
+      }
+      throw new Error("No user data returned");
     } catch (error) {
       toast.error("Error al iniciar sesión: " + (error as Error).message);
       throw error;
@@ -34,18 +48,26 @@ export const useAuthOperations = () => {
   const verifyCode = async (email: string, code: string) => {
     try {
       setIsLoading(true);
+      const { data, error } = await supabase.auth.verifyOtp({
+        email,
+        token: code,
+        type: 'email'
+      });
+
+      if (error) throw error;
       
-      const userData: User = {
-        id: "temp-" + Date.now(),
-        name: "Usuario Temporal",
-        email: email,
-        role: "admin" as const
-      };
-      
-      localStorage.setItem("user", JSON.stringify(userData));
-      setUser(userData);
-      toast.success("Inicio de sesión exitoso");
-      
+      if (data.user) {
+        const userData: User = {
+          id: data.user.id,
+          name: data.user.email?.split('@')[0] || '',
+          email: data.user.email || '',
+          role: "admin"
+        };
+        
+        localStorage.setItem("user", JSON.stringify(userData));
+        setUser(userData);
+        toast.success("Inicio de sesión exitoso");
+      }
     } catch (error) {
       toast.error("Error en la verificación: " + (error as Error).message);
       throw error;
@@ -54,21 +76,34 @@ export const useAuthOperations = () => {
     }
   };
 
-  const register = async (name: string, email: string, password: string, role: "admin" | "user" = "user") => {
+  const register = async (name: string, email: string, password: string) => {
     try {
       setIsLoading(true);
       
-      const newUser: User = {
-        id: "user-" + Date.now(),
-        name,
+      const { data, error } = await supabase.auth.signUp({
         email,
-        role: "admin" as const // Temporarily setting all users as admin
-      };
-      
-      localStorage.setItem("user", JSON.stringify(newUser));
-      setUser(newUser);
-      toast.success("Usuario registrado exitosamente");
-      
+        password,
+        options: {
+          data: {
+            full_name: name,
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        const userData: User = {
+          id: data.user.id,
+          name,
+          email: data.user.email || '',
+          role: "admin"
+        };
+        
+        localStorage.setItem("user", JSON.stringify(userData));
+        setUser(userData);
+        toast.success("Usuario registrado exitosamente");
+      }
     } catch (error) {
       toast.error("Error al registrarse: " + (error as Error).message);
       throw error;
@@ -77,11 +112,18 @@ export const useAuthOperations = () => {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("app_users");
-    setUser(null);
-    toast.info("Sesión cerrada");
+  const logout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      localStorage.removeItem("user");
+      localStorage.removeItem("app_users");
+      setUser(null);
+      toast.info("Sesión cerrada");
+    } catch (error) {
+      toast.error("Error al cerrar sesión: " + (error as Error).message);
+    }
   };
 
   return {
