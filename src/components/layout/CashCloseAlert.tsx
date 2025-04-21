@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Clock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
 
 interface CashCloseAlertProps {
   open: boolean;
@@ -24,11 +26,14 @@ const CashCloseAlert = ({
   onOpenChange,
   onGoToCashClose,
 }: CashCloseAlertProps) => {
-  // Permite habilitar "Usuario Temporal" para test
+  const navigate = useNavigate();
+
+  // Permite habilitar "Usuario Temporal" para test, y entrar a la app
   const activarModoTemporal = () => {
-    onOpenChange(false);
     localStorage.setItem("temporalUserMode", "active");
-    // Puedes mostrar un toast aquí si deseas (modo test)
+    onOpenChange(false);
+    toast.info("Modo Usuario Temporal activado. Ahora puede usar la aplicación para cerrar el sistema correctamente.");
+    navigate("/dashboard");
   };
 
   // Limpia el modo temporal y procede con el cierre de caja real
@@ -61,7 +66,7 @@ const CashCloseAlert = ({
             Se detectó que la aplicación no se cerró correctamente o se ha iniciado un nuevo día de operaciones.
             Es necesario realizar el cierre de caja antes de continuar.
             <span className="block mt-2 text-xs text-gray-500 italic">
-              (Click en el título para activar el modo Usuario Temporal y continuar usando la aplicación)
+              (Click en el título para activar el modo Usuario Temporal y continuar usando la aplicación. Use esto solo para test.)
             </span>
           </AlertDialogDescription>
         </AlertDialogHeader>
