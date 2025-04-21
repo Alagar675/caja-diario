@@ -32,7 +32,11 @@ const CashCloseAlert = ({
   const activarModoTemporal = () => {
     localStorage.setItem("temporalUserMode", "active");
     onOpenChange(false);
-    toast.info("Modo Usuario Temporal activado. Ahora puede usar la aplicación para cerrar el sistema correctamente.");
+    toast({
+      title: "Modo Usuario Temporal activado",
+      description: "Ahora puede usar la aplicación para cerrar el sistema correctamente.",
+      variant: "default",
+    });
     navigate("/dashboard");
   };
 
@@ -91,4 +95,3 @@ const CashCloseAlert = ({
 };
 
 export default CashCloseAlert;
-
