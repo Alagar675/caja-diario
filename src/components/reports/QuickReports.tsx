@@ -1,12 +1,14 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Calendar, FileText, Printer, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
+import { Calendar, FileText, Printer, ArrowDownCircle, ArrowUpCircle, Clock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFinance, Transaction } from "@/context/FinanceContext";
 import { formatCurrency } from "@/utils/formatters";
 import { DailySummary } from "@/types/finance";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface QuickReportsProps {
   dailySummary: DailySummary;
@@ -20,7 +22,8 @@ const QuickReports: React.FC<QuickReportsProps> = ({
   onConfirmClose
 }) => {
   const {
-    transactions
+    transactions,
+    archivedTransactions
   } = useFinance();
   const [highlightConfirmButton, setHighlightConfirmButton] = useState(false);
   const [reportGenerated, setReportGenerated] = useState(false);
@@ -47,6 +50,7 @@ const QuickReports: React.FC<QuickReportsProps> = ({
       setHighlightConfirmButton(false);
     }, 3000);
   };
+  
   const handleConfirmClose = () => {
     if (onConfirmClose) {
       onConfirmClose();
@@ -54,8 +58,23 @@ const QuickReports: React.FC<QuickReportsProps> = ({
   };
 
   const getFilteredTransactions = (type: "income" | "expense") => {
-    return transactions.filter(t => t.type === type).sort((a, b) => b.date.getTime() - a.date.getTime()).slice(0, 5);
+    return transactions.filter(t => t.type === type).sort((a, b) => 
+      new Date(b.date).getTime() - new Date(a.date).getTime()
+    ).slice(0, 5);
   };
+  
+  // Get the timestamp of last cash close
+  const getLastCashCloseTime = () => {
+    const lastCloseTime = localStorage.getItem("lastCashCloseTime");
+    return lastCloseTime ? new Date(lastCloseTime) : null;
+  };
+  
+  const lastCloseTime = getLastCashCloseTime();
+  const today = new Date();
+  const isNewDay = lastCloseTime ? 
+    lastCloseTime.getDate() !== today.getDate() || 
+    lastCloseTime.getMonth() !== today.getMonth() || 
+    lastCloseTime.getFullYear() !== today.getFullYear() : true;
 
   return (
     <div className="space-y-4">
@@ -76,9 +95,13 @@ const QuickReports: React.FC<QuickReportsProps> = ({
       
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="w-full justify-start" variant="outline">
-            <Calendar className="mr-2 h-4 w-4" />
+          <Button 
+            className={`w-full justify-start ${isNewDay ? "animate-pulse bg-yellow-100 text-yellow-800 hover:bg-yellow-200 border-yellow-300" : ""}`} 
+            variant="outline"
+          >
+            <Clock className={`mr-2 h-4 w-4 ${isNewDay ? "text-yellow-800" : ""}`} />
             Cierre de caja diario
+            {isNewDay && <span className="ml-auto text-xs font-medium bg-yellow-200 text-yellow-900 px-2 py-0.5 rounded">Pendiente</span>}
           </Button>
         </DialogTrigger>
         <DialogContent>
@@ -92,6 +115,15 @@ const QuickReports: React.FC<QuickReportsProps> = ({
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
+            {isNewDay && (
+              <Alert className="mb-4 border-yellow-500 bg-yellow-50">
+                <Clock className="h-4 w-4" />
+                <AlertTitle>Cierre pendiente</AlertTitle>
+                <AlertDescription>
+                  Es necesario realizar el cierre de caja diario para reiniciar los saldos del día.
+                </AlertDescription>
+              </Alert>
+            )}
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span>Total ingresos:</span>
@@ -116,7 +148,10 @@ const QuickReports: React.FC<QuickReportsProps> = ({
               <FileText className="mr-1 h-4 w-4" />
               Guardar PDF
             </Button>
-            <Button className={`${highlightConfirmButton ? "animate-pulse ring-2 ring-primary ring-offset-2" : ""}`} onClick={handleConfirmClose}>
+            <Button 
+              className={`${highlightConfirmButton || isNewDay ? "animate-pulse ring-2 ring-primary ring-offset-2" : ""}`} 
+              onClick={handleConfirmClose}
+            >
               Confirmar Cierre
             </Button>
           </DialogFooter>

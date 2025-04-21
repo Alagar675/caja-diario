@@ -13,6 +13,7 @@ export interface Transaction {
   paymentMethod: PaymentMethod;
   date: Date;
   createdAt: Date;
+  archivedAt?: Date;
   bankName?: string;
   transferNumber?: string;
   recipientName?: string;
@@ -38,13 +39,17 @@ export interface Withdrawal {
   concept: string;
   authorizedBy: string;
   timestamp: Date;
+  archivedAt?: Date;
 }
 
 export interface FinanceContextType {
   transactions: Transaction[];
   withdrawals: Withdrawal[];
+  archivedTransactions: Transaction[];
+  archivedWithdrawals: Withdrawal[];
   addTransaction: (transaction: Omit<Transaction, "id" | "userId" | "createdAt">) => void;
   addWithdrawal: (withdrawal: Omit<Withdrawal, "id" | "userId" | "timestamp">) => void;
+  resetBalancesForNewDay: () => void;
   getTransactionsByDate: (startDate: Date, endDate: Date) => Transaction[];
   getDailySummary: (date?: Date) => DailySummary;
   getTotalBalance: () => number;
