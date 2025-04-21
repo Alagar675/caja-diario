@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
-import { toast } from "sonner";
 
 const RegisterForm = () => {
   const [name, setName] = useState("");
@@ -21,27 +20,19 @@ const RegisterForm = () => {
     e.preventDefault();
     
     if (!name || !email || !password) {
-      toast.error("Por favor complete todos los campos");
       return;
     }
     
     if (password !== confirmPassword) {
-      toast.error("Las contraseñas no coinciden");
       return;
     }
 
     try {
       setIsLoading(true);
       await register(name, email, password);
-      toast.success("Usuario registrado exitosamente");
       navigate("/dashboard");
-    } catch (error: any) {
+    } catch (error) {
       console.error("Registration error:", error);
-      if (error.code === "user_already_exists") {
-        toast.error("Este email ya está registrado. Intente iniciar sesión.");
-      } else {
-        toast.error(error.message || "Error al registrarse");
-      }
     } finally {
       setIsLoading(false);
     }
