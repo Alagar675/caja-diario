@@ -40,11 +40,18 @@ const CashCloseAlert = ({
     navigate("/dashboard");
   };
 
-  // Limpia el modo temporal y procede con el cierre de caja real
+  // Limpia el modo temporal y procede con el cierre de caja real, luego lleva al dashboard
   const handleRealCashClose = () => {
     localStorage.removeItem("temporalUserMode");
+    localStorage.setItem("needsCashClose", "false"); // Por si acaso, limpia bandera
     onGoToCashClose();
-    onOpenChange(false); // Cierra la alerta (opcional)
+    onOpenChange(false); // Cierra la alerta
+    navigate("/dashboard"); // Redirige al dashboard para recuperar o cerrar caja
+    toast({
+      title: "Listo para Cierre de Caja",
+      description: "Ahora puede realizar el cierre o recuperación desde el panel principal.",
+      variant: "default",
+    });
   };
 
   return (
@@ -95,3 +102,4 @@ const CashCloseAlert = ({
 };
 
 export default CashCloseAlert;
+
