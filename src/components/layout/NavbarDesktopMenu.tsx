@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
 import NavbarMenu from "./NavbarMenu";
-import { FileText } from "lucide-react";
+import { FileText, Currency } from "lucide-react";
 
 interface MenuItem {
   name: string;
@@ -126,6 +126,32 @@ const NavbarDesktopMenu = ({
       >
         Informes
       </Button>
+      
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={(e) => {
+          e.preventDefault();
+          handleNavigate("/settings/currency");
+        }}
+        title="Conversor de moneda"
+        className="h-8 w-8"
+      >
+        <Currency className="h-4 w-4" />
+      </Button>
+
+      {isAdmin && (
+        <Button
+          variant="ghost"
+          onClick={(e) => {
+            e.preventDefault();
+            handleNavigate("/admin/settings");
+          }}
+          className="text-sm h-8"
+        >
+          Administrador
+        </Button>
+      )}
 
       <NavbarMenu
         menuItems={allMenuItems}

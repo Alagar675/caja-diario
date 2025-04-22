@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { LogOut, Settings, Currency } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
@@ -34,22 +34,10 @@ const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, clo
       closeMenu();
     }
   };
-
-  // No need to add menu items here, they're already handled in Navbar.tsx
   
   return (
     <>
       <div className={isMobile ? "flex flex-col space-y-2 pt-2 border-t" : "flex items-center space-x-2"}>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={(e) => handleNavigation("/settings/currency", e)}
-          title="Conversor de moneda"
-          className={isMobile ? "" : "h-8 w-8"}
-        >
-          <Currency className="h-4 w-4" />
-        </Button>
-        
         <Button
           variant="ghost"
           size="icon"

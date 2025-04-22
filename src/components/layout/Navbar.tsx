@@ -66,15 +66,15 @@ const Navbar = () => {
     },
   ];
 
-  const formattedName = user ? user.name : "";
-  const userGender = user ? (user.gender === "female" ? "female" : "male") : "male";
+  const formattedName = user ? user.name || "" : "";
+  const userGender = user?.gender === "female" ? "female" : "male";
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b shadow-sm dark:bg-gray-950">
       <div className="container flex h-12 items-center justify-between">
         <NavbarLogo onLogoClick={handleLogoClick} />
 
-        <NavbarUserSection user={user} formattedName={formattedName} userGender={userGender as "male" | "female"} />
+        <NavbarUserSection user={user} formattedName={formattedName} userGender={userGender} />
 
         <nav className="hidden md:flex items-center space-x-4">
           <NavbarDesktopMenu
@@ -100,7 +100,7 @@ const Navbar = () => {
         isMenuOpen={isMenuOpen}
         user={user}
         formattedName={formattedName}
-        userGender={userGender as "male" | "female"}
+        userGender={userGender}
         menuItems={menuItems}
         saveLastAction={saveLastAction}
         handleLogout={handleLogout}

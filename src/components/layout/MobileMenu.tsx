@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import UserProfileDisplay from "./UserProfileDisplay";
 import NavbarMenu from "./NavbarMenu";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronRight, FileText } from "lucide-react";
+import { ChevronDown, ChevronRight, FileText, Currency } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useFinance } from "@/context/FinanceContext";
 import { useAuth } from "@/context/AuthContext";
@@ -59,8 +59,10 @@ const MobileMenu = ({
     }
   };
 
-  // Simplified menu items - removing duplications
-  const mobileMenuItems = menuItems;
+  // Add admin menu item if user is admin
+  const mobileMenuItems = isAdmin
+    ? [...menuItems, { name: "Administrador", path: "/admin/settings" }]
+    : menuItems;
 
   return (
     <div
@@ -126,6 +128,15 @@ const MobileMenu = ({
                 </div>
               ))}
             </div>
+            
+            <Button
+              variant="ghost"
+              className="w-full justify-start"
+              onClick={(e) => handleNavigation("/settings/currency", e)}
+            >
+              <Currency className="h-4 w-4 mr-2" />
+              Conversor de moneda
+            </Button>
             
             <NavbarMenu
               menuItems={[]}
