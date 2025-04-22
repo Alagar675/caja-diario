@@ -59,13 +59,8 @@ const MobileMenu = ({
     }
   };
 
-  const mobileMenuItems = [
-    ...menuItems,
-    ...(isAdmin ? [{ 
-      name: "Administrador", 
-      path: "/admin/settings" 
-    }] : [])
-  ];
+  // Simplified menu items - removing duplications
+  const mobileMenuItems = menuItems;
 
   return (
     <div

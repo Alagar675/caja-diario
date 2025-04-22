@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, Settings, Currency } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
@@ -35,25 +35,21 @@ const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, clo
     }
   };
 
-  const allMenuItems = isAdmin ? [
-    ...menuItems,
-    { name: "Administrador", path: "/admin/settings" }
-  ] : menuItems;
-
+  // No need to add menu items here, they're already handled in Navbar.tsx
+  
   return (
     <>
-      {allMenuItems.map(item => (
-        <Button
-          key={item.name}
-          variant="ghost"
-          className={isMobile ? "w-full justify-start" : "h-8"}
-          onClick={(e) => handleNavigation(item.path, e)}
-        >
-          {item.name}
-        </Button>
-      ))}
-      
       <div className={isMobile ? "flex flex-col space-y-2 pt-2 border-t" : "flex items-center space-x-2"}>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={(e) => handleNavigation("/settings/currency", e)}
+          title="Conversor de moneda"
+          className={isMobile ? "" : "h-8 w-8"}
+        >
+          <Currency className="h-4 w-4" />
+        </Button>
+        
         <Button
           variant="ghost"
           size="icon"
@@ -63,6 +59,7 @@ const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, clo
         >
           <Settings className="h-4 w-4" />
         </Button>
+        
         <Button 
           variant={isMobile ? "outline" : "outline"} 
           size={isMobile ? "default" : "sm"}

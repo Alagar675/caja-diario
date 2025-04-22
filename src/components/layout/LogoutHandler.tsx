@@ -21,12 +21,22 @@ const LogoutHandler = ({ showLogoutAlert, setShowLogoutAlert }: LogoutHandlerPro
     setShowLogoutAlert(false);
     
     setTimeout(() => {
-      const dailyCashCloseButton = document.querySelector('button:has(.h-4.w-4 + span:contains("Cierre de caja diario"))');
-      if (dailyCashCloseButton) {
-        dailyCashCloseButton.classList.add('ring', 'ring-primary', 'ring-offset-2');
-        dailyCashCloseButton.scrollIntoView({ behavior: 'smooth' });
+      // Fix for the invalid selector error
+      const dailyCashCloseButtons = document.querySelectorAll('button');
+      let cashCloseButton = null;
+      
+      // Find button with text content "Cierre de caja diario"
+      dailyCashCloseButtons.forEach(button => {
+        if (button.textContent && button.textContent.includes("Cierre de caja diario")) {
+          cashCloseButton = button;
+        }
+      });
+      
+      if (cashCloseButton) {
+        cashCloseButton.classList.add('ring', 'ring-primary', 'ring-offset-2');
+        cashCloseButton.scrollIntoView({ behavior: 'smooth' });
         setTimeout(() => {
-          dailyCashCloseButton.classList.remove('ring', 'ring-primary', 'ring-offset-2');
+          cashCloseButton.classList.remove('ring', 'ring-primary', 'ring-offset-2');
         }, 2000);
       }
     }, 500);
