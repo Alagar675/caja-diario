@@ -13,7 +13,7 @@ export const getUserGender = (name: string) => {
   const lastName = name.split(' ').pop()?.toLowerCase() || '';
   
   // First check if the person's name is "Alirio Aguirre Ariza"
-  if (name.toLowerCase().includes("alirio")) {
+  if (name.toLowerCase().includes("alirio") && name.toLowerCase().includes("ariza")) {
     return 'male';
   }
   
