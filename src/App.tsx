@@ -1,84 +1,61 @@
-
 import React from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "./context/AuthContext";
-import { FinanceProvider } from "./context/FinanceContext";
+import { Routes, Route } from "react-router-dom";
+import { Toaster } from "sonner";
+
 import Index from "./pages/Index";
-import Dashboard from "./pages/Dashboard";
-import Reports from "./pages/Reports";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import NotFound from "./pages/NotFound";
+import ForgotPassword from "./pages/ForgotPassword";
+import Dashboard from "./pages/Dashboard";
+import Reports from "./pages/Reports";
 import CurrencySettings from "./pages/CurrencySettings";
 import AdminSettings from "./pages/AdminSettings";
-import ForgotPassword from "./pages/ForgotPassword";
+import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+import { AuthProvider } from "./context/AuthContext";
+import { FinanceProvider } from "./context/FinanceContext";
+import { PublicRoute, ProtectedRoute } from "./components/routes";
 
-// Protected route component
-const ProtectedRoute = ({ children, requireAdmin = false }: { children: React.ReactNode, requireAdmin?: boolean }) => {
-  const { isAuthenticated, isAdmin } = useAuth();
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  if (requireAdmin && !isAdmin) {
-    return <Navigate to="/dashboard" replace />;
-  }
-  
-  return <>{children}</>;
-};
+// Importar las nuevas páginas de centro de costos
+import CostCenterRegister from "./pages/CostCenterRegister";
+import CostCenterSelect from "./pages/CostCenterSelect";
+import CostCenterReport from "./pages/CostCenterReport";
 
-const App = () => (
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <AuthProvider>
-            <FinanceProvider>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                
-                {/* Protected routes */}
-                <Route path="/dashboard" element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                } />
-                <Route path="/reports" element={
-                  <ProtectedRoute>
-                    <Reports />
-                  </ProtectedRoute>
-                } />
-                <Route path="/settings/currency" element={
-                  <ProtectedRoute>
-                    <CurrencySettings />
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin/settings" element={
-                  <ProtectedRoute requireAdmin={true}>
-                    <AdminSettings />
-                  </ProtectedRoute>
-                } />
-                
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </FinanceProvider>
-          </AuthProvider>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </React.StrictMode>
-);
+function App() {
+  return (
+    <div className="antialiased text-gray-800 font-sans max-w-screen">
+      <Toaster richColors={true} closeButton />
+
+      <AuthProvider>
+        <FinanceProvider>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/reports" element={<Reports />} />
+              
+              {/* Nuevas rutas para centro de costos */}
+              <Route path="/cost-center/register" element={<CostCenterRegister />} />
+              <Route path="/cost-center/select" element={<CostCenterSelect />} />
+              <Route path="/cost-center/reports" element={<CostCenterReport />} />
+              
+              <Route path="/settings/currency" element={<CurrencySettings />} />
+              <Route path="/admin/settings" element={<AdminSettings />} />
+            </Route>
+            
+            <Route element={<PublicRoute />}>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+            </Route>
+            
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </FinanceProvider>
+      </AuthProvider>
+    </div>
+  );
+}
 
 export default App;

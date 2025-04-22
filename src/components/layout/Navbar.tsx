@@ -1,10 +1,17 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/context/AuthContext";
 import { formatName, getUserGender } from "@/utils/userUtils";
+import { useFinance } from "@/context/FinanceContext";
 import UserProfileDisplay from "./UserProfileDisplay";
 import NavbarMenu from "./NavbarMenu";
 import LogoutHandler from "./LogoutHandler";
@@ -18,6 +25,7 @@ const Navbar = () => {
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
   const [showRecoveryAlert, setShowRecoveryAlert] = useState(false);
   const { user, logout, isAdmin } = useAuth();
+  const { selectedCostCenter } = useFinance();
   const navigate = useNavigate();
   const { saveLastAction, checkRecoveryNeeded, navigateSafely } = useLocalStorageState();
   
@@ -47,6 +55,14 @@ const Navbar = () => {
   const menuItems = [{
     name: "Inicio",
     path: "/dashboard"
+  }, {
+    name: selectedCostCenter ? `Centro de Costos: ${selectedCostCenter.name}` : "Centro de Costos",
+    path: "#",
+    submenu: [
+      { name: "Registrar centro de costos", path: "/cost-center/register" },
+      { name: "Elegir centro de costos", path: "/cost-center/select" },
+      { name: "Reportes por centro", path: "/cost-center/reports" }
+    ]
   }, {
     name: "Informes",
     path: "/reports"
@@ -83,11 +99,58 @@ const Navbar = () => {
 
         <nav className="hidden md:flex items-center space-x-6">
           {user && (
-            <NavbarMenu 
-              menuItems={menuItems} 
-              saveLastAction={saveLastAction} 
-              onLogout={handleLogout}
-            />
+            <>
+              <Button
+                variant="ghost"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigateSafely("/dashboard");
+                }}
+                className="text-sm"
+              >
+                Inicio
+              </Button>
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    className={`text-sm flex items-center gap-2 ${selectedCostCenter ? 'bg-green-50 text-green-700' : ''}`}
+                  >
+                    <FileText className="h-4 w-4" />
+                    {selectedCostCenter ? `Centro: ${selectedCostCenter.name.substring(0, 15)}${selectedCostCenter.name.length > 15 ? '...' : ''}` : 'Centro de Costos'}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="center">
+                  <DropdownMenuItem onClick={() => navigateSafely("/cost-center/register")}>
+                    Registrar centro de costos
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigateSafely("/cost-center/select")}>
+                    Elegir centro de costos
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigateSafely("/cost-center/reports")}>
+                    Reportes por centro
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
+              <Button
+                variant="ghost"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigateSafely("/reports");
+                }}
+                className="text-sm"
+              >
+                Informes
+              </Button>
+              
+              <NavbarMenu 
+                menuItems={[]} 
+                saveLastAction={saveLastAction} 
+                onLogout={handleLogout}
+              />
+            </>
           )}
           
           {!user && (

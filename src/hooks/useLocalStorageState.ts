@@ -26,8 +26,25 @@ export const useLocalStorageState = () => {
   };
   
   const navigateSafely = (path: string) => {
+    // Lista de rutas que permitimos para recuperación
+    const validRecoveryPaths = [
+      "/dashboard", 
+      "/reports", 
+      "/cost-center/register",
+      "/cost-center/select",
+      "/cost-center/reports"
+    ];
+    
     saveLastAction(path);
-    clearRecoveryState(); // Asegurarnos que la navegación sea normal
+    
+    if (validRecoveryPaths.includes(path)) {
+      // Solo marcamos como recuperación posible para rutas clave de la aplicación
+      localStorage.setItem("needsRecovery", "true");
+    } else {
+      // Para otras rutas, no necesitamos recuperación
+      clearRecoveryState();
+    }
+    
     navigate(path, { replace: true });
   };
 

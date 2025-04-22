@@ -18,6 +18,7 @@ export interface Transaction {
   transferNumber?: string;
   recipientName?: string;
   recipientId?: string;
+  costCenterId?: string;
 }
 
 export interface DailySummary {
@@ -42,11 +43,21 @@ export interface Withdrawal {
   archivedAt?: Date;
 }
 
+export interface CostCenter {
+  id: string;
+  userId: string;
+  name: string;
+  description: string;
+  createdAt: Date;
+}
+
 export interface FinanceContextType {
   transactions: Transaction[];
   withdrawals: Withdrawal[];
   archivedTransactions: Transaction[];
   archivedWithdrawals: Withdrawal[];
+  costCenters: CostCenter[];
+  selectedCostCenter: CostCenter | null;
   addTransaction: (transaction: Omit<Transaction, "id" | "userId" | "createdAt">) => void;
   addWithdrawal: (withdrawal: Omit<Withdrawal, "id" | "userId" | "timestamp">) => void;
   resetBalancesForNewDay: () => void;
@@ -57,4 +68,7 @@ export interface FinanceContextType {
   generateDayEndReport: () => DailySummary;
   getBalanceSummary: () => { cashBalance: number; transferBalance: number; creditBalance: number };
   getTotalWithdrawals: () => { cashWithdrawals: number; transferWithdrawals: number; creditWithdrawals: number; totalWithdrawals: number };
+  addCostCenter: (costCenter: Omit<CostCenter, "id" | "userId" | "createdAt">) => void;
+  selectCostCenter: (costCenterId: string | null) => void;
+  getTransactionsByCostCenter: (costCenterId: string) => Transaction[];
 }
