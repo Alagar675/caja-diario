@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import UserProfileDisplay from "./UserProfileDisplay";
@@ -7,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronRight, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useFinance } from "@/context/FinanceContext";
+import { useAuth } from "@/context/AuthContext";
 
 interface MobileMenuProps {
   isMenuOpen: boolean;
@@ -35,6 +35,7 @@ const MobileMenu = ({
 }: MobileMenuProps) => {
   const navigate = useNavigate();
   const { selectedCostCenter } = useFinance();
+  const { isAdmin } = useAuth();
   const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
   
   const handleNavigation = (path: string, event?: React.MouseEvent) => {
@@ -57,6 +58,17 @@ const MobileMenu = ({
     }
   };
 
+  const mobileMenuItems = [
+    ...menuItems.map(item => ({
+      ...item,
+      name: item.name.replace('Centro de Costos', 'C.Costos')
+    })),
+    ...(isAdmin ? [{ 
+      name: "Administrador", 
+      path: "/admin/settings" 
+    }] : [])
+  ];
+
   return (
     <div
       className={cn(
@@ -64,7 +76,7 @@ const MobileMenu = ({
         isMenuOpen ? "block animate-slide-in" : "hidden"
       )}
     >
-      <div className="container py-4 space-y-4">
+      <div className="container py-3 space-y-3">
         {user && (
           <>
             <UserProfileDisplay
@@ -74,7 +86,7 @@ const MobileMenu = ({
             />
             
             <div className="flex flex-col space-y-2 pt-2">
-              {menuItems.map(item => (
+              {mobileMenuItems.map(item => (
                 <div key={item.name} className="w-full">
                   {item.submenu ? (
                     <div className="w-full">

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, X, FileText } from "lucide-react";
@@ -56,7 +55,7 @@ const Navbar = () => {
     name: "Inicio",
     path: "/dashboard"
   }, {
-    name: selectedCostCenter ? `Centro de Costos: ${selectedCostCenter.name}` : "Centro de Costos",
+    name: selectedCostCenter ? `C.Costos: ${selectedCostCenter.name}` : "C.Costos",
     path: "#",
     submenu: [
       { name: "Registrar centro de costos", path: "/cost-center/register" },
@@ -68,12 +67,17 @@ const Navbar = () => {
     path: "/reports"
   }];
 
+  const allMenuItems = isAdmin ? [
+    ...menuItems,
+    { name: "Administrador", path: "/admin/settings" }
+  ] : menuItems;
+
   const formattedName = user ? formatName(user.name) : '';
   const userGender = user ? getUserGender(user.name) : 'male';
   
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b shadow-sm dark:bg-gray-950">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-14 items-center justify-between">
         <div className="flex items-center space-x-2">
           <Image 
             src="/lovable-uploads/1dd588be-cbaf-47c8-8924-e510ea18d27f.png" 
@@ -146,7 +150,7 @@ const Navbar = () => {
               </Button>
               
               <NavbarMenu 
-                menuItems={[]} 
+                menuItems={allMenuItems} 
                 saveLastAction={saveLastAction} 
                 onLogout={handleLogout}
               />
