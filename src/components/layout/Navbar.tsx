@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, X, FileText } from "lucide-react";
@@ -77,17 +78,17 @@ const Navbar = () => {
   
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b shadow-sm dark:bg-gray-950">
-      <div className="container flex h-14 items-center justify-between">
+      <div className="container flex h-12 items-center justify-between">
         <div className="flex items-center space-x-2">
           <Image 
             src="/lovable-uploads/1dd588be-cbaf-47c8-8924-e510ea18d27f.png" 
             alt="Daily Cash Report Logo" 
-            className="h-10 w-10 object-cover cursor-pointer"
+            className="h-8 w-8 object-cover cursor-pointer"
             onClick={handleLogoClick}
           />
           <Button
             variant="ghost"
-            className="font-bold text-blue-700 text-xl"
+            className="font-bold text-blue-700 text-md"
             onClick={handleLogoClick}
           >
             Daily Cash Report
@@ -101,7 +102,7 @@ const Navbar = () => {
           />
         )}
 
-        <nav className="hidden md:flex items-center space-x-6">
+        <nav className="hidden md:flex items-center space-x-4">
           {user && (
             <>
               <Button
@@ -110,7 +111,7 @@ const Navbar = () => {
                   e.preventDefault();
                   navigateSafely("/dashboard");
                 }}
-                className="text-sm"
+                className="text-sm h-8"
               >
                 Inicio
               </Button>
@@ -119,10 +120,10 @@ const Navbar = () => {
                 <DropdownMenuTrigger asChild>
                   <Button 
                     variant="ghost" 
-                    className={`text-sm flex items-center gap-2 ${selectedCostCenter ? 'bg-green-50 text-green-700' : ''}`}
+                    className={`text-sm flex items-center gap-2 h-8 ${selectedCostCenter ? 'bg-green-50 text-green-700' : ''}`}
                   >
                     <FileText className="h-4 w-4" />
-                    {selectedCostCenter ? `Centro: ${selectedCostCenter.name.substring(0, 15)}${selectedCostCenter.name.length > 15 ? '...' : ''}` : 'Centro de Costos'}
+                    {selectedCostCenter ? `C.Costos: ${selectedCostCenter.name.substring(0, 15)}${selectedCostCenter.name.length > 15 ? '...' : ''}` : 'C.Costos'}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="center">
@@ -144,7 +145,7 @@ const Navbar = () => {
                   e.preventDefault();
                   navigateSafely("/reports");
                 }}
-                className="text-sm"
+                className="text-sm h-8"
               >
                 Informes
               </Button>
@@ -165,7 +166,7 @@ const Navbar = () => {
                   e.preventDefault();
                   navigateSafely("/login");
                 }} 
-                className="text-sm"
+                className="text-sm h-8"
               >
                 Iniciar sesión
               </Button>
@@ -174,7 +175,7 @@ const Navbar = () => {
                   e.preventDefault();
                   navigateSafely("/register");
                 }} 
-                className="text-sm bg-primary text-white"
+                className="text-sm h-8 bg-primary text-white"
               >
                 Registrarse
               </Button>

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import UserProfileDisplay from "./UserProfileDisplay";
@@ -59,10 +60,7 @@ const MobileMenu = ({
   };
 
   const mobileMenuItems = [
-    ...menuItems.map(item => ({
-      ...item,
-      name: item.name.replace('Centro de Costos', 'C.Costos')
-    })),
+    ...menuItems,
     ...(isAdmin ? [{ 
       name: "Administrador", 
       path: "/admin/settings" 
@@ -76,7 +74,7 @@ const MobileMenu = ({
         isMenuOpen ? "block animate-slide-in" : "hidden"
       )}
     >
-      <div className="container py-3 space-y-3">
+      <div className="container py-3 space-y-2">
         {user && (
           <>
             <UserProfileDisplay
@@ -85,18 +83,18 @@ const MobileMenu = ({
               isMobile={true}
             />
             
-            <div className="flex flex-col space-y-2 pt-2">
+            <div className="flex flex-col space-y-1 pt-1">
               {mobileMenuItems.map(item => (
                 <div key={item.name} className="w-full">
                   {item.submenu ? (
                     <div className="w-full">
                       <Button
                         variant="ghost"
-                        className={`w-full justify-between ${selectedCostCenter && item.name.includes('Centro de Costos') ? 'bg-green-50 text-green-700' : ''}`}
+                        className={`w-full justify-between ${selectedCostCenter && item.name.includes('C.Costos') ? 'bg-green-50 text-green-700' : ''}`}
                         onClick={() => toggleExpandedMenu(item.name)}
                       >
                         <div className="flex items-center">
-                          {item.name.includes('Centro de Costos') && <FileText className="h-4 w-4 mr-2" />}
+                          {item.name.includes('C.Costos') && <FileText className="h-4 w-4 mr-2" />}
                           {item.name}
                         </div>
                         {expandedMenu === item.name ? (

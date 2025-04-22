@@ -37,7 +37,7 @@ const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, clo
 
   const allMenuItems = isAdmin ? [
     ...menuItems,
-    { name: "Panel de Administrador", path: "/admin/settings" }
+    { name: "Administrador", path: "/admin/settings" }
   ] : menuItems;
 
   return (
@@ -46,7 +46,7 @@ const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, clo
         <Button
           key={item.name}
           variant="ghost"
-          className={isMobile ? "w-full justify-start" : ""}
+          className={isMobile ? "w-full justify-start" : "h-8"}
           onClick={(e) => handleNavigation(item.path, e)}
         >
           {item.name}
@@ -59,6 +59,7 @@ const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, clo
           size="icon"
           onClick={(e) => handleNavigation("/settings/currency", e)}
           title="Configuración de moneda"
+          className={isMobile ? "" : "h-8 w-8"}
         >
           <Settings className="h-4 w-4" />
         </Button>
@@ -69,7 +70,7 @@ const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, clo
             e.preventDefault();
             onLogout();
           }} 
-          className={isMobile ? "justify-start" : "flex items-center gap-1"}
+          className={isMobile ? "justify-start" : "flex items-center gap-1 h-8"}
         >
           <LogOut className="h-4 w-4" />
           <span>{isMobile ? "Cerrar sesión" : "Salir"}</span>
