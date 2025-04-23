@@ -36,14 +36,15 @@ const NavbarDesktopMenu = ({
 }: NavbarDesktopMenuProps) => {
   const navigate = useNavigate();
 
-  const allMenuItems = isAdmin
-    ? [...menuItems, { name: "Administrador", path: "/admin/settings" }]
-    : menuItems;
-
   const handleNavigate = (path: string) => {
+    if (path === "#") return; // Don't navigate for dropdown triggers
+    
+    // Mark navigation as controlled to prevent issues
     saveLastAction(path);
     localStorage.setItem("needsRecovery", "false");
     localStorage.setItem("abnormalExit", "false");
+    
+    // Use navigate with replace to avoid history stack issues
     navigate(path, { replace: true });
   };
 
@@ -141,7 +142,7 @@ const NavbarDesktopMenu = ({
       )}
 
       <NavbarMenu
-        menuItems={allMenuItems}
+        menuItems={[]}
         saveLastAction={saveLastAction}
         onLogout={onLogout}
       />

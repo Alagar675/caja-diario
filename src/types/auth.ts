@@ -4,6 +4,7 @@ export interface User {
   name: string;
   email: string;
   role: "admin" | "user";
+  gender?: "male" | "female"; // Added gender as optional property
 }
 
 export interface AuthContextType {

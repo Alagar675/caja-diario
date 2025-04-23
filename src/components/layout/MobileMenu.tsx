@@ -44,9 +44,16 @@ const MobileMenu = ({
       event.preventDefault();
     }
     
+    if (path === "#") {
+      return; // Don't navigate for dropdown triggers
+    }
+    
+    // Mark as controlled navigation to prevent issues
     saveLastAction(path);
     localStorage.setItem("needsRecovery", "false");
     localStorage.setItem("abnormalExit", "false");
+    
+    // Use navigate with replace to avoid history stack issues
     navigate(path, { replace: true });
     closeMenu();
   };

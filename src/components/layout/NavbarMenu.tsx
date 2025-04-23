@@ -22,12 +22,12 @@ const NavbarMenu = ({ menuItems, saveLastAction, onLogout, isMobile = false, clo
       event.preventDefault();
     }
     
-    // Guardar la acción pero marcar como salida normal
+    // Mark as controlled navigation to prevent issues
     saveLastAction(path);
     localStorage.setItem("needsRecovery", "false");
     localStorage.setItem("abnormalExit", "false");
     
-    // Usar navigate con replace para evitar problemas de historial
+    // Use navigate with replace to avoid history stack issues
     navigate(path, { replace: true });
     
     if (isMobile && closeMenu) {

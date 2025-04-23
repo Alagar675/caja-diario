@@ -8,6 +8,7 @@ import RecoveryHandler from "./RecoveryHandler";
 import { useAuth } from "@/context/AuthContext";
 import { useFinance } from "@/context/FinanceContext";
 import useLocalStorageState from "@/hooks/useLocalStorageState";
+import { getUserGender } from "@/utils/userUtils";
 
 import NavbarLogo from "./NavbarLogo";
 import NavbarUserSection from "./NavbarUserSection";
@@ -67,7 +68,8 @@ const Navbar = () => {
   ];
 
   const formattedName = user ? user.name || "" : "";
-  const userGender = user?.gender === "female" ? "female" : "male";
+  // Use the getUserGender utility function or default to user's gender property if available
+  const userGender = user?.gender || (user ? getUserGender(user.name || "") : "male");
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b shadow-sm dark:bg-gray-950">

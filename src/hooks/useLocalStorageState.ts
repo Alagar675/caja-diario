@@ -6,8 +6,8 @@ export const useLocalStorageState = () => {
   
   const saveLastAction = (action: string) => {
     localStorage.setItem("lastAction", action);
-    // Solo configuramos estos valores si realmente necesitamos recuperación
-    // Para navegación normal, estos valores deberían ser false
+    // Only set these values when we actually need recovery
+    // For normal navigation, these values should be false
     // localStorage.setItem("needsRecovery", "true");
     // localStorage.setItem("abnormalExit", "true");
   };
@@ -26,7 +26,7 @@ export const useLocalStorageState = () => {
   };
   
   const navigateSafely = (path: string) => {
-    // Lista de rutas que permitimos para recuperación
+    // List of routes allowed for recovery
     const validRecoveryPaths = [
       "/dashboard", 
       "/reports", 
@@ -37,13 +37,9 @@ export const useLocalStorageState = () => {
     
     saveLastAction(path);
     
-    if (validRecoveryPaths.includes(path)) {
-      // Solo marcamos como recuperación posible para rutas clave de la aplicación
-      localStorage.setItem("needsRecovery", "true");
-    } else {
-      // Para otras rutas, no necesitamos recuperación
-      clearRecoveryState();
-    }
+    // Mark as controlled navigation to prevent issues
+    localStorage.setItem("needsRecovery", "false");
+    localStorage.setItem("abnormalExit", "false");
     
     navigate(path, { replace: true });
   };
